@@ -1,5 +1,9 @@
 from pygame import *
 
+"""
+SPACE INVADER
+"""
+
 init()  # Initializes pygame
 
 # Creates a window with the name of the game, and sets the future background image
