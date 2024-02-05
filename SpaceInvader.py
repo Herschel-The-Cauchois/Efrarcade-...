@@ -1,4 +1,5 @@
 from pygame import *
+import pygame
 from pygame.locals import *
 
 """
@@ -14,7 +15,10 @@ SPACE INVADER
    (y)
 """
 
-#CONSTANTES
+#GLOBAL VARIABLES
+global L, H, is_active
+global scene, background, perso, persoRect
+
 L = 1000
 H = 500
 is_active = True
@@ -40,7 +44,7 @@ persoRect.y = H - 100
 
 class Player:
 
-    def __innit__(self, x, y, ship):
+    def __init__(self, x, y, ship):
         self.x = x                              # x and y are the coordinates of the player's ship
         self.y = y                     
         self.ship = ship                        # The ship is the image of the player's spaceship
@@ -48,34 +52,32 @@ class Player:
 
     def move(self):
 
-        l = L - 150
+        l = L - 150                            # The player's ship can't go beyond the window
         h = H - 100
-        #event = [K_RIGHT, K_LEFT, K_UP, K_DOWN]
 
         
-        for event in event.get():          
+        for event in pygame.event.get():          
 
-
-            if event.type == KEYDOWN:       # If a key is pressed, the player's ship moves
+            if event.type == pygame.KEYDOWN:       # If a key is pressed, the player's ship moves
 
                 if event.key == K_RIGHT:    #Right arrow key
                     if persoRect.x < l:
-                        persoRect.x += 1
+                        persoRect.x += 5
                     
 
                 if event.key == K_LEFT:     #Left arrow key
                     if persoRect.x > 0:
-                        persoRect.x -= 1
+                        persoRect.x -= 5
 
 
                 if event.key == K_UP:       #Up arrow key
                     if persoRect.y > 0:
-                        persoRect.y -= 1
+                        persoRect.y -= 5
 
 
                 if event.key == K_DOWN:     #Down arrow key
                     if persoRect.y < h:
-                        persoRect.y += 1
+                        persoRect.y += 5
 
                 
 
