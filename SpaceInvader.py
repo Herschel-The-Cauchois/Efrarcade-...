@@ -1,8 +1,21 @@
 from pygame import *
+from SpaceInvader_enemies import *
 
 """
 SPACE INVADER
 """
+
+
+# Class containing different elements of the game
+class Game:
+    def __init__(self):
+        self.enemies = sprite.Group()
+        self.spawn()
+
+    def spawn(self):
+        a = EnemyShip()
+        self.enemies.add(a)
+
 
 init()  # Initializes pygame
 
@@ -16,7 +29,13 @@ is_active = True
 # Main loop that will reproduce a series of checks while the window is deemed active
 while is_active:
     scene.blit(background, (0, 0))
+
+    # Draws enemy group of sprites.
+    game = Game()
+    game.enemies.draw(scene)
+
     display.flip()  # Sets the background and refreshes the window
+
     for thing in event.get():
         if thing.type == QUIT:
             # If quitting event detected, closes the windows
