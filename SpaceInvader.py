@@ -1,3 +1,4 @@
+import random
 from pygame import *
 import pygame
 from pygame.locals import *
@@ -6,40 +7,39 @@ from pygame.locals import *
 SPACE INVADER
 """
 
-#INFOS
-"""
-Axis
+pygame.init()  # Initializes pygamegame
 
-  0-|------------ (x)
-    |
-    |
-    |
-   (y)
-"""
-
-#GLOBAL VARIABLES
-global L, H, is_active
-global scene, background, perso, persoRect
-
-clock = pygame.time.Clock()
-L = 1000
-H = 500
+# Creates a window with the name of the game, and sets the future background image
+screen_width = 1000
+screen_height = 500
 is_active = True
-
-#INITIALISATION
-
-init()  
-
-#WINDOW
-display.set_caption("Efrarcade")
-scene = display.set_mode((L, H))
-background = image.load("./assets/test.png")
+pygame.display.set_caption("Efrarcade")
+scene = pygame.display.set_mode((screen_width, screen_height))
+background = pygame.Surface(scene.get_size())
+clock = pygame.time.Clock()
+star_positions = []
+def genererateStars():
+    """ generate some stars that will move from the right to the left.
+    It creates a new star with a 10% chance, to avoid having too many stars. Once its creating it by putting it in a list (to keep track of it), it will move it to the left and remove it from the list if it goes out of the screen.
+    An star is a list with 3 elements: x position, y position and speed.
+    """
+    if random.randint(0, 100) < 10:
+        star_positions.append([screen_width, random.randint(0, screen_height), random.randint(1, 3)])
+    for star in star_positions:
+        star[0] -= star[2]
+        if star[0] < 0:
+            star_positions.remove(star)
+def paintStars(scene):
+    """ paint the stars on the scene """
+    for star in star_positions:
+        pygame.draw.circle(scene, (255, 255, 255), (star[0], star[1]), 1)
+    
 
 #PLAYER
 perso = image.load("./assets/perso.png").convert()
 persoRect = perso.get_rect()
-persoRect.x = (L - 150)/2
-persoRect.y = H - 100
+persoRect.x = (screen_width - 150)/2
+persoRect.y = screen_height - 100
 
 
 class Player :
@@ -63,8 +63,8 @@ class Move:
 
     def move(self):
 
-        l = L - 100                                     # Size ofthe temporary perso 100x100
-        h = H - 100                                     # The player's ship can't go beyond the window
+        l = screen_width - 100                                     # Size ofthe temporary perso 100x100
+        h = screen_height - 100                                     # The player's ship can't go beyond the window
 
         keys = pygame.key.get_pressed()                 # Get the state of all keyboard keys
 
@@ -86,18 +86,17 @@ class Move:
 while is_active:
     scene.blit(background, (0, 0))
     scene.blit(perso,(persoRect.x, persoRect.y))
-    display.flip()                                      # Sets the background and refreshes the window
-    clock.tick(60)
 
-
+    # Draw each star onto the scene
+    genererateStars()
+    paintStars(scene)
     Move.move(perso)
     pygame.display.update()
+    clock.tick(60)
+    pygame.display.flip()  # Sets the background and refreshes the window
 
-    for event in pygame.event.get(): 
-
-        if event.type == QUIT:
-            is_active = False                           # Set is_active to False when the window is closed
-            quit()         
-
-    if not is_active:                                   # Exit the game loop if is_active is False
-        break
+    for thing in pygame.event.get():
+        if thing.type == pygame.QUIT:
+            # If quitting event detected, closes the windows
+            is_active = False
+            quit()
