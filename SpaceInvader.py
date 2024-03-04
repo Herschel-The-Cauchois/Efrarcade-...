@@ -1,24 +1,49 @@
-from pygame import *
+import pygame
+import random
 
 """
 SPACE INVADER
 """
 
-init()  # Initializes pygame
+pygame.init()  # Initializes pygamegame
 
 # Creates a window with the name of the game, and sets the future background image
-display.set_caption("Efrarcade")
-scene = display.set_mode((1000, 500))
-background = image.load("./assets/test.png")
+screen_width = 1000
+screen_height = 500
+pygame.display.set_caption("Efrarcade")
+scene = pygame.display.set_mode((screen_width, screen_height))
+background = pygame.Surface(scene.get_size())
+clock = pygame.time.Clock()
+star_positions = []
+def genererateStars():
+    """ generate some stars that will move from the right to the left """
+    if random.randint(0, 100) < 10:
+        star_positions.append([screen_width, random.randint(0, screen_height), random.randint(1, 3)])
+    for star in star_positions:
+        star[0] -= star[2]
+        if star[0] < 0:
+            star_positions.remove(star)
+def paintStars(scene):
+    """ paint the stars on the scene """
+    for star in star_positions:
+        pygame.draw.circle(scene, (255, 255, 255), (star[0], star[1]), 1)
+    
+
 
 is_active = True
 
 # Main loop that will reproduce a series of checks while the window is deemed active
 while is_active:
     scene.blit(background, (0, 0))
-    display.flip()  # Sets the background and refreshes the window
-    for thing in event.get():
-        if thing.type == QUIT:
+
+    # Draw each star onto the scene
+    genererateStars()
+    paintStars(scene)
+
+    pygame.display.flip()  # Sets the background and refreshes the window
+
+    for thing in pygame.event.get():
+        if thing.type == pygame.QUIT:
             # If quitting event detected, closes the windows
             is_active = False
             quit()
