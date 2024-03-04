@@ -61,6 +61,7 @@ class Move:
         self.move_up = False
         self.move_down = False
 
+
     def move(self):
 
         l = L - 100                                     # Size ofthe temporary perso 100x100
@@ -80,24 +81,51 @@ class Move:
         if keys[pygame.K_DOWN] and persoRect.y < h:
             persoRect.y += 20
 
+class Projectile:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def move(self):
+        self.x += 30                                                        # Speed of projectile
+
+    def draw(self):
+        pygame.draw.rect(scene, (255, 255, 255), (self.x, self.y, 5, 10))   # Draw the projectile
+
 
 #GAME LOOP
-
-while is_active:
-    scene.blit(background, (0, 0))
-    scene.blit(perso,(persoRect.x, persoRect.y))
-    display.flip()                                      # Sets the background and refreshes the window
-    clock.tick(60)
+        
+projectiles = []
 
 
-    Move.move(perso)
-    pygame.display.update()
+while is_active:                                                # Main loop
+    scene.blit(background, (0, 0))                              # Background
+    scene.blit(perso, (persoRect.x, persoRect.y))               # Player's ship
 
-    for event in pygame.event.get(): 
+    for projectile in projectiles:                              
+        projectile.move()                                       
+        projectile.draw()
 
+    display.flip()                                              # Update the display
+    clock.tick(60)                                              
+
+    Move.move(perso)                                            # class Move 
+    pygame.display.update()                                     
+
+    for event in pygame.event.get():                            # Event loop
         if event.type == QUIT:
-            is_active = False                           # Set is_active to False when the window is closed
-            quit()         
+            is_active = False
+            quit()
 
-    if not is_active:                                   # Exit the game loop if is_active is False
+      
+        if event.type == KEYDOWN and event.key == pygame.K_SPACE:   # If the space key is pressed
+            projectile = Projectile(persoRect.x + 75, persoRect.y + 50)  # Create a projectile
+            projectiles.append(projectile)
+            
+
+    if not is_active:
         break
+
+        
+
+
