@@ -1,4 +1,5 @@
 from pygame import *
+from math import sqrt, sin
 
 
 class Enemies(sprite.Sprite):
@@ -21,6 +22,37 @@ class EnemyShip(Enemies):
         self.rect = self.image.get_rect()  # Creates hitbox
         self.rect.x = 0
         self.rect.y = 0  # Sets up starting position of the ship by setting up the enemy's coordinate
+        self.reached_border = 0
+        self.velocity = 2
+
+    def displacement(self):
+        # Will move the ship across the screen. This enemy will move in straight lines until it reaches a certain level.
+        if self.rect.x >= 950:
+            # If the ship is too much to the right, it will lower its altitude before reversing the displacement
+            # behavior.
+            if self.rect.y < 400:
+                # This condition verifies if the ship isn't too low. If its y coordinate is above designated level,
+                # it will not lower again its altitude, and in the case of the lowering process making it go
+                # Too much below, it will directly lower it to the minimum altitude.
+                if self.rect.y + 8 * (int(sqrt(self.velocity))) > 400:
+                    self.rect.y = 400
+                else:
+                    self.rect.y += 8 * (int(sqrt(self.velocity)))  # The sqrt factor makes the altitude loss dependent
+                    # on velocity but helps attenuate the effect instead of using a constant when the velocity is high.
+            self.reached_border = 1
+        if self.rect.x <= 10:
+            # If the ship is too much to the left, it will lower its altitude before reversing the displacement
+            # behavior.
+            if self.rect.y < 400:
+                if self.rect.y + 8 * (int(sqrt(self.velocity))) > 400:
+                    self.rect.y = 400
+                else:
+                    self.rect.y += 8 * (int(sqrt(self.velocity)))
+            self.reached_border = 0
+        if self.reached_border == 0:
+            self.rect.x += 1 * self.velocity
+        elif self.reached_border == 1:
+            self.rect.x -= 1 * self.velocity
 
 
 class Sinusoid(Enemies):
@@ -36,3 +68,16 @@ class Sinusoid(Enemies):
         self.rect = self.image.get_rect()  # Creates hitbox
         self.rect.x = 0
         self.rect.y = 0  # Sets up starting position of the ship by setting up the enemy's coordinate
+        self.reached_border = 0
+        self.velocity = 10
+
+    def displacement(self):
+        # Will move the ship across the screen. This enemy will move in straight lines until it reaches a certain level.
+        if self.rect.x >= 990:
+            self.reached_border = 1
+        if self.rect.x <= 10:
+            self.reached_border = 0
+        if self.reached_border == 0:
+            self.rect.x += 1 * self.velocity
+        elif self.reached_border == 1:
+            self.rect.x -= 1 * self.velocity
