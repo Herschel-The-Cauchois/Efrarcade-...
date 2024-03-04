@@ -36,7 +36,7 @@ def paintStars(scene):
     
 
 #PLAYER
-perso = image.load("./assets/perso.png").convert()
+perso = image.load("./assets/Perso.png").convert()
 persoRect = perso.get_rect()
 persoRect.x = (screen_width - 150)/2
 persoRect.y = screen_height - 100
