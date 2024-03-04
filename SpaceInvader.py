@@ -10,11 +10,11 @@ SPACE INVADER
 class Game:
     def __init__(self):
         self.enemies = sprite.Group()
-        self.spawn()
+        self.spawn()  # Makes an enemy spawn upon initialisation
 
     def spawn(self):
         a = EnemyShip()
-        self.enemies.add(a)
+        self.enemies.add(a)  # Displays one enemy by adding it to the enemies group sprite.
 
 
 init()  # Initializes pygame
