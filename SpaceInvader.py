@@ -38,8 +38,8 @@ background = image.load("./assets/test.png")
 #PLAYER
 perso = image.load("./assets/perso.png").convert()
 persoRect = perso.get_rect()
-persoRect.x = (L - 150)/2
-persoRect.y = H - 100
+persoRect.x = 0
+persoRect.y = (H - 100)/2
 
 
 class Player :
@@ -87,10 +87,10 @@ class Projectile:
         self.y = y
 
     def move(self):
-        self.x += 30                                                        # Speed of projectile
+        self.x += 45                                                        # Speed of projectile
 
     def draw(self):
-        pygame.draw.rect(scene, (255, 255, 255), (self.x, self.y, 5, 10))   # Draw the projectile
+        pygame.draw.rect(scene, (255, 255, 255), (self.x, self.y, 10, 5))   # Draw the projectile 10x5 pixels (white)
 
 
 #GAME LOOP
@@ -105,6 +105,9 @@ while is_active:                                                # Main loop
     for projectile in projectiles:                              
         projectile.move()                                       
         projectile.draw()
+
+        if L < projectile.x :                                    # Remove the projectile if it goes off the screen
+            projectiles.remove(projectile)
 
     display.flip()                                              # Update the display
     clock.tick(60)                                              
