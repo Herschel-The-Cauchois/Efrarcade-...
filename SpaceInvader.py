@@ -24,7 +24,7 @@ def genererateStars():
     An star is a list with 3 elements: x position, y position and speed.
     """
     if random.randint(0, 100) < 10:
-        star_positions.append([screen_width, random.randint(0, screen_height), random.randint(1, 3)])
+        star_positions.append([screen_width, random.randint(0, screen_height), random.randint(1, 3)]) # vitesse alléatoire pour donner une illusion de différents plans
     for star in star_positions:
         star[0] -= star[2]
         if star[0] < 0:
@@ -34,6 +34,16 @@ def paintStars(scene):
     for star in star_positions:
         pygame.draw.circle(scene, (255, 255, 255), (star[0], star[1]), 1)
     
+def pause_game():
+    paused = True
+    while paused:
+        for events in pygame.event.get():
+            if events.type == pygame.KEYDOWN:
+                pass
+                #TODO check with the menu
+                
+
+
 
 #PLAYER
 perso = image.load("./assets/Perso.png").convert()
@@ -91,12 +101,15 @@ while is_active:
     genererateStars()
     paintStars(scene)
     Move.move(perso)
-    pygame.display.update()
+    pygame.display.flip()
     clock.tick(60)
-    pygame.display.flip()  # Sets the background and refreshes the window
+  # Sets the background and refreshes the window
 
-    for thing in pygame.event.get():
-        if thing.type == pygame.QUIT:
+    for events in pygame.event.get():
+        if events.type == pygame.QUIT:
             # If quitting event detected, closes the windows
             is_active = False
             quit()
+        if events.type == pygame.KEYDOWN: #pause the game if escape is pressed
+            if events.key == pygame.K_ESCAPE:
+                pause_game()
