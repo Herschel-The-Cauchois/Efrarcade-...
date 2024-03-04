@@ -16,7 +16,10 @@ background = pygame.Surface(scene.get_size())
 clock = pygame.time.Clock()
 star_positions = []
 def genererateStars():
-    """ generate some stars that will move from the right to the left """
+    """ generate some stars that will move from the right to the left.
+    It creates a new star with a 10% chance, to avoid having too many stars. Once its creating it by putting it in a list (to keep track of it), it will move it to the left and remove it from the list if it goes out of the screen.
+    An star is a list with 3 elements: x position, y position and speed.
+    """
     if random.randint(0, 100) < 10:
         star_positions.append([screen_width, random.randint(0, screen_height), random.randint(1, 3)])
     for star in star_positions:
