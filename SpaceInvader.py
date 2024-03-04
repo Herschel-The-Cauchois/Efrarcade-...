@@ -8,6 +8,8 @@ SPACE INVADER
 
 #INFOS
 """
+Axis
+
   0-|------------ (x)
     |
     |
@@ -51,9 +53,9 @@ class Player :
 class Move:
 
     def __init__(self, x, y, is_active):
-        self.x = x                              # x and y are the coordinates of the player's ship
+        self.x = x                                      # x and y are the coordinates of the player's ship
         self.y = y                     
-        self.is_active = is_active                        # The ship is the image of the player's spaceship
+        self.is_active = is_active                      # The ship is the image of the player's spaceship
         self.move_right = False
         self.move_left = False
         self.move_up = False
@@ -61,12 +63,12 @@ class Move:
 
     def move(self):
 
-        l = L - 100                           # Size ofthe temporary perso 100x100
-        h = H - 100                           # The player's ship can't go beyond the window
+        l = L - 100                                     # Size ofthe temporary perso 100x100
+        h = H - 100                                     # The player's ship can't go beyond the window
 
-        keys = pygame.key.get_pressed()       # Get the state of all keyboard keys
+        keys = pygame.key.get_pressed()                 # Get the state of all keyboard keys
 
-        if keys[pygame.K_RIGHT] and persoRect.x < l:
+        if keys[pygame.K_RIGHT] and persoRect.x < l:    # Move the perso if the right key is pressed and the ship is within the window boundaries
             persoRect.x += 10
 
         if keys[pygame.K_LEFT] and persoRect.x > 0:
@@ -84,7 +86,7 @@ class Move:
 while is_active:
     scene.blit(background, (0, 0))
     scene.blit(perso,(persoRect.x, persoRect.y))
-    display.flip()                                  # Sets the background and refreshes the window
+    display.flip()                                      # Sets the background and refreshes the window
     clock.tick(60)
 
 
@@ -94,8 +96,8 @@ while is_active:
     for event in pygame.event.get(): 
 
         if event.type == QUIT:
-            is_active = False          # Set is_active to False when the window is closed
+            is_active = False                           # Set is_active to False when the window is closed
             quit()         
 
-    if not is_active:                               # Exit the game loop if is_active is False
+    if not is_active:                                   # Exit the game loop if is_active is False
         break
