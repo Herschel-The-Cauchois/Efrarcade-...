@@ -40,53 +40,43 @@ persoRect.x = (L - 150)/2
 persoRect.y = H - 100
 
 
+class Player :
+
+    def __init__(self, perso):
+        self.perso = perso
+
 
 #PLAYER MOVEMENT
 
-class Player:
+class Move:
 
-    def __init__(self, x, y, ship):
+    def __init__(self, x, y, is_active):
         self.x = x                              # x and y are the coordinates of the player's ship
         self.y = y                     
-        self.ship = ship                        # The ship is the image of the player's spaceship
-        
+        self.is_active = is_active                        # The ship is the image of the player's spaceship
+        self.move_right = False
+        self.move_left = False
+        self.move_up = False
+        self.move_down = False
 
     def move(self):
 
-        l = L - 150                            # The player's ship can't go beyond the window
-        h = H - 100
-        
+        l = L - 100                           # Size ofthe temporary perso 100x100
+        h = H - 100                           # The player's ship can't go beyond the window
 
-        
-        for event in pygame.event.get():          
+        keys = pygame.key.get_pressed()       # Get the state of all keyboard keys
 
-            if event.type == pygame.KEYDOWN:       # If a key is pressed, the player's ship moves
-                
+        if keys[pygame.K_RIGHT] and persoRect.x < l:
+            persoRect.x += 10
 
-                if event.key == K_RIGHT:           #Right arrow key
-                    if persoRect.x < l:
-                        persoRect.x += 10
-                    
+        if keys[pygame.K_LEFT] and persoRect.x > 0:
+            persoRect.x -= 10
 
-                if event.key == K_LEFT:            #Left arrow key
-                    if persoRect.x > 0:
-                        persoRect.x -= 10
+        if keys[pygame.K_UP] and persoRect.y > 0:
+            persoRect.y -= 20
 
-
-                if event.key == K_UP:              #Up arrow key
-                    if persoRect.y > 0:
-                        persoRect.y -= 20
-
-
-                if event.key == K_DOWN:            #Down arrow key
-                    if persoRect.y < h:
-                        persoRect.y += 20
-
-                
-
-
-
-
+        if keys[pygame.K_DOWN] and persoRect.y < h:
+            persoRect.y += 20
 
 
 #GAME LOOP
@@ -95,14 +85,17 @@ while is_active:
     scene.blit(background, (0, 0))
     scene.blit(perso,(persoRect.x, persoRect.y))
     display.flip()                                  # Sets the background and refreshes the window
-    clock.tick(30)
+    clock.tick(60)
 
 
-    Player.move(perso)
+    Move.move(perso)
+    pygame.display.update()
 
-    for thing in event.get():
-        if thing.type == QUIT:                      # If the window is closed, the game stops
-            is_active = False
-            quit()
+    for event in pygame.event.get(): 
 
+        if event.type == QUIT:
+            is_active = False          # Set is_active to False when the window is closed
+            quit()         
 
+    if not is_active:                               # Exit the game loop if is_active is False
+        break
