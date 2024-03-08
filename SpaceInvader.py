@@ -126,7 +126,7 @@ while is_active:                                                                
             projectiles.append(projectile)
             
 
-    if not is_active:
+    if not is_active:                                                               # Exit the game
         break
 
         
