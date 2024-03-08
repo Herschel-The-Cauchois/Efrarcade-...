@@ -18,6 +18,8 @@ scene = pygame.display.set_mode((screen_width, screen_height))
 background = pygame.Surface(scene.get_size())
 clock = pygame.time.Clock()
 star_positions = []
+
+
 def genererateStars():
     """ generate some stars that will move from the right to the left.
     It creates a new star with a 10% chance, to avoid having too many stars. Once its creating it by putting it in a list (to keep track of it), it will move it to the left and remove it from the list if it goes out of the screen.
@@ -38,7 +40,7 @@ def paintStars(scene):
 #PLAYER
 perso = image.load("./assets/Perso.png").convert()
 persoRect = perso.get_rect()
-persoRect.x = (screen_width - 150)/2
+persoRect.x = int((screen_width - 150)/2)
 persoRect.y = screen_height - 100
 
 
