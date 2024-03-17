@@ -11,7 +11,7 @@ class Game:
         self.enemies = sprite.Group()  # Sprite group that will manage enemies
         self.bullets = sprite.Group()  # Sprite group that will manage enemy bullets
         self.spawn(11, 0, 20, "EnemyShip")  # Makes an enemy spawn upon initialisation
-        self.spawn(50, 400, 5, "Sinusoid")  # Makes another enemy spawn
+        self.spawn(50, 150, 1, "Sinusoid")  # Makes another enemy spawn
         print(self.enemies.sprites())  # Prints lists of sprite present in the enemy group
 
     def spawn(self, x: int, y: int, velocity: int, type: str):
