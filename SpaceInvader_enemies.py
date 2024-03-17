@@ -2,11 +2,11 @@ from pygame import *
 from math import sqrt, sin
 
 
-def bezier_curve_calc(weights: list, details: int):
+def bezier_curve_calc(controls: list, details: int):
     t = 0
     curve = []
     while t <= 1:
-        working_list = weights[:]
+        working_list = controls[:]
         while len(working_list) != 1:
             for pos, coord in enumerate(working_list):
                 if coord != working_list[-1]:
@@ -103,10 +103,18 @@ class Sinusoid(Enemies):
                     # on velocity but helps attenuate the effect instead of using a constant when high velocity.
             if self.rect.x >= 950:
                 self.reached_border = 1
-            else:
+            elif self.rect.x <= 10:
                 self.reached_border = 0
-
-            self.trajectory = bezier_curve_calc()
+            if self.reached_border:
+                self.trajectory = bezier_curve_calc([(950, self.rect.y)]+[(950-25*k, self.rect.y+25*((-1)**k)) for k in range(1, 38)]+[(10, self.rect.y)], 100)
+            elif not self.reached_border:
+                self.trajectory = bezier_curve_calc([(0, self.rect.y)] + [
+                    (0 + 25 * k, self.rect.y + 25 * ((-1) ** k)) for k in range(1, 38)] + [(950, self.rect.y)], 100)
+            print(self.trajectory)
+        else:
+            self.rect.x = self.trajectory[0][0]
+            self.rect.y = self.trajectory[0][1]
+            self.trajectory.pop(0)
         """if self.rect.x >= 950:
             # If the ship is too much to the right, it will lower its altitude before reversing the displacement
             # behavior.
