@@ -1,19 +1,28 @@
 from pygame import *
-from math import sqrt, sin
+from math import sqrt
 
 
 def bezier_curve_calc(controls: list, details: int):
-    t = 0
-    curve = []
-    while t <= 1:
-        working_list = controls[:]
+    """This very important function use the mathematical work of Bézier to generate a curve on a computer with the
+    help of a list of control points to create an exhaustive enough list of the curve's point to be visually
+    credible. See material used for the script copied/inspired for the implementation.
+    Controls parameter must be a list of 2 element tuples (x,y), details a power of 10."""
+    t = 0  # This variable increases for each point generation as it allows the calculation of the "proportion" of one
+    # control point's coordinates and its neighbor to pinpoint at one point of the segment between them.
+    curve = []  # This list will hold all the points of the future curve.
+    while t <= 1:  # Because t is used to get a proportion, it can't be > 1.
+        working_list = controls[:]  # To prevent altering original control points list, makes a copy.
         while len(working_list) != 1:
-            for pos, coord in enumerate(working_list):
+            for pos, coord in enumerate(working_list):  # Enumerate allows us to retrieve easily element + index couple
+                # Will pass each control points through the Bezier function and make the last one pop until there is
+                # Only one remaining : a point belonging to the curve.
                 if coord != working_list[-1]:
+                    # Last control point is excluded of course because there is no element after.
                     working_list[pos] = (1-t)*coord[0]+t*working_list[pos+1][0], (1-t)*coord[1]+t*working_list[pos+1][1]
             working_list.pop()
-        curve.append(working_list[0])
-        t += 1/details
+        curve.append(working_list[0])  # Appends found point to the curve list.
+        t += 1/details  # Increments t by 1/details, the more the incrementation is small -> more points -> more
+        # seamless curve.
     return curve
 
 
@@ -34,7 +43,7 @@ class EnemyShip(Enemies):
         self.hp = 50  # + sets new common properties for enemies of that type such as constant hp stat
         self.type = "EnemyShip"  # Declares type of enemy for it to be identifiable to the game
         self.damage = 1  # Damage inflicted by the enemy
-        self.rect = self.image.get_rect()  # Creates hitbox
+        self.rect = self.image.get_rect()  # Creates hit box
         self.rect.x = 0
         self.rect.y = 0  # Sets up starting position of the ship by setting up the enemy's coordinate
         self.reached_border = 0
@@ -76,7 +85,7 @@ class Sinusoid(Enemies):
         self.hp = 50  # + sets new common properties for enemies of that type such as constant hp stat
         self.type = "Sinusoid"  # Declares type of enemy for it to be identifiable to the game
         self.damage = 5  # Damage inflicted by the enemy
-        self.rect = self.image.get_rect()  # Creates hitbox
+        self.rect = self.image.get_rect()  # Creates hit box
         self.rect.x = 0
         self.rect.y = 0  # Sets up starting position of the ship by setting up the enemy's coordinate
         self.reached_border = 0  # Determines if the ship has reached one of the borders.
@@ -85,7 +94,7 @@ class Sinusoid(Enemies):
 
     def displacement(self):
         # Will move the ship across the screen. This enemy will move in sinusoidal-simile curves
-        # until it reaches a certain level.
+        # until it reaches a certain border.
         if not self.trajectory:  # This boolean expression was proposed by the IDE to detect when this list is empty.
             # if said list is empty, it means it completed a calculated trajectory.
             # If the ship is too much to the right, it will lower its altitude before reversing the displacement
@@ -102,16 +111,35 @@ class Sinusoid(Enemies):
                     self.rect.y += 8 * (int(sqrt(self.velocity)))  # The sqrt factor makes the altitude loss dependent
                     # on velocity but helps attenuate the effect instead of using a constant when high velocity.
             if (self.rect.x - 950) > -900:
+                # Since the trigger for knowing when a Sinusoid has reached the game's border is different, this
+                # condition tests differently due to the unpredictability of the Bézier curve points if it has
+                # hit a border.
                 self.reached_border = 1
             else:
                 self.reached_border = 0
             if self.reached_border:
-                self.trajectory = bezier_curve_calc([(950, self.rect.y)]+[(950-25*k, self.rect.y+75*((-1)**k)) for k in range(1, 38)]+[(10, self.rect.y)], 1000)
+                # The iterations down there allows the easy recreation of the periodic pattern of the sine wave.
+                for i in range(0, 19):
+                    # A sine wave can be resumed in 4 points : start, location of maximum, location of minimum,
+                    # end point. For the control points to emulate better a sine wave pattern, each control points
+                    # are located relative to 50 pixel periods from the right border (950 px for x).
+                    self.trajectory += bezier_curve_calc(
+                        [(950 - 50 * i, self.rect.y), (950 - 50 * i - 13, self.rect.y + 75),
+                         (950 - 50 * i - 38, self.rect.y - 75), (950 - 50 * (i + 1), self.rect.y)], 100)
             elif not self.reached_border:
-                self.trajectory = bezier_curve_calc([(0, self.rect.y)] + [
-                    (0 + 25 * k, self.rect.y + 75 * ((-1) ** k)) for k in range(1, 38)] + [(950, self.rect.y)], 1000)
+                # Same as above, except control points are located relative to the left border (x = 0).
+                for i in range(0, 19):
+                    self.trajectory += bezier_curve_calc(
+                        [(0 + 50 * i, self.rect.y), (0 + 50 * i + 13, self.rect.y + 75),
+                         (0 + 50 * i + 38, self.rect.y - 75), (0 + 50 * (i + 1), self.rect.y)], 100)
             print(self.trajectory)
         else:
-            self.rect.x = self.trajectory[0][0]
-            self.rect.y = self.trajectory[0][1]
-            self.trajectory.pop(0)
+            # Case where the trajectory defined in the curve list is not done. It will go through in one update to
+            # velocity times 1 point.
+            for i in range(0, self.velocity):
+                if self.trajectory:  # conditions checks if during the execution of the loop, there is still
+                    # elements in the curve list to prevent out of range related errors.
+                    self.rect.x = self.trajectory[0][0]
+                    self.rect.y = self.trajectory[0][1]
+                    self.trajectory.pop(0)  # After going to a point, the sprite doesn't need to go through it again.
+                    # Hence, it is deleted. In the order of the indexes.
