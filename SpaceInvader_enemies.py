@@ -79,8 +79,8 @@ class Sinusoid(Enemies):
         self.rect = self.image.get_rect()  # Creates hitbox
         self.rect.x = 0
         self.rect.y = 0  # Sets up starting position of the ship by setting up the enemy's coordinate
-        self.reached_border = 0
-        self.trajectory = []
+        self.reached_border = 0  # Determines if the ship has reached one of the borders.
+        self.trajectory = []  # This attribute host the list of points the enemy will have to go through.
         self.velocity = 10
 
     def displacement(self):
@@ -101,45 +101,17 @@ class Sinusoid(Enemies):
                 else:
                     self.rect.y += 8 * (int(sqrt(self.velocity)))  # The sqrt factor makes the altitude loss dependent
                     # on velocity but helps attenuate the effect instead of using a constant when high velocity.
-            if self.rect.x >= 950:
+            if (self.rect.x - 950) > -900:
                 self.reached_border = 1
-            elif self.rect.x <= 10:
+            else:
                 self.reached_border = 0
             if self.reached_border:
-                self.trajectory = bezier_curve_calc([(950, self.rect.y)]+[(950-25*k, self.rect.y+25*((-1)**k)) for k in range(1, 38)]+[(10, self.rect.y)], 100)
+                self.trajectory = bezier_curve_calc([(950, self.rect.y)]+[(950-25*k, self.rect.y+75*((-1)**k)) for k in range(1, 38)]+[(10, self.rect.y)], 1000)
             elif not self.reached_border:
                 self.trajectory = bezier_curve_calc([(0, self.rect.y)] + [
-                    (0 + 25 * k, self.rect.y + 25 * ((-1) ** k)) for k in range(1, 38)] + [(950, self.rect.y)], 100)
+                    (0 + 25 * k, self.rect.y + 75 * ((-1) ** k)) for k in range(1, 38)] + [(950, self.rect.y)], 1000)
             print(self.trajectory)
         else:
             self.rect.x = self.trajectory[0][0]
             self.rect.y = self.trajectory[0][1]
             self.trajectory.pop(0)
-        """if self.rect.x >= 950:
-            # If the ship is too much to the right, it will lower its altitude before reversing the displacement
-            # behavior.
-            if self.rect.y < 400:
-                # This condition verifies if the ship isn't too low. If its y coordinate is above designated level,
-                # it will not lower again its altitude, and in the case of the lowering process making it go
-                # Too much below, it will directly lower it to the minimum altitude.
-                if self.rect.y + 8 * (int(sqrt(self.velocity))) > 400:
-                    self.rect.y = 400
-                else:
-                    self.rect.y += 8 * (int(sqrt(self.velocity)))  # The sqrt factor makes the altitude loss dependent
-                    # on velocity but helps attenuate the effect instead of using a constant when the velocity is high.
-            self.reached_border = 1
-        if self.rect.x <= 10:
-            # If the ship is too much to the left, it will lower its altitude before reversing the displacement
-            # behavior.
-            if self.rect.y < 400:
-                if self.rect.y + 8 * (int(sqrt(self.velocity))) > 400:
-                    self.rect.y = 400
-                else:
-                    self.rect.y += 8 * (int(sqrt(self.velocity)))
-            self.reached_border = 0
-        if self.reached_border == 0:
-            self.rect.x += 1 * self.velocity
-            self.rect.y += 100 * sin(self.velocity/1000)
-        elif self.reached_border == 1:
-            self.rect.x -= 1 * self.velocity
-            self.rect.y += 100 * sin(self.velocity/1000)"""
