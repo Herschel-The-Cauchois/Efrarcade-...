@@ -97,13 +97,13 @@ class Projectile:
 
 class Life:
 
-    def __init__(self, vie, mort):
-        self.vie = vie
-        self.mort = mort
+    def __init__(self, alive, dead):
+        self.alive = alive
+        self.dead = dead
 
     
-    def en_vie():
-        
+    def begin_game():
+
 
 
 
