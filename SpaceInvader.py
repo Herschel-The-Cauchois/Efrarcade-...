@@ -96,13 +96,39 @@ class Projectile:
 #Life
 
 class Life:
-
-    def __init__(self, alive, dead):
-        self.alive = alive
-        self.dead = dead
-
     
-    def begin_game():
+    def __init__(self, life):
+        self.life = life
+
+    def draw(self):
+        alive_heart_image = image.load("./assets/alive_heart_image.jpeg")
+        alive_heart_image = transform.scale(alive_heart_image, (32, 32))
+        heart_width = alive_heart_image.get_width()
+        heart_height = alive_heart_image.get_height()
+        heart_spacing = 5
+
+        for i in range(3):
+            heart_x = L - (heart_width + heart_spacing) * (i + 1)
+            heart_y = H - heart_height - heart_spacing
+            scene.blit(alive_heart_image, (heart_x, heart_y))
+
+
+    def check_game_over(self):
+        dead_heart_image = image.load("./assets/dead_heart_image.jpg")
+        dead_heart_image = transform.scale(dead_heart_image, (32, 32))
+        heart_width = dead_heart_image.get_width()
+        heart_height = dead_heart_image.get_height()
+        heart_spacing = 5
+
+        for i in range(3):
+            heart_x = L - (heart_width + heart_spacing) * (i + 1)
+            heart_y = H - heart_height - heart_spacing
+            scene.blit(dead_heart_image, (heart_x, heart_y))
+         
+     
+
+    check_game_over()
+
 
 
 
@@ -117,6 +143,9 @@ while is_active:                                                                
     scene.blit(background, (0, 0))                                                  # Background
     scene.blit(perso, (persoRect.x, persoRect.y))                                   # Player's ship
 
+    life = Life(3)
+    life.draw()
+
     for projectile in projectiles:                              
         projectile.move()                                       
         projectile.draw()
@@ -128,7 +157,10 @@ while is_active:                                                                
     clock.tick(60)                                              
 
     Move.move(perso)                                                                # class Move 
-    pygame.display.update()                                     
+    pygame.display.update()      
+
+    if life == 0:
+        is_active = False                               
 
     for event in pygame.event.get():                                                # Event loop
         if event.type == QUIT:
