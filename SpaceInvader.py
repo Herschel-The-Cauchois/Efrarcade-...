@@ -93,6 +93,21 @@ class Projectile:
         pygame.draw.rect(scene, (255, 255, 255), (self.x, self.y, 10, 5))           # Draw the projectile 10x5 pixels (white)
 
 
+#Life
+
+class Life:
+
+    def __init__(self, vie, mort):
+        self.vie = vie
+        self.mort = mort
+
+    
+    def en_vie():
+        
+
+
+
+
 #GAME LOOP
         
 projectiles = []
