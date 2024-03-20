@@ -12,7 +12,8 @@ class Game:
         self.bullets = sprite.Group()  # Sprite group that will manage enemy bullets (temporarily in enemy group)
         self.spawn(11, 0, 20, "EnemyShip")  # Makes an enemy spawn upon initialisation
         self.spawn(50, 150, 3, "Sinusoid")  # Makes another enemy spawn
-        self.spawn(250, 0, 6, "EnemyBullets") # Spawns a random bullet
+        self.spawn(250, 0, 6, "EnemyBullets")  # Spawns a random bullet
+        self.spawn(30, 0, 5, "Randominator")  # Spawns a Randominator
         print(self.enemies.sprites())  # Prints lists of sprite present in the enemy group
 
     def spawn(self, x: int, y: int, velocity: int, type: str):
@@ -22,6 +23,8 @@ class Game:
             a = Sinusoid()
         elif type == "EnemyBullets":
             a = EnemyBullets()
+        elif type == "Randominator":
+            a = Randominator()
         a.rect.x = x  # Instead of the default position in (0,0), puts the sprite in coordinates passed in parameters
         a.rect.y = y
         a.velocity = velocity
@@ -31,7 +34,9 @@ class Game:
         # This method, used down below will trigger the displacement method of each enemy sprite, hence making them move
         # while making sure each sprite move independently following the established rule relative to the enemy type.
         for i in range(0, len(self.enemies)):
-            self.enemies.sprites()[i].displacement()
+            if i < len(self.enemies):  # Due to the sprite killing method integrated in the enemy class, this condition
+                # is needed because it provoked out of range related problems
+                self.enemies.sprites()[i].displacement()
 
 
 init()  # Initializes pygame

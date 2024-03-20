@@ -1,5 +1,6 @@
 from pygame import *
 from math import sqrt
+from random import randint
 
 
 def bezier_curve_calc(controls: list, details: int):
@@ -132,7 +133,60 @@ class Sinusoid(Enemies):
                     self.trajectory += bezier_curve_calc(
                         [(0 + 50 * i, self.rect.y), (0 + 50 * i + 13, self.rect.y + 75),
                          (0 + 50 * i + 38, self.rect.y - 75), (0 + 50 * (i + 1), self.rect.y)], 100)
-            print(self.trajectory)
+        else:
+            # Case where the trajectory defined in the curve list is not done. It will go through in one update to
+            # velocity times 1 point.
+            for i in range(0, self.velocity):
+                if self.trajectory:  # conditions checks if during the execution of the loop, there is still
+                    # elements in the curve list to prevent out of range related errors.
+                    self.rect.x = self.trajectory[0][0]
+                    self.rect.y = self.trajectory[0][1]
+                    self.trajectory.pop(0)  # After going to a point, the sprite doesn't need to go through it again.
+                    # Hence, it is deleted. In the order of the indexes.
+
+
+class Randominator(Enemies):
+    def __init__(self):
+        super().__init__()  # Initializes sprite class
+        # Classical sprite initialisation : load image, initialize rectangle, positions...
+        self.image = image.load("./assets/red_placeholder.svg")
+        self.image = transform.scale(self.image, (40, 35))  # Resizes image sprite to correct size
+        self.hp = 100  # + sets new common properties for enemies of that type such as constant hp stat
+        self.type = "Randominator"  # Declares type of enemy for it to be identifiable to the game
+        self.damage = 10  # Damage inflicted by the enemy
+        self.rect = self.image.get_rect()  # Creates hit box
+        self.rect.x = 0
+        self.rect.y = 0  # Sets up starting position of the ship by setting up the enemy's coordinate
+        self.reached_border = 0  # Determines if the ship has reached one of the borders.
+        self.trajectory = []  # This attribute host the list of points the enemy will have to go through.
+        self.velocity = 10
+
+    def displacement(self):
+        if not self.trajectory:
+            control_points = [(randint(0, 950), randint(10, 390)) for k in range(0, randint(3, 13))]
+            # Self generate a certain number of control points to be able to randomly generate a trajectory.
+            for i in range(0, len(control_points)):
+                # To be able to have a somewhat coherent trajectory, the control points are selection sorted by distance
+                # from the initial position of the ship.
+                maxdis = 0  # variable that store the maximum distance to reduce calculations during the sort.
+                maxind = 0  # index of the set of coordinates with maximum distance variable.
+                maxpos = (self.rect.x, self.rect.y)  # where the tuple with maximum distance will be temporarily stored
+                # for the swap down below.
+                for j in range(0, len(control_points)-i):
+                    if sqrt(((control_points[j][0]-self.rect.x)**2)+((control_points[j][1]-self.rect.y)**2)) > maxdis:
+                        # If 2D vectorial distance calculation of one of the control points is superior to the
+                        # previous maximum distance, takes its information in the specified variables for it to become
+                        # the set of coordinates with maximum distance from the starting point.
+                        maxdis = sqrt(((control_points[j][0]-self.rect.x)**2)+((control_points[j][1]-self.rect.y)**2))
+                        maxpos = control_points[j]
+                        maxind = j
+                # Swaps the positions of the tuple containing the coordinates with maximum distance in the control
+                # point list with the tuple at the last position of the considered control point list.
+                temp = control_points[len(control_points)-1-i]
+                control_points[len(control_points)-1-i] = maxpos
+                control_points[maxind] = temp
+            control_points = [(self.rect.x, self.rect.y)] + control_points
+            self.trajectory = bezier_curve_calc(control_points, 1000)
         else:
             # Case where the trajectory defined in the curve list is not done. It will go through in one update to
             # velocity times 1 point.
