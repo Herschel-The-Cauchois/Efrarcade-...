@@ -1,5 +1,6 @@
 import pygame_menu
 import pygame
+from SpaceInvader import game_loop
 
 pygame.init()   #initialiser l'environnement de jeu
 surface = pygame.display.set_mode((1000, 500), pygame.RESIZABLE)
@@ -14,19 +15,13 @@ menu = pygame_menu.Menu('SPACE INVADER',1000, 500,
                        mouse_enabled=False,
                        mouse_motion_selection=False)
 
-background = pygame_menu.BaseImage(image_path="background_space_invader.jpg")
+background = pygame_menu.BaseImage(image_path="assets/background_space_invader.jpg")
 
 def main_background() -> None:
     """
     Background color/image of the main menu. In this function, the user can plot images, play sounds, etc.
     """
     background.draw(surface)
-
-
-
-def play_function():
-    pass
-
 
 
 def check_name(value):
@@ -44,8 +39,10 @@ about_menu.add.button('Return to main menu', pygame_menu.events.BACK)
 
 
 
-menu.add.button('Play', play_function, font_name = pygame_menu.font.FONT_8BIT, font_size = 30, font_color = (0,0,0), selection_color = (255,255,255))
+menu.add.button('Play', game_loop, font_name = pygame_menu.font.FONT_8BIT, font_size = 30, font_color = (0,0,0), selection_color = (255,255,255))
 menu.add.button('About',about_menu, font_name = pygame_menu.font.FONT_8BIT, font_size = 30, font_color = (0,0,0), selection_color = (255,255,255))
 menu.add.button('Quit', pygame_menu.events.EXIT, font_name = pygame_menu.font.FONT_8BIT, font_size = 30, font_color = (0,0,0), selection_color = (255,255,255))
 
-menu.mainloop(surface, main_background)
+
+def main_invader():
+    menu.mainloop(surface, main_background)

@@ -12,9 +12,10 @@ pygame.init()  # Initializes pygamegame
 # Creates a window with the name of the game, and sets the future background image
 screen_width = 1000
 screen_height = 500
+ratio = screen_width / screen_height
 is_active = True
 pygame.display.set_caption("Efrarcade")
-scene = pygame.display.set_mode((screen_width, screen_height))
+scene = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
 background = pygame.Surface(scene.get_size())
 clock = pygame.time.Clock()
 star_positions = []
@@ -38,7 +39,8 @@ def paintStars(scene):
     
 
 #PLAYER
-perso = image.load("./assets/Perso.png").convert()
+perso = image.load("./assets/ship.png").convert()
+perso = pygame.transform.rotate(perso, -90)
 persoRect = perso.get_rect()
 persoRect.x = int((screen_width - 150)/2)
 persoRect.y = screen_height - 100
@@ -85,20 +87,26 @@ class Move:
 
 #GAME LOOP
 
-while is_active:
-    scene.blit(background, (0, 0))
-    scene.blit(perso,(persoRect.x, persoRect.y))
+def game_loop():
+    is_active=True
+    while is_active:
+        scene.blit(background, (0, 0))
+        scene.blit(perso,(persoRect.x, persoRect.y))
 
-    # Draw each star onto the scene
-    genererateStars()
-    paintStars(scene)
-    Move.move(perso)
-    pygame.display.update()
-    clock.tick(60)
-    pygame.display.flip()  # Sets the background and refreshes the window
+        # Draw each star onto the scene
+        genererateStars()
+        paintStars(scene)
+        Move.move(perso)
+        pygame.display.update()
+        clock.tick(60)
+        pygame.display.flip()  # Sets the background and refreshes the window
 
-    for thing in pygame.event.get():
-        if thing.type == pygame.QUIT:
-            # If quitting event detected, closes the windows
-            is_active = False
-            quit()
+        for thing in pygame.event.get():
+            if thing.type == pygame.QUIT:
+                # If quitting event detected, closes the windows
+                is_active = False
+                quit()
+            elif thing.type == pygame.VIDEORESIZE: #THIS IS NOT WORKING
+                new_width = thing.w
+                new_height = int(new_width / ratio)
+                screen = pygame.display.set_mode((new_width, new_height), pygame.RESIZABLE)
