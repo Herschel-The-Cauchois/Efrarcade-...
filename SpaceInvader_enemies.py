@@ -143,3 +143,25 @@ class Sinusoid(Enemies):
                     self.rect.y = self.trajectory[0][1]
                     self.trajectory.pop(0)  # After going to a point, the sprite doesn't need to go through it again.
                     # Hence, it is deleted. In the order of the indexes.
+
+
+class EnemyBullets(Enemies):
+    def __init__(self):
+        super().__init__()  # Initializes sprite class
+        # Classical sprite initialisation : load image, initialize rectangle, positions...
+        self.image = image.load("./assets/white_placeholder.svg")
+        self.image = transform.scale(self.image, (10, 20))  # Resizes image sprite to correct size
+        self.hp = 1  # + sets new common properties for enemies of that type such as constant hp stat
+        self.type = "EnemyBullet"  # Declares type of enemy for it to be identifiable to the game
+        self.damage = 1  # Damage inflicted by the enemy
+        self.rect = self.image.get_rect()  # Creates hit box
+        self.rect.x = 0
+        self.rect.y = 0  # Sets up starting position of the ship by setting up the enemy's coordinate
+        self.reached_border = 0  # Determines if the ship has reached one of the borders.
+        self.velocity = 10
+
+    def displacement(self):  # Displacement function
+        if self.rect.y < 400:
+            self.rect.y += self.velocity  # Displaces the bullet of a number of pixel equal to the velocity.
+        else:
+            self.kill()  # Once it has reached the border, will automatically disappear.

@@ -9,9 +9,10 @@ SPACE INVADER
 class Game:
     def __init__(self):
         self.enemies = sprite.Group()  # Sprite group that will manage enemies
-        self.bullets = sprite.Group()  # Sprite group that will manage enemy bullets
+        self.bullets = sprite.Group()  # Sprite group that will manage enemy bullets (temporarily in enemy group)
         self.spawn(11, 0, 20, "EnemyShip")  # Makes an enemy spawn upon initialisation
         self.spawn(50, 150, 3, "Sinusoid")  # Makes another enemy spawn
+        self.spawn(250, 0, 6, "EnemyBullets") # Spawns a random bullet
         print(self.enemies.sprites())  # Prints lists of sprite present in the enemy group
 
     def spawn(self, x: int, y: int, velocity: int, type: str):
@@ -19,6 +20,8 @@ class Game:
             a = EnemyShip()
         elif type == "Sinusoid":
             a = Sinusoid()
+        elif type == "EnemyBullets":
+            a = EnemyBullets()
         a.rect.x = x  # Instead of the default position in (0,0), puts the sprite in coordinates passed in parameters
         a.rect.y = y
         a.velocity = velocity
