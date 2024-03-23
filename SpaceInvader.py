@@ -10,9 +10,9 @@ class Game:
     def __init__(self):
         self.enemies = sprite.Group()  # Sprite group that will manage enemies
         self.bullets = sprite.Group()  # Sprite group that will manage enemy bullets (temporarily in enemy group)
-        self.spawn(11, 0, 20, "EnemyShip")  # Makes an enemy spawn upon initialisation
-        self.spawn(50, 150, 3, "Sinusoid")  # Makes another enemy spawn
-        self.spawn(250, 0, 6, "EnemyBullets")  # Spawns a random bullet
+        self.spawn(811, 11, 10, "EnemyShip")  # Makes an enemy spawn upon initialisation
+        self.spawn(500, 0, 3, "Sinusoid")  # Makes another enemy spawn
+        self.spawn(550, 250, 6, "EnemyBullets")  # Spawns a random bullet
         self.spawn(30, 0, 5, "Randominator")  # Spawns a Randominator
         print(self.enemies.sprites())  # Prints lists of sprite present in the enemy group
 
