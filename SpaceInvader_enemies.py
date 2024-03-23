@@ -32,6 +32,7 @@ class Enemies(sprite.Sprite):
         super().__init__()  # Initializes super class that encapsulate all enemies
         self.hp = 0
         self.damage = 0
+        self.time = 0
 
 
 class EnemyShip(Enemies):
@@ -50,6 +51,7 @@ class EnemyShip(Enemies):
         self.rect.y = 0  # Sets up starting position of the ship by setting up the enemy's coordinate
         self.reached_border = 0
         self.velocity = 2
+        self.cadence = 3
 
     def displacement(self):
         # Will move the ship across the screen. This enemy will move in straight lines until it reaches a certain level.
@@ -74,6 +76,28 @@ class EnemyShip(Enemies):
             self.rect.y += 1 * self.velocity
         elif self.reached_border == 1:
             self.rect.y -= 1 * self.velocity
+
+    def detection(self):
+        """Detects the position of the player relative to the ship and returns a tuple containing the expected
+        position of the bullet that will be spawned, and its rotation angle to aim at the player's ship. The cadence
+        attribute allows to personalize the frequency of bullet spawning in a certain amount of time."""
+        flag = randint(0, 3)  # Prior to being able to detect the player, is temporarily random.
+        if self.time >= 100/self.cadence:
+            self.time = 0
+            if flag == 0:
+                # Makes the bullet spawn to the left of the enemy.
+                return self.rect.x, self.rect.y-25, -90
+            if flag == 1:
+                # Bis repetita for different positions, here above the enemy.
+                return self.rect.x+25, self.rect.y+1, 0
+            if flag == 2:
+                return self.rect.x+50, self.rect.y-25, 90
+            if flag == 3:
+                return self.rect.x+25, self.rect.y-50, 180
+        else:
+            # If the timer isn't at the right value, increments it and returns a tuple of incorrect values.
+            self.time += 1
+            return -1, -1, 0
 
 
 class Sinusoid(Enemies):
@@ -141,6 +165,10 @@ class Sinusoid(Enemies):
                     self.trajectory.pop(0)  # After going to a point, the sprite doesn't need to go through it again.
                     # Hence, it is deleted. In the order of the indexes.
 
+    def detection(self):
+        print("wip")
+        return -1, -1, 0
+
 
 class Randominator(Enemies):
     def __init__(self):
@@ -196,6 +224,10 @@ class Randominator(Enemies):
                     self.trajectory.pop(0)  # After going to a point, the sprite doesn't need to go through it again.
                     # Hence, it is deleted. In the order of the indexes.
 
+    def detection(self):
+        print("WIP")
+        return -1, -1, 0
+
 
 class EnemyBullets(Enemies):
     def __init__(self):
@@ -203,7 +235,7 @@ class EnemyBullets(Enemies):
         # Classical sprite initialisation : load image, initialize rectangle, positions...
         self.image = image.load("./assets/white_placeholder.svg")
         self.image = transform.scale(self.image, (10, 20))  # Resizes image sprite to correct size
-        self.image = transform.rotate(self.image, -90)  # Rotates the bullet to face the left side of the screen
+        self.transformation = 0  # This attribute the rotation angle that will be applied to the bullet.
         self.hp = 1  # + sets new common properties for enemies of that type such as constant hp stat
         self.type = "EnemyBullet"  # Declares type of enemy for it to be identifiable to the game
         self.damage = 1  # Damage inflicted by the enemy
@@ -214,7 +246,21 @@ class EnemyBullets(Enemies):
         self.velocity = 10
 
     def displacement(self):  # Displacement function
-        if self.rect.x > 100:
-            self.rect.x -= self.velocity  # Displaces the bullet of a number of pixel equal to the velocity.
+        if self.rect.x > 10 or self.rect.x < 990 or self.rect.y > 10 or self.rect.y < 490:
+            # This condition verifies if the bullet is situated in an expected position on the screen, else, it is
+            # promptly killed. According to the rotation transformation impulsed to the bullet, it will follow a
+            # specific trajectory (to the left of the screen if oriented towards the left of the screen, e.g.)
+            if self.transformation == -90:
+                self.rect.x -= self.velocity  # Displaces the bullet of a number of pixel equal to the velocity.
+            elif self.transformation == 0:
+                self.rect.y += self.velocity
+            elif self.transformation == 90:
+                self.rect.x += self.velocity
+            elif self.transformation == 180:
+                self.rect.y -= self.velocity
         else:
             self.kill()  # Once it has reached the border, will automatically disappear.
+
+    def rotate(self):
+        self.image = transform.rotate(self.image, self.transformation)  # Rotates the bullet to face the left side of
+        # the screen.
