@@ -1,6 +1,6 @@
-from pygame import*
+from pygame import *
 import pygame
-from pygame.locals import*
+from pygame.locals import *
 """
 SPACE INVADER
 """
