@@ -1,1 +1,2 @@
 pygame_menu
+pygame~=2.5.2

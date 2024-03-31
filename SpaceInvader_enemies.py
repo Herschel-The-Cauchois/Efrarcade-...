@@ -1,6 +1,6 @@
 from pygame import *
 from math import sqrt
-from random import randint
+from random import *
 
 
 def bezier_curve_calc(controls: list, details: int):
@@ -54,7 +54,8 @@ class EnemyShip(Enemies):
         self.cadence = 3
 
     def displacement(self):
-        # Will move the ship across the screen. This enemy will move in straight lines until it reaches a certain level.
+        """Method that moves the ship across the screen. This enemy will move in straight lines until it reaches a
+        certain level to leave space for the player to move."""
         if self.rect.y >= 450 or self.rect.y <= 10:
             # If the ship is too high, it will move it to the left before reversing the displacement behavior.
             # If the ship is too low, it will do the same actions.
@@ -122,7 +123,8 @@ class Sinusoid(Enemies):
         self.cadence = 3
 
     def displacement(self):
-        # Will move the ship across the screen. This enemy will move in sinusoidal-simile curves
+        """This method moves the ship across the screen. This enemy will move in sinusoidal-simile curves until
+        a certain level."""
         # until it reaches a certain border.
         if not self.trajectory:  # This boolean expression was proposed by the IDE to detect when this list is empty.
             # if said list is empty, it means it completed a calculated trajectory.
@@ -212,6 +214,10 @@ class Randominator(Enemies):
         self.cadence = 3
 
     def displacement(self):
+        """This method makes the enemy move following a random calculated trajectory by the Bézier curve function
+        methodology. It hence generates a certain number of random control points that will generate a random
+        trajectory if the self . trajectory attribute list is empty, or else make the enemy go through as many points
+        of the trajectory as there is units in the velocity attribute."""
         if not self.trajectory:
             control_points = [(randint(100, 950), randint(10, 475)) for k in range(0, randint(3, 16))]
             # Self generate a certain number of control points to be able to randomly generate a trajectory.
@@ -289,7 +295,9 @@ class EnemyBullets(Enemies):
         self.reached_border = 0  # Determines if the ship has reached one of the borders.
         self.velocity = 10
 
-    def displacement(self):  # Displacement function
+    def displacement(self):
+        """Method that will make the enemy bullet move through the screen in a linear trajectory, deduced from
+        the transformation impulsed by the game's spawn method to the EnemyBullet instance."""
         if self.rect.x > 10 or self.rect.x < 990 or self.rect.y > 10 or self.rect.y < 490:
             # This condition verifies if the bullet is situated in an expected position on the screen, else, it is
             # promptly killed. According to the rotation transformation impulsed to the bullet, it will follow a
@@ -306,5 +314,6 @@ class EnemyBullets(Enemies):
             self.kill()  # Once it has reached the border, will automatically disappear.
 
     def rotate(self):
-        self.image = transform.rotate(self.image, self.transformation)  # Rotates the bullet to face the left side of
-        # the screen.
+        """Method that applies a rotation transformation following the rotation angle given by the transformation
+        attribute."""
+        self.image = transform.rotate(self.image, self.transformation)
