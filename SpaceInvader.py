@@ -11,13 +11,13 @@ class Game:
         self.enemies = sprite.Group()  # Sprite group that will manage enemies
         self.bullets = sprite.Group()  # Sprite group that will manage enemy bullets
         self.bullet_velocity = 5  # Attribute that will contain the general speed of bullets during the game
-        self.spawn(811, 11, 0, "EnemyShip")  # Makes an enemy spawn upon initialisation
-        self.spawn(500, 0, 0, "Sinusoid")  # Makes another enemy spawn
+        self.spawn(811, 11, 4, "EnemyShip")  # Makes an enemy spawn upon initialisation
+        self.spawn(500, 0, 3, "Sinusoid")  # Makes another enemy spawn
         self.spawn(550, 250, 6, "EnemyBullets")  # Spawns a random bullet
-        self.spawn(30, 0, 0, "Randominator")  # Spawns a Randominator
-        self.spawn(450, 250, 0, "EnemyShip")
+        self.spawn(30, 0, 5, "Randominator")  # Spawns a Randominator
+        self.spawn(450, 250, 0, "EnemyShip")  # Enemy spawning for bullet position tests
         self.spawn(575, 250, 0, "Sinusoid")
-        self.spawn(700, 250, 0, "Randominator")
+        self.spawn(700, 150, 0, "Randominator")
         print(self.enemies.sprites())  # Prints lists of sprite present in the sprite groups
         print(self.bullets.sprites())
 

@@ -119,6 +119,7 @@ class Sinusoid(Enemies):
         self.reached_border = 0  # Determines if the ship has reached one of the borders.
         self.trajectory = []  # This attribute host the list of points the enemy will have to go through.
         self.velocity = 10
+        self.cadence = 3
 
     def displacement(self):
         # Will move the ship across the screen. This enemy will move in sinusoidal-simile curves
@@ -168,8 +169,28 @@ class Sinusoid(Enemies):
                     # Hence, it is deleted. In the order of the indexes.
 
     def detection(self):
-        print("wip")
-        return -1, -1, 0
+        """Detects the position of the player relative to the ship and returns a tuple containing the expected
+        position of the bullet that will be spawned, and its rotation angle to aim at the player's ship. The cadence
+        attribute allows to personalize the frequency of bullet spawning in a certain amount of time."""
+        flag = randint(0, 3)  # Prior to being able to detect the player, is temporarily random.
+        if self.time >= 100 / self.cadence:
+            self.time = 0
+            if flag == 0:
+                # Makes the bullet spawn to the left of the enemy.
+                return self.rect.x - 20, self.rect.y + 9, -90
+            if flag == 1:
+                # Bis repetita for different positions, here above the enemy.
+                return self.rect.x + 20, self.rect.y - 20, 180
+            if flag == 2:
+                # Right of the enemy.
+                return self.rect.x + 50, self.rect.y + 9, 90
+            if flag == 3:
+                # Under the enemy.
+                return self.rect.x + 20, self.rect.y + 30, 0
+        else:
+            # If the timer isn't at the right value, increments it and returns a tuple of incorrect values.
+            self.time += 1
+            return -1, -1, 0
 
 
 class Randominator(Enemies):
@@ -188,6 +209,7 @@ class Randominator(Enemies):
         self.reached_border = 0  # Determines if the ship has reached one of the borders.
         self.trajectory = []  # This attribute host the list of points the enemy will have to go through.
         self.velocity = 10
+        self.cadence = 3
 
     def displacement(self):
         if not self.trajectory:
@@ -227,8 +249,28 @@ class Randominator(Enemies):
                     # Hence, it is deleted. In the order of the indexes.
 
     def detection(self):
-        print("WIP")
-        return -1, -1, 0
+        """Detects the position of the player relative to the ship and returns a tuple containing the expected
+        position of the bullet that will be spawned, and its rotation angle to aim at the player's ship. The cadence
+        attribute allows to personalize the frequency of bullet spawning in a certain amount of time."""
+        flag = randint(0, 3)  # Prior to being able to detect the player, is temporarily random.
+        if self.time >= 100 / self.cadence:
+            self.time = 0
+            if flag == 0:
+                # Makes the bullet spawn to the left of the enemy.
+                return self.rect.x - 20, self.rect.y + 15, -90
+            if flag == 1:
+                # Bis repetita for different positions, here above the enemy.
+                return self.rect.x + 13, self.rect.y - 20, 180
+            if flag == 2:
+                # Right of the enemy.
+                return self.rect.x + 35, self.rect.y + 15, 90
+            if flag == 3:
+                # Under the enemy.
+                return self.rect.x + 13, self.rect.y + 40, 0
+        else:
+            # If the timer isn't at the right value, increments it and returns a tuple of incorrect values.
+            self.time += 1
+            return -1, -1, 0
 
 
 class EnemyBullets(Enemies):
