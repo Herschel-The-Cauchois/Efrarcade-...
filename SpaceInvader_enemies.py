@@ -86,14 +86,16 @@ class EnemyShip(Enemies):
             self.time = 0
             if flag == 0:
                 # Makes the bullet spawn to the left of the enemy.
-                return self.rect.x, self.rect.y-25, -90
+                return self.rect.x-20, self.rect.y+20, -90
             if flag == 1:
                 # Bis repetita for different positions, here above the enemy.
-                return self.rect.x+25, self.rect.y+1, 0
+                return self.rect.x+20, self.rect.y-20, 180
             if flag == 2:
-                return self.rect.x+50, self.rect.y-25, 90
+                # Right of the enemy.
+                return self.rect.x+50, self.rect.y+20, 90
             if flag == 3:
-                return self.rect.x+25, self.rect.y-50, 180
+                # Under the enemy.
+                return self.rect.x+20, self.rect.y+50, 0
         else:
             # If the timer isn't at the right value, increments it and returns a tuple of incorrect values.
             self.time += 1
