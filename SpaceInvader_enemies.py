@@ -323,7 +323,7 @@ class EnemyBullets(Enemies):
     def displacement(self):
         """Method that will make the enemy bullet move through the screen in a linear trajectory, deduced from
         the transformation impulsed by the game's spawn method to the EnemyBullet instance."""
-        if self.rect.x > 10 or self.rect.x < 990 or self.rect.y > 10 or self.rect.y < 490:
+        if self.rect.x > 10 and self.rect.x < 990 and self.rect.y > 10 and self.rect.y < 490:
             # This condition verifies if the bullet is situated in an expected position on the screen, else, it is
             # promptly killed. According to the rotation transformation impulsed to the bullet, it will follow a
             # specific trajectory (to the left of the screen if oriented towards the left of the screen, e.g.)

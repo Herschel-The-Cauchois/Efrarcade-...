@@ -16,7 +16,7 @@ class Player(sprite.Sprite):
     def move(self):
         """When summoned, and if a corresponding key pressing event happens, executes the corresponding movement to the
         player."""
-        l = 1000 - 700
+        l = 1000 - 100
         h = 500 - 100  # Defines dimensional constant to limit the player's ability to move.
         keys = key.get_pressed()  # Retrieves all keys pressed.
 
@@ -32,6 +32,12 @@ class Player(sprite.Sprite):
 
         if (keys[K_DOWN] or keys[K_s]) and self.rect.y < h:
             self.rect.y += 5*self.velocity
+
+    def touchEnemy(self, ennemies):
+        "Check if the player is touching an ennemy."
+        for i in ennemies:
+            if self.rect.colliderect(i.rect):
+                return True
 
 
 class Projectile(sprite.Sprite):
@@ -49,3 +55,14 @@ class Projectile(sprite.Sprite):
             self.kill()
         else:
             self.rect.x += 5 * self.velocity  # Speed of projectile
+
+    def touchedEnemy(self, enemies):
+        for i in enemies:
+            if self.rect.colliderect(i.rect):
+                return True
+    
+    def touchedEbullet(self, bullets):
+        for i in bullets:
+            if self.rect.colliderect(i.rect):
+                self.kill()
+                i.kill()
