@@ -130,9 +130,12 @@ def game_loop():
         generate_stars()
         paint_stars(scene)
         player.move()
+        if player.touchEnemy(game.enemies.sprites()):
+            print(f"Player touched enemy, x: {player.rect.x}, y: {player.rect.y},  {game.bullets}", end="\r")
+        else:
+            print(f"Player not touching enemy, x: {player.rect.x}, y: {player.rect.y}, {game.bullets}", end="\r")
         display.update()  # Updates the display
         clock.tick(60)
-
         display.flip()  # Sets the background and refreshes the window
 
         for thing in event.get():
