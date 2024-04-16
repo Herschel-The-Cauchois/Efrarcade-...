@@ -14,13 +14,14 @@ class Game:
         self.bullets = sprite.Group()  # Sprite group that will manage bullets
         self.projectiles = []  # Regroups projectiles objects for interactions with enemies
         self.bullet_velocity = 5  # Attribute that will contain the general speed of bullets during the game
+        self.player = Player()  # Initializes the player class
         self.spawn(811, 11, 4, "EnemyShip")  # Makes an enemy spawn upon initialisation
         self.spawn(500, 0, 3, "Sinusoid")  # Makes another enemy spawn
         self.spawn(550, 250, 6, "EnemyBullets")  # Spawns a random bullet
         self.spawn(30, 0, 5, "Randominator")  # Spawns a Randominator
         self.spawn(450, 250, 0, "EnemyShip")  # Immobile enemy spawning for bullet position tests
         self.spawn(575, 250, 0, "Sinusoid")
-        self.spawn(700, 150, 0, "Randominator")
+        self.spawn(100, 150, 0, "Randominator")
         print(self.enemies.sprites())  # Prints lists of sprite present in the sprite groups
         print(self.bullets.sprites())
 
@@ -44,11 +45,11 @@ class Game:
             return
         elif type == "PlayerProjectile":
             projectile = Projectile()  # Create a projectile
-            projectile.rect.x = player.rect.x + 75
-            projectile.rect.y = player.rect.y + 43  # Inserts the coordinates to center the bullet spawn point
+            projectile.rect.x = self.player.rect.x + 75
+            projectile.rect.y = self.player.rect.y + 43  # Inserts the coordinates to center the bullet spawn point
             # At the tip of the player's ship
             game.bullets.add(projectile)  # Adds it to the bullet sprite group for management
-            self.projectiles.append(projectile)  # References it in the player projectile list
+            self.projectiles.append(projectile)  # References its hitbox in the player projectile list
             return
         elif type == "Randominator":
             a = Randominator()
@@ -70,7 +71,7 @@ class Game:
             if i < len(self.enemies):  # Due to the sprite killing method integrated in the enemy class, this condition
                 # is needed because it provoked out of range related problems
                 self.enemies.sprites()[i].displacement()  # Activates the displacement method of each enemy
-                bullet_spawn.append(self.enemies.sprites()[i].detection())  # Puts in a list the tuple yielded from
+                bullet_spawn.append(self.enemies.sprites()[i].detection(self.player))  # Puts in a list the tuple yielded from
                 # each enemy's player detection method
         for elem in bullet_spawn:
             if elem[0] != -1:
@@ -89,7 +90,6 @@ screen_width = 1000
 screen_height = 500  # Dimensions of the game window
 ratio = screen_width / screen_height
 game = Game()  # Initializes the game class
-player = Player()  # Initializes the player class
 display.set_caption("Efrarcade")  # Titles the pygame window to Efrarcade
 scene = display.set_mode((screen_width, screen_height), RESIZABLE)
 background = Surface(scene.get_size())  # Creates a surface for the background of the game
@@ -117,10 +117,11 @@ def paint_stars(s):
 
 
 def game_loop():
+    debug= False
     is_active = True  # Elementary boolean that stays True until QUIT event is triggered.
     while is_active:
         scene.blit(background, (0, 0))
-        scene.blit(player.image, (player.rect.x, player.rect.y))  # Draws background and player.
+        scene.blit(game.player.image, (game.player.rect.x, game.player.rect.y))  # Draws background and player.
 
         game.enemies.draw(scene)
         game.bullets.draw(scene)
@@ -129,11 +130,34 @@ def game_loop():
         # Draw each star on the background scene
         generate_stars()
         paint_stars(scene)
-        player.move()
+        game.player.move()
+
         display.update()  # Updates the display
         clock.tick(60)
-
         display.flip()  # Sets the background and refreshes the window
+
+        if sprite.spritecollideany(game.player, game.bullets):  # Detects is there is collision with smth
+            bullets = [elem for elem in game.bullets]  # References all bullets in a list
+            bullets_hitting = game.player.rect.collidelistall([elem.rect for elem in bullets])  # List all
+            # indexes of bullets which rectangle hitbox touches the player's ship
+            for bullet in bullets_hitting:  # For each of the concerned bullets, does following action :
+                if bullets[bullet] not in game.projectiles:  # If the concerned bullet isn't a player projectile
+                    game.player.hp -= bullets[bullet].damage  # Removes hp from the player and kills the bullet
+                    bullets[bullet].kill()  # Deletes bullets, since it has hit its target.
+        for projectile in game.projectiles:
+            if sprite.spritecollideany(projectile, game.enemies):
+                enemies = [elem for elem in game.enemies]
+                enemies_hitting = projectile.rect.collidelistall([elem.rect for elem in enemies])
+                for enemy in enemies_hitting:
+                    print("Touched" + str(enemy))
+                    game.projectiles.remove(projectile)
+                    projectile.kill()
+            if projectile.rect.x > 990:
+                game.projectiles.remove(projectile)
+                projectile.kill()
+        if game.player.touchEnemy(game.enemies.sprites()):  # If the player is touching an enemy :
+            print("Player touched enemy")
+            
 
         for thing in event.get():
             if thing.type == QUIT:
@@ -141,11 +165,13 @@ def game_loop():
                 is_active = False
                 quit()
             if thing.type == KEYDOWN and thing.key == K_SPACE:  # If the space key is pressed, spawns projectile
-                game.spawn(player.rect.x + 75, player.rect.x + 43, 1, "PlayerProjectile")
-            if thing.type == VIDEORESIZE:  # WIP
+                game.spawn(game.player.rect.x + 75, game.player.rect.x + 43, 1, "PlayerProjectile")
+            if thing.type == VIDEORESIZE:  # WIP Note from Pverte : This make the window not resizable after a resize, making the screen of the game little
                 new_width = thing.w
                 new_height = int(new_width / ratio)
                 screen = display.set_mode((new_width, new_height), RESIZABLE)
+        if debug:
+            print(f"===PLAYER===\nX: {game.player.rect.x} Y: {game.player.rect.y}\nHP: {game.player.hp}\nIs touching ennemies ? {game.player.touchEnemy(game.enemies.sprites())}\n===ENEMIES===\n{game.enemies.sprites()}\n===BULLETS===\n{len(game.bullets.sprites())}\n===PROJECTILES===\n{len(game.projectiles)}\n", end="\r")
 
 
 game_loop()
