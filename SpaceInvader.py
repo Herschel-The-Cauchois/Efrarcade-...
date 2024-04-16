@@ -49,7 +49,7 @@ class Game:
             projectile.rect.y = self.player.rect.y + 43  # Inserts the coordinates to center the bullet spawn point
             # At the tip of the player's ship
             game.bullets.add(projectile)  # Adds it to the bullet sprite group for management
-            self.projectiles.append(projectile.rect)  # References its hitbox in the player projectile list
+            self.projectiles.append(projectile)  # References its hitbox in the player projectile list
             return
         elif type == "Randominator":
             a = Randominator()
@@ -117,6 +117,7 @@ def paint_stars(s):
 
 
 def game_loop():
+    debug= False
     is_active = True  # Elementary boolean that stays True until QUIT event is triggered.
     while is_active:
         scene.blit(background, (0, 0))
@@ -130,10 +131,7 @@ def game_loop():
         generate_stars()
         paint_stars(scene)
         game.player.move()
-        if game.player.touchEnemy(game.enemies.sprites()):
-            print(f"Player touched enemy, x: {game.player.rect.x}, y: {game.player.rect.y},  {game.bullets}", end="\r")
-        else:
-            print(f"Player not touching enemy, x: {game.player.rect.x}, y: {game.player.rect.y}, {game.bullets}", end="\r")
+
         display.update()  # Updates the display
         clock.tick(60)
         display.flip()  # Sets the background and refreshes the window
@@ -146,6 +144,20 @@ def game_loop():
                 if bullets[bullet] not in game.projectiles:  # If the concerned bullet isn't a player projectile
                     game.player.hp -= bullets[bullet].damage  # Removes hp from the player and kills the bullet
                     bullets[bullet].kill()  # Deletes bullets, since it has hit its target.
+        for projectile in game.projectiles:
+            if sprite.spritecollideany(projectile, game.enemies):
+                enemies = [elem for elem in game.enemies]
+                enemies_hitting = projectile.rect.collidelistall([elem.rect for elem in enemies])
+                for enemy in enemies_hitting:
+                    print("Touched" + str(enemy))
+                    game.projectiles.remove(projectile)
+                    projectile.kill()
+            if projectile.rect.x > 990:
+                game.projectiles.remove(projectile)
+                projectile.kill()
+        if game.player.touchEnemy(game.enemies.sprites()):  # If the player is touching an enemy :
+            print("Player touched enemy")
+            
 
         for thing in event.get():
             if thing.type == QUIT:
@@ -154,10 +166,12 @@ def game_loop():
                 quit()
             if thing.type == KEYDOWN and thing.key == K_SPACE:  # If the space key is pressed, spawns projectile
                 game.spawn(game.player.rect.x + 75, game.player.rect.x + 43, 1, "PlayerProjectile")
-            if thing.type == VIDEORESIZE:  # WIP
+            if thing.type == VIDEORESIZE:  # WIP Note from Pverte : This make the window not resizable after a resize, making the screen of the game little
                 new_width = thing.w
                 new_height = int(new_width / ratio)
                 screen = display.set_mode((new_width, new_height), RESIZABLE)
+        if debug:
+            print(f"===PLAYER===\nX: {game.player.rect.x} Y: {game.player.rect.y}\nHP: {game.player.hp}\nIs touching ennemies ? {game.player.touchEnemy(game.enemies.sprites())}\n===ENEMIES===\n{game.enemies.sprites()}\n===BULLETS===\n{len(game.bullets.sprites())}\n===PROJECTILES===\n{len(game.projectiles)}\n", end="\r")
 
 
 game_loop()

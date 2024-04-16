@@ -51,18 +51,9 @@ class Projectile(sprite.Sprite):
         self.velocity = 1
 
     def displacement(self):
-        if self.rect.x > 1000:
-            self.kill()
-        else:
-            self.rect.x += 5 * self.velocity  # Speed of projectile
+        self.rect.x += 5 * self.velocity  # Speed of projectile
 
     def touchedEnemy(self, enemies):
         for i in enemies:
             if self.rect.colliderect(i.rect):
                 return True
-    
-    def touchedEbullet(self, bullets):
-        for i in bullets:
-            if self.rect.colliderect(i.rect):
-                self.kill()
-                i.kill()
