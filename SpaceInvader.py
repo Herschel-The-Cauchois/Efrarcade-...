@@ -70,9 +70,11 @@ class Game:
         for i in range(0, len(self.enemies)):
             if i < len(self.enemies):  # Due to the sprite killing method integrated in the enemy class, this condition
                 # is needed because it provoked out of range related problems
-                self.enemies.sprites()[i].displacement()  # Activates the displacement method of each enemy
+                self.enemies.sprites()[i].displacement()  # Activa  tes the displacement method of each enemy
                 bullet_spawn.append(self.enemies.sprites()[i].detection(self.player))  # Puts in a list the tuple
                 # yielded from each enemy's player detection method
+            if self.enemies.sprites()[i].hp < 1:
+                self.enemies.sprites()[i].kill()  # Find another loop to clean dead enemies.
         for elem in bullet_spawn:
             if elem[0] != -1:
                 # If there is any tuple that contains a valid x coordinate, proceeds to make a bullet spawn from the
@@ -83,7 +85,9 @@ class Game:
                 if self.bullets.sprites()[i].rect in self.projectiles:  # Checks if bullet belongs to player's.
                     if not self.bullets.sprites()[i].has_touched_bullet(self.bullets):
                         # Checks if bullet hasn't been killed by hitting an enemy bullet. If not, displaces it.
-                        self.bullets.sprites()[i].displacement()
+                        if not self.bullets.sprites()[i].has_touched_enemies(self.enemies):
+                            # Checks if the bullet hasn't touched an enemy and if it was killed by such actions.
+                            self.bullets.sprites()[i].displacement()
                 else:
                     if i < len(self.bullets):
                         self.bullets.sprites()[i].displacement()  # Triggers the bullet's displacement.

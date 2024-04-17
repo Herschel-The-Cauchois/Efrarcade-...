@@ -11,6 +11,7 @@ class Player(sprite.Sprite):
         self.hp = 100
         self.rect.x = 0
         self.rect.y = (500 - 100)/2
+        self.damage = 1
         self.velocity = 1  # Default player speed.
 
     def move(self):
@@ -48,6 +49,7 @@ class Projectile(sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = 0
         self.rect.y = 0
+        self.damage = 1
         self.velocity = 1
 
     def displacement(self):
@@ -58,8 +60,12 @@ class Projectile(sprite.Sprite):
 
     def has_touched_enemies(self, enemies):
         for i in enemies:
-            if self.rect.colliderect(i.rect):
+            if self.rect.colliderect(i.rect):  # Check if enemy has been hit by a projectile.
+                i.hp -= self.damage  # If so, removes hp to the enemy and kills the projectile.
+                print(i.hp)
+                self.kill()
                 return True
+        return False
     
     def has_touched_bullet(self, bullets):
         for i in bullets:
