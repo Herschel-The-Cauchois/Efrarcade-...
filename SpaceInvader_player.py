@@ -33,10 +33,10 @@ class Player(sprite.Sprite):
         if (keys[K_DOWN] or keys[K_s]) and self.rect.y < h:
             self.rect.y += 5*self.velocity
 
-    def touchEnemy(self, ennemies):
-        "Check if the player is touching an ennemy."
-        for i in ennemies:
-            if self.rect.colliderect(i.rect):
+    def is_touching_enemy(self, enemies):
+        """Check if the player is touching an enemy."""
+        for i in enemies:
+            if self.rect.colliderect(i.rect):  # Verification if one enemy hitbox hits the player's.
                 return True
 
 
@@ -56,13 +56,15 @@ class Projectile(sprite.Sprite):
         else:
             self.rect.x += 5 * self.velocity  # Speed of projectile
 
-    def touchedEnemy(self, enemies):
+    def has_touched_enemies(self, enemies):
         for i in enemies:
             if self.rect.colliderect(i.rect):
                 return True
     
-    def touchedEbullet(self, bullets):
+    def has_touched_bullet(self, bullets):
         for i in bullets:
-            if self.rect.colliderect(i.rect):
-                self.kill()
+            if self.rect.colliderect(i.rect) and i.rect != self.rect:  # Checks if a different bullet hit the projectile
+                self.kill()  # Kills both bullets.
                 i.kill()
+                return True  # Returns a True boolean to confirm concerned bullet has been killed.
+        return False  # If no collision, returns False.

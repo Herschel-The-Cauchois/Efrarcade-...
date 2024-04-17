@@ -71,16 +71,22 @@ class Game:
             if i < len(self.enemies):  # Due to the sprite killing method integrated in the enemy class, this condition
                 # is needed because it provoked out of range related problems
                 self.enemies.sprites()[i].displacement()  # Activates the displacement method of each enemy
-                bullet_spawn.append(self.enemies.sprites()[i].detection(self.player))  # Puts in a list the tuple yielded from
-                # each enemy's player detection method
+                bullet_spawn.append(self.enemies.sprites()[i].detection(self.player))  # Puts in a list the tuple
+                # yielded from each enemy's player detection method
         for elem in bullet_spawn:
             if elem[0] != -1:
                 # If there is any tuple that contains a valid x coordinate, proceeds to make a bullet spawn from the
                 # enemy's position using elements from the bullet spawn tuple.
                 self.spawn(elem[0], elem[1], self.bullet_velocity, "EnemyBullets", elem[2])
         for i in range(0, len(self.bullets)):
-            if i < len(self.bullets):
-                self.bullets.sprites()[i].displacement()  # Triggers the bullet's displacement.
+            if i < len(self.bullets):  # This is a solution to the same out of range problem as for enemies.
+                if self.bullets.sprites()[i].rect in self.projectiles:  # Checks if bullet belongs to player's.
+                    if not self.bullets.sprites()[i].has_touched_bullet(self.bullets):
+                        # Checks if bullet hasn't been killed by hitting an enemy bullet. If not, displaces it.
+                        self.bullets.sprites()[i].displacement()
+                else:
+                    if i < len(self.bullets):
+                        self.bullets.sprites()[i].displacement()  # Triggers the bullet's displacement.
 
 
 init()  # Initializes pygame
@@ -130,10 +136,9 @@ def game_loop():
         generate_stars()
         paint_stars(scene)
         game.player.move()
-        if game.player.touchEnemy(game.enemies.sprites()):
-            print(f"Player touched enemy, x: {game.player.rect.x}, y: {game.player.rect.y},  {game.bullets}", end="\r")
-        else:
-            print(f"Player not touching enemy, x: {game.player.rect.x}, y: {game.player.rect.y}, {game.bullets}", end="\r")
+        if game.player.is_touching_enemy(game.enemies.sprites()):  # Detects if the player touches any enemy.
+            print("Player touched enemy, x: {0}, y: {1},  {2}".format(game.player.rect.x, game.player.rect.y, game.bullets))
+            game.player.hp -= 1
         display.update()  # Updates the display
         clock.tick(60)
         display.flip()  # Sets the background and refreshes the window
