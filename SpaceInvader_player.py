@@ -21,6 +21,10 @@ class Player(sprite.Sprite):
         h = 500 - 100  # Defines dimensional constant to limit the player's ability to move.
         keys = key.get_pressed()  # Retrieves all keys pressed.
 
+        if self.hp < 1:  # Forbids the player from moving if it isn't alive.
+            self.kill()
+            return
+
         if (keys[K_RIGHT] or keys[K_d]) and self.rect.x < l:
             # Move the player's ship if the right key is pressed and the ship is within the defined zone.
             self.rect.x += 5*self.velocity  # Velocity is factored it for potential speed malus or bonuses.

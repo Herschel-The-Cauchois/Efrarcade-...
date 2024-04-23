@@ -25,7 +25,7 @@ class Game:
         print(self.enemies.sprites())  # Prints lists of sprite present in the sprite groups
         print(self.bullets.sprites())
 
-    def spawn(self, x: int, y: int, velocity: int, type: str, transformation: int = 0):
+    def spawn(self, x: int, y: int, velocity: int, type: str, transformation: int = 0):  # Must add damage + hp param
         """Method that will spawn enemies and bullets, by instantiating their respective class following the type
         parameter, give the instance a position from the x and y parameter, a velocity, and for enemy bullets
         a rotation angle."""
@@ -73,8 +73,8 @@ class Game:
                 self.enemies.sprites()[i].displacement()  # Activa  tes the displacement method of each enemy
                 bullet_spawn.append(self.enemies.sprites()[i].detection(self.player))  # Puts in a list the tuple
                 # yielded from each enemy's player detection method
-            if self.enemies.sprites()[i].hp < 1:
-                self.enemies.sprites()[i].kill()  # Find another loop to clean dead enemies.
+                if self.enemies.sprites()[i].hp < 1:
+                    self.enemies.sprites()[i].kill()  # Find another loop to clean dead enemies.
         for elem in bullet_spawn:
             if elem[0] != -1:
                 # If there is any tuple that contains a valid x coordinate, proceeds to make a bullet spawn from the
@@ -94,6 +94,7 @@ class Game:
 
 
 init()  # Initializes pygame
+font.init()  # Initializes font module
 
 # Creates a window with the name of the game, and sets the future background image
 screen_width = 1000
@@ -105,6 +106,8 @@ scene = display.set_mode((screen_width, screen_height), RESIZABLE)
 background = Surface(scene.get_size())  # Creates a surface for the background of the game
 clock = time.Clock()
 star_positions = []  # Lists that holds the position of each respective star.
+game_over_font = font.SysFont("Comic Sans MS", 30)
+game_over_text = game_over_font.render("Game Over :(", False, (255, 255, 255))
 
 
 def generate_stars():
@@ -129,8 +132,9 @@ def paint_stars(s):
 def game_loop():
     is_active = True  # Elementary boolean that stays True until QUIT event is triggered.
     while is_active:
-        scene.blit(background, (0, 0))
-        scene.blit(game.player.image, (game.player.rect.x, game.player.rect.y))  # Draws background and player.
+        scene.blit(background, (0, 0))  # Draws background.
+        if game.player.hp > 0:
+            scene.blit(game.player.image, (game.player.rect.x, game.player.rect.y))  # Draws player if alive.
 
         game.enemies.draw(scene)
         game.bullets.draw(scene)
@@ -156,12 +160,22 @@ def game_loop():
                     game.player.hp -= bullets[bullet].damage  # Removes hp from the player and kills the bullet
                     bullets[bullet].kill()  # Deletes bullets, since it has hit its target.
 
+        if game.player.hp < 1:  # If the player dies...
+            scene.blit(game_over_text, (500, 250))
+            for enemy in game.enemies.sprites():
+                enemy.kill()  # Kills all enemies.
+            for bullet in game.bullets.sprites():
+                bullet.kill()  # Kills all bullets.
+            game.player.kill()  # Kills the player.
+            game_over = 1
+
         for thing in event.get():
             if thing.type == QUIT:
                 # If quitting event detected, closes the windows
                 is_active = False
                 quit()
-            if thing.type == KEYDOWN and thing.key == K_SPACE:  # If the space key is pressed, spawns projectile
+            if thing.type == KEYDOWN and thing.key == K_SPACE and game.player.hp > 0:
+                # If the space key is pressed and the player is alive, spawns projectile
                 game.spawn(game.player.rect.x + 75, game.player.rect.x + 43, 1, "PlayerProjectile")
             if thing.type == VIDEORESIZE:  # WIP
                 new_width = thing.w
