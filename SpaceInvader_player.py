@@ -36,7 +36,7 @@ background = image.load("./assets/test.png")
 
 #PLAYER
 
-perso = image.load("./assets/perso.png").convert()
+perso = image.load("./assets/Perso.png").convert()
 persoRect = perso.get_rect()
 persoRect.x = 0
 persoRect.y = int((H - 100)/2)
