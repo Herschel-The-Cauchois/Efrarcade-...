@@ -74,7 +74,8 @@ class Game:
                 bullet_spawn.append(self.enemies.sprites()[i].detection(self.player))  # Puts in a list the tuple
                 # yielded from each enemy's player detection method
                 if self.enemies.sprites()[i].hp < 1:
-                    self.enemies.sprites()[i].kill()  # Find another loop to clean dead enemies.
+                    self.enemies.sprites()[i].kill()  # Kill the sprites of dead enemies.
+                    mixer.Sound("assets/enemy_boom.mp3").play()  # Plays a sound when an enemy is killed.
         for elem in bullet_spawn:
             if elem[0] != -1:
                 # If there is any tuple that contains a valid x coordinate, proceeds to make a bullet spawn from the
@@ -133,7 +134,9 @@ def game_loop():
     is_active = True  # Elementary boolean that stays True until QUIT event is triggered.
     while is_active:
         scene.blit(background, (0, 0))  # Draws background.
+        draw.rect(scene, (0, 0, 0), (0, 0, 1000, 100))  # Trying to draw a slot for the game stats...
         if game.player.hp > 0:
+            game_over = 0
             scene.blit(game.player.image, (game.player.rect.x, game.player.rect.y))  # Draws player if alive.
 
         game.enemies.draw(scene)
@@ -167,7 +170,9 @@ def game_loop():
             for bullet in game.bullets.sprites():
                 bullet.kill()  # Kills all bullets.
             game.player.kill()  # Kills the player.
-            game_over = 1
+            if not game_over:
+                mixer.Sound("assets/game_over.mp3").play()
+                game_over = 1
 
         for thing in event.get():
             if thing.type == QUIT:

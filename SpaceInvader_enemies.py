@@ -41,7 +41,7 @@ class EnemyShip(Enemies):
     def __init__(self):
         super().__init__()  # Initializes sprite class
         # Classical sprite initialisation : load image, initialize rectangle, positions...
-        self.image = image.load("./assets/yellow_placeholder.png")
+        self.image = image.load("./assets/EnemyShip.png")
         self.image = transform.scale(self.image, (50, 50))  # Resizes image sprite to correct size
         self.image = transform.rotate(self.image, -90)  # Rotates the enemy to face the left side of the screen
         self.hp = 50  # + sets new common properties for enemies of that type such as constant hp stat
@@ -117,7 +117,7 @@ class Sinusoid(Enemies):
     def __init__(self):
         super().__init__()  # Initializes sprite class
         # Classical sprite initialisation : load image, initialize rectangle, positions...
-        self.image = image.load("./assets/white_placeholder.svg")
+        self.image = image.load("./assets/Sinusoid.png")
         self.image = transform.scale(self.image, (30, 50))  # Resizes image sprite to correct size
         self.image = transform.rotate(self.image, -90)  # Rotates the enemy to face the left side of the screen
         self.hp = 50  # + sets new common properties for enemies of that type such as constant hp stat
@@ -216,7 +216,7 @@ class Randominator(Enemies):
     def __init__(self):
         super().__init__()  # Initializes sprite class
         # Classical sprite initialisation : load image, initialize rectangle, positions...
-        self.image = image.load("./assets/red_placeholder.svg")
+        self.image = image.load("./assets/Randominator.png")
         self.image = transform.scale(self.image, (40, 35))  # Resizes image sprite to correct size
         self.image = transform.rotate(self.image, -90)  # Rotates the enemy to face the left side of the screen
         self.hp = 100  # + sets new common properties for enemies of that type such as constant hp stat
@@ -309,7 +309,7 @@ class EnemyBullets(Enemies):
         super().__init__()  # Initializes sprite class
         # Classical sprite initialisation : load image, initialize rectangle, positions...
         self.image = image.load("./assets/white_placeholder.svg")
-        self.image = transform.scale(self.image, (10, 20))  # Resizes image sprite to correct size
+        self.image = transform.scale(self.image, (7, 15))  # Resizes image sprite to correct size
         self.transformation = 0  # This attribute the rotation angle that will be applied to the bullet.
         self.hp = 1  # + sets new common properties for enemies of that type such as constant hp stat
         self.type = "EnemyBullet"  # Declares type of enemy for it to be identifiable to the game
