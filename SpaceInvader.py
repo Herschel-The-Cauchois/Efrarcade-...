@@ -15,20 +15,20 @@ class Game:
         self.projectiles = []  # Regroups projectiles objects for interactions with enemies
         self.bullet_velocity = 5  # Attribute that will contain the general speed of bullets during the game
         self.player = Player()  # Initializes the player class
-        self.spawn(811, 11, 4, "EnemyShip")  # Makes an enemy spawn upon initialisation
+        """self.spawn(811, 11, 4, "EnemyShip")  # Makes an enemy spawn upon initialisation
         self.spawn(500, 0, 3, "Sinusoid")  # Makes another enemy spawn
         self.spawn(550, 250, 6, "EnemyBullets")  # Spawns a random bullet
-        self.spawn(30, 0, 5, "Randominator")  # Spawns a Randominator
-        self.spawn(450, 250, 0, "EnemyShip")  # Immobile enemy spawning for bullet position tests
+        self.spawn(30, 0, 5, "Randominator")  # Spawns a Randominator"""
+        self.spawn(450, 250, 0, "EnemyShip", 0, 15)  # Immobile enemy spawning for bullet position tests
         self.spawn(575, 250, 0, "Sinusoid")
-        self.spawn(100, 150, 0, "Randominator")
+        self.spawn(100, 150, 0, "Randominator", 0, 15, 5, 3)
         print(self.enemies.sprites())  # Prints lists of sprite present in the sprite groups
         print(self.bullets.sprites())
 
-    def spawn(self, x: int, y: int, velocity: int, type: str, transformation: int = 0):  # Must add damage + hp param
+    def spawn(self, x: int, y: int, velocity: int, type: str, transformation: int = 0, hp: int = -1, damage: int = -1, cadence: int = -1):
         """Method that will spawn enemies and bullets, by instantiating their respective class following the type
-        parameter, give the instance a position from the x and y parameter, a velocity, and for enemy bullets
-        a rotation angle."""
+        parameter, give the instance a position from the x and y parameter, a velocity, other enemy related properties
+        and for enemy bullets a rotation angle."""
         if type == "EnemyShip":  # Assigns to variable "a" the correct type of enemy that will be added to the game
             a = EnemyShip()
         elif type == "Sinusoid":
@@ -41,6 +41,7 @@ class Game:
             # will have to go through before spawning
             a.rotate()
             a.velocity = velocity
+            a.damage = damage
             self.bullets.add(a)  # Adds it to the bullet group for specific management
             return
         elif type == "PlayerProjectile":
@@ -61,6 +62,12 @@ class Game:
         a.rect.x = x  # Instead of the default position in (0,0), puts the sprite in coordinates passed in parameters
         a.rect.y = y
         a.velocity = velocity
+        if hp != -1:  # Optional hp, damage and cadence modifiers relative to default values set up in their class.
+            a.hp = hp
+        if damage != -1:
+            a.damage = damage
+        if cadence != -1:
+            a.cadence = cadence
         self.enemies.add(a)  # Displays one enemy by adding it to the enemies group sprite.
 
     def update(self):
@@ -70,7 +77,7 @@ class Game:
         for i in range(0, len(self.enemies)):
             if i < len(self.enemies):  # Due to the sprite killing method integrated in the enemy class, this condition
                 # is needed because it provoked out of range related problems
-                self.enemies.sprites()[i].displacement()  # Activa  tes the displacement method of each enemy
+                self.enemies.sprites()[i].displacement()  # Activates the displacement method of each enemy
                 bullet_spawn.append(self.enemies.sprites()[i].detection(self.player))  # Puts in a list the tuple
                 # yielded from each enemy's player detection method
                 if self.enemies.sprites()[i].hp < 1:
@@ -80,7 +87,7 @@ class Game:
             if elem[0] != -1:
                 # If there is any tuple that contains a valid x coordinate, proceeds to make a bullet spawn from the
                 # enemy's position using elements from the bullet spawn tuple.
-                self.spawn(elem[0], elem[1], self.bullet_velocity, "EnemyBullets", elem[2])
+                self.spawn(elem[0], elem[1], self.bullet_velocity, "EnemyBullets", elem[2], -1, elem[3])
         for i in range(0, len(self.bullets)):
             if i < len(self.bullets):  # This is a solution to the same out of range problem as for enemies.
                 if self.bullets.sprites()[i].rect in self.projectiles:  # Checks if bullet belongs to player's.
@@ -148,7 +155,7 @@ def game_loop():
         paint_stars(scene)
         game.player.move()
         if game.player.is_touching_enemy(game.enemies.sprites()):  # Detects if the player touches any enemy.
-            print("Player touched enemy, x: {0}, y: {1},  {2}".format(game.player.rect.x, game.player.rect.y, game.bullets))
+            print("Player touched enemy, x: {0}, y: {1},  {2}, HP : {3}".format(game.player.rect.x, game.player.rect.y, game.bullets, game.player.hp))
             game.player.hp -= 1
         display.update()  # Updates the display
         clock.tick(60)
@@ -161,6 +168,7 @@ def game_loop():
             for bullet in bullets_hitting:  # For each of the concerned bullets, does following action :
                 if bullets[bullet] not in game.projectiles:  # If the concerned bullet isn't a player projectile
                     game.player.hp -= bullets[bullet].damage  # Removes hp from the player and kills the bullet
+                    print(game.player.hp)
                     bullets[bullet].kill()  # Deletes bullets, since it has hit its target.
 
         if game.player.hp < 1:  # If the player dies...

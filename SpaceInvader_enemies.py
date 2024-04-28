@@ -48,6 +48,7 @@ class EnemyShip(Enemies):
         self.type = "EnemyShip"  # Declares type of enemy for it to be identifiable to the game
         self.damage = 1  # Damage inflicted by the enemy
         self.rect = self.image.get_rect()  # Creates hit box
+        self.rect = Rect.inflate(self.rect, -15, -15)
         self.rect.x = 0
         self.rect.y = 0  # Sets up starting position of the ship by setting up the enemy's coordinate
         self.reached_border = 0
@@ -81,8 +82,9 @@ class EnemyShip(Enemies):
 
     def detection(self, player):
         """Detects the position of the player relative to the ship and returns a tuple containing the expected
-        position of the bullet that will be spawned, and its rotation angle to aim at the player's ship. The cadence
-        attribute allows to personalize the frequency of bullet spawning in a certain amount of time."""
+        position of the bullet that will be spawned, the bullet's damage and its rotation angle to aim at the
+        player's ship. The cadence attribute allows to personalize the frequency of bullet spawning in a certain
+        amount of time."""
         if player.rect.x < self.rect.x - 35:
             # Detects the position of the player relative to the ship's position.
             flag = 0
@@ -96,20 +98,20 @@ class EnemyShip(Enemies):
             self.time = 0
             if flag == 0:
                 # Makes the bullet spawn to the left of the enemy.
-                return self.rect.x-20, self.rect.y+20, -90
+                return self.rect.x-20, self.rect.y+20, -90, self.damage
             if flag == 1:
                 # Bis repetita for different positions, here above the enemy.
-                return self.rect.x+20, self.rect.y-20, 180
+                return self.rect.x+20, self.rect.y-20, 180, self.damage
             if flag == 2:
                 # Right of the enemy.
-                return self.rect.x+50, self.rect.y+20, 90
+                return self.rect.x+50, self.rect.y+20, 90, self.damage
             if flag == 3:
                 # Under the enemy.
-                return self.rect.x+20, self.rect.y+50, 0
+                return self.rect.x+20, self.rect.y+50, 0, self.damage
         else:
             # If the timer isn't at the right value, increments it and returns a tuple of incorrect values.
             self.time += 1
-            return -1, -1, 0
+            return -1, -1, 0, 0
 
 
 class Sinusoid(Enemies):
@@ -124,6 +126,7 @@ class Sinusoid(Enemies):
         self.type = "Sinusoid"  # Declares type of enemy for it to be identifiable to the game
         self.damage = 5  # Damage inflicted by the enemy
         self.rect = self.image.get_rect()  # Creates hit box
+        self.rect = Rect.inflate(self.rect, -5, -5)
         self.rect.x = 0
         self.rect.y = 0  # Sets up starting position of the ship by setting up the enemy's coordinate
         self.reached_border = 0  # Determines if the ship has reached one of the borders.
@@ -181,8 +184,9 @@ class Sinusoid(Enemies):
 
     def detection(self, player):
         """Detects the position of the player relative to the ship and returns a tuple containing the expected
-        position of the bullet that will be spawned, and its rotation angle to aim at the player's ship. The cadence
-        attribute allows to personalize the frequency of bullet spawning in a certain amount of time."""
+        position of the bullet that will be spawned, the bullet's damage and its rotation angle to aim at the
+        player's ship. The cadence attribute allows to personalize the frequency of bullet spawning in a certain
+        amount of time."""
         if player.rect.x < self.rect.x - 35:
             # Detects the position of the player relative to the ship's position.
             flag = 0
@@ -196,20 +200,20 @@ class Sinusoid(Enemies):
             self.time = 0
             if flag == 0:
                 # Makes the bullet spawn to the left of the enemy.
-                return self.rect.x - 20, self.rect.y + 9, -90
+                return self.rect.x - 20, self.rect.y + 9, -90, self.damage
             if flag == 1:
                 # Bis repetita for different positions, here above the enemy.
-                return self.rect.x + 20, self.rect.y - 20, 180
+                return self.rect.x + 20, self.rect.y - 20, 180, self.damage
             if flag == 2:
                 # Right of the enemy.
-                return self.rect.x + 50, self.rect.y + 9, 90
+                return self.rect.x + 50, self.rect.y + 9, 90, self.damage
             if flag == 3:
                 # Under the enemy.
-                return self.rect.x + 20, self.rect.y + 30, 0
+                return self.rect.x + 20, self.rect.y + 30, 0, self.damage
         else:
             # If the timer isn't at the right value, increments it and returns a tuple of incorrect values.
             self.time += 1
-            return -1, -1, 0
+            return -1, -1, 0, 0
 
 
 class Randominator(Enemies):
@@ -223,6 +227,7 @@ class Randominator(Enemies):
         self.type = "Randominator"  # Declares type of enemy for it to be identifiable to the game
         self.damage = 10  # Damage inflicted by the enemy
         self.rect = self.image.get_rect()  # Creates hit box
+        self.rect = Rect.inflate(self.rect, -15, -15)
         self.rect.x = 0
         self.rect.y = 0  # Sets up starting position of the ship by setting up the enemy's coordinate
         self.reached_border = 0  # Determines if the ship has reached one of the borders.
@@ -273,8 +278,9 @@ class Randominator(Enemies):
 
     def detection(self, player):
         """Detects the position of the player relative to the ship and returns a tuple containing the expected
-        position of the bullet that will be spawned, and its rotation angle to aim at the player's ship. The cadence
-        attribute allows to personalize the frequency of bullet spawning in a certain amount of time."""
+        position of the bullet that will be spawned, the bullet's damage and its rotation angle to aim at the
+        player's ship. The cadence attribute allows to personalize the frequency of bullet spawning in a certain
+        amount of time."""
         if player.rect.x < self.rect.x - 35:
             # Detects the position of the player relative to the ship's position.
             flag = 0
@@ -288,20 +294,20 @@ class Randominator(Enemies):
             self.time = 0
             if flag == 0:
                 # Makes the bullet spawn to the left of the enemy.
-                return self.rect.x - 20, self.rect.y + 15, -90
+                return self.rect.x - 20, self.rect.y + 15, -90, self.damage
             if flag == 1:
                 # Bis repetita for different positions, here above the enemy.
-                return self.rect.x + 13, self.rect.y - 20, 180
+                return self.rect.x + 13, self.rect.y - 20, 180, self.damage
             if flag == 2:
                 # Right of the enemy.
-                return self.rect.x + 35, self.rect.y + 15, 90
+                return self.rect.x + 35, self.rect.y + 15, 90, self.damage
             if flag == 3:
                 # Under the enemy.
-                return self.rect.x + 13, self.rect.y + 40, 0
+                return self.rect.x + 13, self.rect.y + 40, 0, self.damage
         else:
             # If the timer isn't at the right value, increments it and returns a tuple of incorrect values.
             self.time += 1
-            return -1, -1, 0
+            return -1, -1, 0, 0
 
 
 class EnemyBullets(Enemies):
