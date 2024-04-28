@@ -54,6 +54,7 @@ class EnemyShip(Enemies):
         self.reached_border = 0
         self.velocity = 2
         self.cadence = 3
+        self.score = 25  # For each enemy, the number of points given when they are killed
 
     def displacement(self):
         """Method that moves the ship across the screen. This enemy will move in straight lines until it reaches a
@@ -133,6 +134,7 @@ class Sinusoid(Enemies):
         self.trajectory = []  # This attribute host the list of points the enemy will have to go through.
         self.velocity = 10
         self.cadence = 3
+        self.score = 35
 
     def displacement(self):
         """This method moves the ship across the screen. This enemy will move in sinusoidal-simile curves until
@@ -234,6 +236,7 @@ class Randominator(Enemies):
         self.trajectory = []  # This attribute host the list of points the enemy will have to go through.
         self.velocity = 10
         self.cadence = 3
+        self.score = 100
 
     def displacement(self):
         """This method makes the enemy move following a random calculated trajectory by the Bézier curve function

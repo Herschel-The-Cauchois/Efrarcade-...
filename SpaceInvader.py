@@ -15,13 +15,17 @@ class Game:
         self.projectiles = []  # Regroups projectiles objects for interactions with enemies
         self.bullet_velocity = 5  # Attribute that will contain the general speed of bullets during the game
         self.player = Player()  # Initializes the player class
+        self.level = 1
+        self.enemy_count = 0
+        self.score = 0
+        self.activate = 0
         """self.spawn(811, 11, 4, "EnemyShip")  # Makes an enemy spawn upon initialisation
         self.spawn(500, 0, 3, "Sinusoid")  # Makes another enemy spawn
         self.spawn(550, 250, 6, "EnemyBullets")  # Spawns a random bullet
-        self.spawn(30, 0, 5, "Randominator")  # Spawns a Randominator"""
+        self.spawn(30, 0, 5, "Randominator")  # Spawns a Randominator
         self.spawn(450, 250, 0, "EnemyShip", 0, 15)  # Immobile enemy spawning for bullet position tests
         self.spawn(575, 250, 0, "Sinusoid")
-        self.spawn(100, 150, 0, "Randominator", 0, 15, 5, 3)
+        self.spawn(100, 150, 0, "Randominator", 0, 15, 5, 3)"""
         print(self.enemies.sprites())  # Prints lists of sprite present in the sprite groups
         print(self.bullets.sprites())
 
@@ -81,8 +85,13 @@ class Game:
                 bullet_spawn.append(self.enemies.sprites()[i].detection(self.player))  # Puts in a list the tuple
                 # yielded from each enemy's player detection method
                 if self.enemies.sprites()[i].hp < 1:
+                    self.score += self.enemies.sprites()[i].score  # When an enemy is killed, increments the score according to the points it is supposed to give.
+                    print("Score : {}".format(self.score))
                     self.enemies.sprites()[i].kill()  # Kill the sprites of dead enemies.
                     mixer.Sound("assets/enemy_boom.mp3").play()  # Plays a sound when an enemy is killed.
+                    self.enemy_count += 1  # Adds one to the enemy killed in the wave
+                    self.activate = 0  # If one enemy is killed, reports to the game that the next wave can be activated
+                    # if enough enemies are killed
         for elem in bullet_spawn:
             if elem[0] != -1:
                 # If there is any tuple that contains a valid x coordinate, proceeds to make a bullet spawn from the
@@ -95,10 +104,24 @@ class Game:
                         # Checks if bullet hasn't been killed by hitting an enemy bullet. If not, displaces it.
                         if not self.bullets.sprites()[i].has_touched_enemies(self.enemies):
                             # Checks if the bullet hasn't touched an enemy and if it was killed by such actions.
-                            self.bullets.sprites()[i].displacement()
+                            self.bullets.sprites()[i].displacement()  # If bullet successfully countered, +1 point
+                    else:
+                        self.score += 1
                 else:
                     if i < len(self.bullets):
                         self.bullets.sprites()[i].displacement()  # Triggers the bullet's displacement.
+
+    def levels(self):
+        """Method that following specific triggers will make waves of enemy spawn one after another, following
+        enemies killed count for intra-level waves and marking the succession to another level."""
+        if self.level == 1:
+            if self.enemy_count == 0 and self.activate == 0:
+                self.spawn(850, 15, 2, "EnemyShip", 0, 5, 1, 3)
+                self.activate = 1
+            if self.enemy_count == 1 and self.activate == 0:
+                self.spawn(700, 15, 2, "EnemyShip", 0, 7, 1, 3)
+                self.spawn(750, 15, 3, "Sinusoid", 0, 10, 1, 3)
+                self.activate = 1
 
 
 init()  # Initializes pygame
@@ -149,6 +172,7 @@ def game_loop():
         game.enemies.draw(scene)
         game.bullets.draw(scene)
         game.update()  # Draw each bullet and enemy before launching the update method for all of them.
+        game.levels()
 
         # Draw each star on the background scene
         generate_stars()
