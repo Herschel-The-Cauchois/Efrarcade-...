@@ -1,6 +1,7 @@
 from pygame import *
 from math import sqrt
 from random import *
+from SpaceInvader_player import *
 
 
 def bezier_curve_calc(controls: list, details: int):
@@ -40,7 +41,7 @@ class EnemyShip(Enemies):
     def __init__(self):
         super().__init__()  # Initializes sprite class
         # Classical sprite initialisation : load image, initialize rectangle, positions...
-        self.image = image.load("./assets/black_placeholder.svg")
+        self.image = image.load("./assets/EnemyShip.png")
         self.image = transform.scale(self.image, (50, 50))  # Resizes image sprite to correct size
         self.image = transform.rotate(self.image, -90)  # Rotates the enemy to face the left side of the screen
         self.hp = 50  # + sets new common properties for enemies of that type such as constant hp stat
@@ -78,11 +79,19 @@ class EnemyShip(Enemies):
         elif self.reached_border == 1:
             self.rect.y -= 1 * self.velocity
 
-    def detection(self):
+    def detection(self, player):
         """Detects the position of the player relative to the ship and returns a tuple containing the expected
         position of the bullet that will be spawned, and its rotation angle to aim at the player's ship. The cadence
         attribute allows to personalize the frequency of bullet spawning in a certain amount of time."""
-        flag = randint(0, 3)  # Prior to being able to detect the player, is temporarily random.
+        if player.rect.x < self.rect.x - 35:
+            # Detects the position of the player relative to the ship's position.
+            flag = 0
+        elif player.rect.x < self.rect.x + 35 and player.rect.y < self.rect.y:
+            flag = 1
+        elif player.rect.x < self.rect.x + 35 and player.rect.y > self.rect.y:
+            flag = 3
+        else:
+            flag = 2
         if self.time >= 100/self.cadence:
             self.time = 0
             if flag == 0:
@@ -108,7 +117,7 @@ class Sinusoid(Enemies):
     def __init__(self):
         super().__init__()  # Initializes sprite class
         # Classical sprite initialisation : load image, initialize rectangle, positions...
-        self.image = image.load("./assets/white_placeholder.svg")
+        self.image = image.load("./assets/Sinusoid.png")
         self.image = transform.scale(self.image, (30, 50))  # Resizes image sprite to correct size
         self.image = transform.rotate(self.image, -90)  # Rotates the enemy to face the left side of the screen
         self.hp = 50  # + sets new common properties for enemies of that type such as constant hp stat
@@ -170,11 +179,19 @@ class Sinusoid(Enemies):
                     self.trajectory.pop(0)  # After going to a point, the sprite doesn't need to go through it again.
                     # Hence, it is deleted. In the order of the indexes.
 
-    def detection(self):
+    def detection(self, player):
         """Detects the position of the player relative to the ship and returns a tuple containing the expected
         position of the bullet that will be spawned, and its rotation angle to aim at the player's ship. The cadence
         attribute allows to personalize the frequency of bullet spawning in a certain amount of time."""
-        flag = randint(0, 3)  # Prior to being able to detect the player, is temporarily random.
+        if player.rect.x < self.rect.x - 35:
+            # Detects the position of the player relative to the ship's position.
+            flag = 0
+        elif player.rect.x < self.rect.x + 35 and player.rect.y < self.rect.y:
+            flag = 1
+        elif player.rect.x < self.rect.x + 35 and player.rect.y > self.rect.y:
+            flag = 3
+        else:
+            flag = 2
         if self.time >= 100 / self.cadence:
             self.time = 0
             if flag == 0:
@@ -199,7 +216,7 @@ class Randominator(Enemies):
     def __init__(self):
         super().__init__()  # Initializes sprite class
         # Classical sprite initialisation : load image, initialize rectangle, positions...
-        self.image = image.load("./assets/red_placeholder.svg")
+        self.image = image.load("./assets/Randominator.png")
         self.image = transform.scale(self.image, (40, 35))  # Resizes image sprite to correct size
         self.image = transform.rotate(self.image, -90)  # Rotates the enemy to face the left side of the screen
         self.hp = 100  # + sets new common properties for enemies of that type such as constant hp stat
@@ -254,11 +271,19 @@ class Randominator(Enemies):
                     self.trajectory.pop(0)  # After going to a point, the sprite doesn't need to go through it again.
                     # Hence, it is deleted. In the order of the indexes.
 
-    def detection(self):
+    def detection(self, player):
         """Detects the position of the player relative to the ship and returns a tuple containing the expected
         position of the bullet that will be spawned, and its rotation angle to aim at the player's ship. The cadence
         attribute allows to personalize the frequency of bullet spawning in a certain amount of time."""
-        flag = randint(0, 3)  # Prior to being able to detect the player, is temporarily random.
+        if player.rect.x < self.rect.x - 35:
+            # Detects the position of the player relative to the ship's position.
+            flag = 0
+        elif player.rect.x < self.rect.x + 15 and player.rect.y < self.rect.y:
+            flag = 1
+        elif player.rect.x < self.rect.x + 15 and player.rect.y > self.rect.y:
+            flag = 3
+        else:
+            flag = 2
         if self.time >= 100 / self.cadence:
             self.time = 0
             if flag == 0:
@@ -284,7 +309,7 @@ class EnemyBullets(Enemies):
         super().__init__()  # Initializes sprite class
         # Classical sprite initialisation : load image, initialize rectangle, positions...
         self.image = image.load("./assets/white_placeholder.svg")
-        self.image = transform.scale(self.image, (10, 20))  # Resizes image sprite to correct size
+        self.image = transform.scale(self.image, (7, 15))  # Resizes image sprite to correct size
         self.transformation = 0  # This attribute the rotation angle that will be applied to the bullet.
         self.hp = 1  # + sets new common properties for enemies of that type such as constant hp stat
         self.type = "EnemyBullet"  # Declares type of enemy for it to be identifiable to the game
@@ -298,7 +323,7 @@ class EnemyBullets(Enemies):
     def displacement(self):
         """Method that will make the enemy bullet move through the screen in a linear trajectory, deduced from
         the transformation impulsed by the game's spawn method to the EnemyBullet instance."""
-        if self.rect.x > 10 and self.rect.x < 990 and self.rect.y > 10 and self.rect.y < 490:
+        if 10 < self.rect.x < 990 and 10 < self.rect.y < 490:
             # This condition verifies if the bullet is situated in an expected position on the screen, else, it is
             # promptly killed. According to the rotation transformation impulsed to the bullet, it will follow a
             # specific trajectory (to the left of the screen if oriented towards the left of the screen, e.g.)
