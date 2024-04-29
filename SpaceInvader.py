@@ -50,8 +50,8 @@ class Game:
             return
         elif type == "PlayerProjectile":
             projectile = Projectile()  # Create a projectile
-            projectile.rect.x = self.player.rect.x + 75
-            projectile.rect.y = self.player.rect.y + 43  # Inserts the coordinates to center the bullet spawn point
+            projectile.rect.x = x
+            projectile.rect.y = y  # Inserts the coordinates to center the bullet spawn point
             # At the tip of the player's ship
             game.bullets.add(projectile)  # Adds it to the bullet sprite group for management
             self.projectiles.append(projectile.rect)  # References its hitbox in the player projectile list
@@ -120,7 +120,25 @@ class Game:
                 self.activate = 1
             if self.enemy_count == 1 and self.activate == 0:
                 self.spawn(700, 15, 2, "EnemyShip", 0, 7, 1, 3)
-                self.spawn(750, 15, 3, "Sinusoid", 0, 10, 1, 3)
+                self.spawn(750, 15, 1, "Sinusoid", 0, 10, 1, 3)
+                self.activate = 1
+            if self.enemy_count == 3 and self.activate == 0:
+                self.spawn(100, 255, 2, "Randominator", 0, 5, 2, 3)
+                self.activate = 1
+            if self.enemy_count == 4:
+                self.level = 2
+                self.enemy_count = 0
+        if self.level == 2:
+            if self.enemy_count == 0 and self.activate == 0:
+                mixer.Sound("assets/level_up.mp3").play()
+                self.score += self.player.hp
+                self.spawn(800, 30, 2, "EnemyShip", 0, 15, 2, 3)
+                self.spawn(750, 50, 2, "Sinusoid", 0, 7, 2, 3)
+                self.spawn(750, 100, 2, "Sinusoid", 0, 7, 2, 3)
+                self.activate = 1
+            if self.enemy_count == 3 and self.activate == 0:
+                self.spawn(350, 250, 3, "EnemyShip", 0, 5, 3, 3)
+                self.spawn(700, 250, 3, "EnemyShip", 0, 5, 3, 3)
                 self.activate = 1
 
 
@@ -213,7 +231,7 @@ def game_loop():
                 quit()
             if thing.type == KEYDOWN and thing.key == K_SPACE and game.player.hp > 0:
                 # If the space key is pressed and the player is alive, spawns projectile
-                game.spawn(game.player.rect.x + 75, game.player.rect.x + 43, 1, "PlayerProjectile")
+                game.spawn(game.player.rect.x + 60, game.player.rect.y + 36, 1, "PlayerProjectile")
             if thing.type == VIDEORESIZE:  # WIP
                 new_width = thing.w
                 new_height = int(new_width / ratio)
