@@ -117,8 +117,9 @@ class Game:
         if self.level == 1:
             if self.enemy_count == 0 and self.activate == 0:
                 self.spawn(850, 15, 2, "EnemyShip", 0, 5, 1, 3)
-                self.activate = 1
+                self.activate = 1  # Marks the wave as activated to prevent repetitively spawning it.
             if self.enemy_count == 1 and self.activate == 0:
+                # Follows the count of enemy dead in the wave to trigger the next
                 self.spawn(700, 15, 2, "EnemyShip", 0, 7, 1, 3)
                 self.spawn(750, 15, 1, "Sinusoid", 0, 10, 1, 3)
                 self.activate = 1
@@ -126,12 +127,13 @@ class Game:
                 self.spawn(100, 255, 2, "Randominator", 0, 5, 2, 3)
                 self.activate = 1
             if self.enemy_count == 4:
+                # When all the enemies of the level are killed, resets enemy count and goes to next level.
                 self.level = 2
                 self.enemy_count = 0
         if self.level == 2:
             if self.enemy_count == 0 and self.activate == 0:
                 mixer.Sound("assets/level_up.mp3").play()
-                self.score += self.player.hp
+                self.score += self.player.hp  # Plays a reward sound and player gets a remaining hp score bonus !
                 self.spawn(800, 30, 2, "EnemyShip", 0, 15, 2, 3)
                 self.spawn(750, 50, 2, "Sinusoid", 0, 7, 2, 3)
                 self.spawn(750, 100, 2, "Sinusoid", 0, 7, 2, 3)
@@ -139,6 +141,54 @@ class Game:
             if self.enemy_count == 3 and self.activate == 0:
                 self.spawn(350, 250, 3, "EnemyShip", 0, 5, 3, 3)
                 self.spawn(700, 250, 3, "EnemyShip", 0, 5, 3, 3)
+                self.activate = 1
+            if self.enemy_count == 5:
+                self.level = 3
+                self.enemy_count = 0
+        if self.level == 3:
+            if self.enemy_count == 0 and self.activate == 0:
+                mixer.Sound("assets/level_up.mp3").play()
+                self.score += self.player.hp
+                self.spawn(500, 140, 3, "Randominator", 0, 15, 3, 4)
+                self.spawn(800, 20, 2, "EnemyShip", 0, 7, 1, 3)
+                self.activate = 1
+            if self.enemy_count == 2 and self.activate == 0:
+                self.level = 4
+                self.enemy_count = 0
+        if self.level == 4:
+            if self.enemy_count == 0 and self.activate == 0:
+                mixer.Sound("assets/level_up.mp3").play()
+                self.score += self.player.hp
+                self.spawn(230, 900, 3, "Sinusoid", 0, 15, 3, 2)
+                self.spawn(900, 150, 3, "Sinusoid", 0, 15, 3, 2)
+                self.activate = 1
+            if self.enemy_count == 2 and self.activate == 0:
+                self.spawn(230, 900, 3, "Sinusoid", 0, 15, 3, 2)
+                self.spawn(900, 150, 3, "Sinusoid", 0, 15, 3, 2)
+                self.spawn(350, 100, 4, "Randominator", 0, 3, 2, 3)
+                self.spawn(650, 100, 4, "Randominator", 0, 3, 2, 3)
+                self.activate = 1
+            if self.enemy_count == 6 and self.activate == 0:
+                self.level = 5
+                self.enemy_count = 0
+        if self.level == 5:
+            if self.enemy_count == 0 and self.activate == 0:
+                mixer.Sound("assets/level_up.mp3").play()
+                self.score += self.player.hp
+                self.spawn(700, 50, 5, "Sinusoid", 0, 7, 3, 3)
+                self.spawn(650, 400, 5, "Sinusoid", 0, 12, 3, 3)
+                self.spawn(680, 200, 3, "EnemyShip", 0, 5, 5, 3)
+                self.spawn(670, 300, 4, "EnemyShip", 0, 7, 3, 3)
+                self.spawn(710, 100, 3, "Sinusoid", 0, 9, 3, 4)
+                self.spawn(660, 175, 3, "Sinusoid", 0, 10, 4, 3)
+                self.activate = 1
+            if self.enemy_count == 6 and self.activate == 0:
+                self.level = 6
+                self.enemy_count = 0
+        if self.level == 6:
+            if self.enemy_count == 0 and self.activate == 0:
+                mixer.Sound("assets/level_up.mp3").play()
+                self.score += self.player.hp
                 self.activate = 1
 
 
