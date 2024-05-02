@@ -53,8 +53,7 @@ class Game:
             return
         elif type == "Randominator":
             a = Randominator()
-        else:
-            # In case of a wrong type of entity entered, returns an input.
+        else:                                                   #In case of a wrong type of entity entered, returns an input.
             print("Incorrect type input for spawn method : "+type)
             return
         # By default, assume it is an enemy that is spawned and will proceed to add it to the enemy group.
@@ -64,22 +63,22 @@ class Game:
         self.enemies.add(a)                                     # Displays one enemy by adding it to the enemies group sprite.
 
     def update(self):
-        # This method, used down below will trigger the displacement method of each enemy sprite, hence making them move
-        # while making sure each sprite move independently following the established rule relative to the enemy type.
+        """"
+        This method, used down below will trigger the displacement method of each enemy sprite, hence making them move
+        while making sure each sprite move independently following the established rule relative to the enemy type.
+        """
         bullet_spawn = []
         for i in range(0, len(self.enemies)):
-            if i < len(self.enemies):                           # Due to the sprite killing method integrated in the enemy class, this condition
-                                                                # is needed because it provoked out of range related problems
-                self.enemies.sprites()[i].displacement()        # Activa  tes the displacement method of each enemy
+            if i < len(self.enemies):                                                   # Due to the sprite killing method integrated in the enemy class, this condition
+                                                                                        # is needed because it provoked out of range related problems
+                self.enemies.sprites()[i].displacement()                                # Activa  tes the displacement method of each enemy
                 bullet_spawn.append(self.enemies.sprites()[i].detection(self.player))   # Puts in a list the tuple
                                                                                         # yielded from each enemy's player detection method
                 if self.enemies.sprites()[i].hp < 1:
                     self.enemies.sprites()[i].kill()                                    # Kill the sprites of dead enemies.
                     mixer.Sound("assets/enemy_boom.mp3").play()                         # Plays a sound when an enemy is killed.
         for elem in bullet_spawn:
-            if elem[0] != -1:
-                # If there is any tuple that contains a valid x coordinate, proceeds to make a bullet spawn from the
-                # enemy's position using elements from the bullet spawn tuple.
+            if elem[0] != -1:                                                           # If there is any tuple that contains a valid x coordinate, proceeds to make a bullet spawn from the enemy's position using elements from the bullet spawn tuple.
                 self.spawn(elem[0], elem[1], self.bullet_velocity, "EnemyBullets", elem[2])
         for i in range(0, len(self.bullets)):
             if i < len(self.bullets):                                                           # This is a solution to the same out of range problem as for enemies.
@@ -94,10 +93,12 @@ class Game:
                         self.bullets.sprites()[i].displacement()                                # Triggers the bullet's displacement.
 
 
-init()                                                                          # Initializes pygame
-font.init()                                                                     # Initializes font module
+init()                                                                                          # Initializes pygame
+font.init()                                                                                     # Initializes font module
 
-# Creates a window with the name of the game, and sets the future background image
+"""
+Creates a window with the name of the game, and sets the future background image
+"""
 screen_width = 1000
 screen_height = 500                                                             # Dimensions of the game window
 ratio = screen_width / screen_height
@@ -118,30 +119,30 @@ def generate_stars():
     """
     if random.randint(0, 100) < 10:
         star_positions.append([screen_width, random.randint(0, screen_height), random.randint(1, 3)])
-    for star in star_positions:                                                 # Loop that generalizes the behavior to all stars.
-        star[0] -= star[2]                                                      # Subtracts x position by the speed.
-        if star[0] < 0:                                                         # Detects if it is off the screen.
+    for star in star_positions:                                                                 # Loop that generalizes the behavior to all stars.
+        star[0] -= star[2]                                                                      # Subtracts x position by the speed.
+        if star[0] < 0:                                                                         # Detects if it is off the screen.
             star_positions.remove(star)
 
 
 def paint_stars(s):
     """Draw each star on the scene."""
     for star in star_positions:
-        draw.circle(s, (255, 255, 255), (star[0], star[1]), 1)                  # Represents them as a circle.
+        draw.circle(s, (255, 255, 255), (star[0], star[1]), 1)                                  # Represents them as a circle.
 
 
 def game_loop():
-    is_active = True                                                            # Elementary boolean that stays True until QUIT event is triggered.
+    is_active = True                                                                            # Elementary boolean that stays True until QUIT event is triggered.
     while is_active:
-        scene.blit(background, (0, 0))                                          # Draws background.
-        draw.rect(scene, (0, 0, 0), (0, 0, 1000, 100))                          # Trying to draw a slot for the game stats...
+        scene.blit(background, (0, 0))                                                          # Draws background.
+        draw.rect(scene, (0, 0, 0), (0, 0, 1000, 100))                                          # Trying to draw a slot for the game stats...
         if game.player.hp > 0:
             game_over = 0
-            scene.blit(game.player.image, (game.player.rect.x, game.player.rect.y))  # Draws player if alive.
+            scene.blit(game.player.image, (game.player.rect.x, game.player.rect.y))             # Draws player if alive.
 
         game.enemies.draw(scene)
         game.bullets.draw(scene)
-        game.update()                                                           # Draw each bullet and enemy before launching the update method for all of them.
+        game.update()                                                                           # Draw each bullet and enemy before launching the update method for all of them.
 
         # Draw each star on the background scene
         generate_stars()
