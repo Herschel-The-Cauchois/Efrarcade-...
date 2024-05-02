@@ -32,6 +32,13 @@ class Player(sprite.Sprite):
         if (keys[K_DOWN] or keys[K_s]) and self.rect.y < h:
             self.rect.y += 20*self.velocity
 
+class Life:
+
+    def __initi__(self, alive, dead):
+        self.alive = alive
+        self.dead = dead
+
+
 
 class Projectile(sprite.Sprite):
     def __init__(self):
