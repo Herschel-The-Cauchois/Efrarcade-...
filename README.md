@@ -25,7 +25,8 @@
 ## About The Project
 
 # EFRARCADE 
-## Team : The Howl     <sub>   Members: `@imtoatb`, `@pverte`, `@Herschel`, `@ReloPataloo`, `@DemoRtPro` </sub>
+## Team : The Howl     
+<sub>   Members: `@imtoatb`, `@pverte`, `@Herschel`, `@ReloPataloo`, `@DemoRtPro` </sub>
 
 <!-- WHAT IS IT ? -->
 ## What is it ?
