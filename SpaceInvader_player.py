@@ -49,6 +49,7 @@ class Projectile(sprite.Sprite):
         super().__init__()
         self.image = image.load("./assets/white_placeholder.svg")
         self.image = transform.scale(self.image, (10, 5))                   # Resizes image sprite to correct size
+        self.image.fill((173, 216, 230))                                    # Change color to light blue
         self.rect = self.image.get_rect()
         self.rect.x = 0
         self.rect.y = 0

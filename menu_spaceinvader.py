@@ -2,10 +2,10 @@ import pygame_menu
 import pygame
 from SpaceInvader import game_loop
 
-pygame.init()   #initialiser l'environnement de jeu
+pygame.init()                                                                           #Initialize the window
 surface = pygame.display.set_mode((1000, 500), pygame.RESIZABLE)
 pygame.display.set_caption('ARCADE')
-mytheme = pygame_menu.Theme(background_color=(0, 0, 0, 0), # transparent background
+mytheme = pygame_menu.Theme(background_color=(0, 0, 0, 0),                              #Transparent background
                 title_background_color=(4, 47, 126),
                 title_font_shadow=False,
                 widget_padding=0)
