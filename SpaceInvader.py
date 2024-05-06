@@ -1,6 +1,30 @@
 from SpaceInvader_enemies import *
 from SpaceInvader_player import *
 import random
+#csv file
+import csv
+
+# score importation from the csv
+def import_score():
+    score=[]
+    final=[]
+    with open('score.csv', 'r') as file:
+        reader = csv.reader(file)
+        next(reader)
+        for row in reader:
+            score.append(row)
+    counter = 1
+    while score:
+        max_score = 0
+        max_index = 0
+        for i in range(len(score)):
+            if int(score[i][1]) > max_score:
+                max_score = int(score[i][1])
+                max_index = i
+        final.append(f"{counter}. {score[max_index][0]} : {score[max_index][1]}")
+        score.pop(max_index)
+        counter += 1
+    return final
 
 """
 SPACE INVADER
@@ -139,14 +163,20 @@ def info_bar():
     #level_surface = level_bar(game.player.level, game.player.xp)
     level_surface = level_bar(game.player.hp)
     info_surface.blit(level_surface, (50, 35))  # Adjust the position as needed
+    info_surface.blit(info_font.render("Level: 1/8", False, (255, 255, 255)), (50, 80))
     draw.line(info_surface, (255, 255, 255), (0, 0), (0, game_height), 2)
     draw.line(info_surface, (255, 255, 255), (0, 0), (200, 0), 2)
     draw.line(info_surface, (255, 255, 255), (0, game_height/2-70), (200, game_height/2-70), 2)
-    info_surface.blit(info_font.render("Level: 1/8", False, (255, 255, 255)), (50, 80))
+
+    #SCORES
+    minus=0
+    for i in import_score():
+        score_text = info_font.render(i, False, (255, 255, 255))
+        info_surface.blit(score_text, (10, game_height/2-50+minus))
+        minus+=30
 
     # Blit the info bar onto the scene
     scene.blit(info_surface, (game_width, 0))
-    #scene.blit(score_text, (game_width + 10, 50))
 
 
 def generate_stars():
