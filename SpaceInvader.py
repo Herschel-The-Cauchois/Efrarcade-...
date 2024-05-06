@@ -1,6 +1,30 @@
 from SpaceInvader_enemies import *
 from SpaceInvader_player import *
 import random
+#csv file
+import csv
+
+# score importation from the csv
+def import_score():
+    score=[]
+    final=[]
+    with open('score.csv', 'r') as file:
+        reader = csv.reader(file)
+        next(reader)
+        for row in reader:
+            score.append(row)
+    counter = 1
+    while score:
+        max_score = 0
+        max_index = 0
+        for i in range(len(score)):
+            if int(score[i][1]) > max_score:
+                max_score = int(score[i][1])
+                max_index = i
+        final.append(f"{counter}. {score[max_index][0]} : {score[max_index][1]}")
+        score.pop(max_index)
+        counter += 1
+    return final
 
 """
 SPACE INVADER
@@ -96,20 +120,66 @@ class Game:
 init()                                                                                          # Initializes pygame
 font.init()                                                                                     # Initializes font module
 
+
 """
 Creates a window with the name of the game, and sets the future background image
 """
 screen_width = 1000
 screen_height = 500                                                             # Dimensions of the game window
-ratio = screen_width / screen_height
+game_width = 1000
+game_height = 500
+ratio = game_width / game_height
 game = Game()                                                                   # Initializes the game class
 display.set_caption("Efrarcade")                                                # Titles the pygame window to Efrarcade
+
 scene = display.set_mode((screen_width, screen_height), RESIZABLE)
 background = Surface(scene.get_size())                                          # Creates a surface for the background of the game
 clock = time.Clock()
-star_positions = []                                                             # Lists that holds the position of each respective star.
-game_over_font = font.SysFont("Comic Sans MS", 30)
-game_over_text = game_over_font.render("Game Over :(", False, (255, 255, 255))
+
+star_positions = []  # Lists that holds the position of each respective star.
+info_font = font.SysFont("Comic Sans MS", 30)
+game_over_text = info_font.render("Game Over :(", False, (255, 255, 255))
+
+
+def level_bar(player_xp):
+    """Creates a rectangle that will show in a % the player's level progression."""
+    # Create a surface for the level bar
+    level_surface = Surface((100, 25))
+    # Fill the rectangle with the player's level progression
+    draw.rect(level_surface, (0, 255, 0), (0, 0, (player_xp/100)*100, 25))
+    # Draw the border rectangle
+    draw.rect(level_surface, (255, 255, 255), (0, 0, 100, 25), 2)
+    # Return the level bar surface
+    return level_surface
+
+def info_bar():
+    """Right display to show the player's stats."""
+    #INIT OF THE INFO BAR
+    info_surface = Surface((200, game_height))  # Create a surface for the info bar
+    info_surface.fill((0, 0, 0))  # Fill the surface with black color
+    # Draw a white line to separate the game and the info bar    
+    # DISPLAYS
+    hp_text = info_font.render("HP:", False, (255, 255, 255))
+    #score_text = game_over_font.render("Score: {}".format(game.player.score), False, (255, 255, 255))
+    info_surface.blit(hp_text, (75, 10))
+    #level_surface = level_bar(game.player.level, game.player.xp)
+    level_surface = level_bar(game.player.hp)
+    info_surface.blit(level_surface, (50, 35))  # Adjust the position as needed
+    info_surface.blit(info_font.render("Level: 1/8", False, (255, 255, 255)), (50, 80))
+    draw.line(info_surface, (255, 255, 255), (0, 0), (0, game_height), 2)
+    draw.line(info_surface, (255, 255, 255), (0, 0), (200, 0), 2)
+    draw.line(info_surface, (255, 255, 255), (0, game_height/2-70), (200, game_height/2-70), 2)
+
+    #SCORES
+    minus=0
+    for i in import_score():
+        score_text = info_font.render(i, False, (255, 255, 255))
+        info_surface.blit(score_text, (10, game_height/2-50+minus))
+        minus+=30
+
+    # Blit the info bar onto the scene
+    scene.blit(info_surface, (game_width, 0))
+
 
 
 def generate_stars():
@@ -118,7 +188,8 @@ def generate_stars():
     until it is removed from the screen. It disposes of three properties : x position, y position and speed.
     """
     if random.randint(0, 100) < 10:
-        star_positions.append([screen_width, random.randint(0, screen_height), random.randint(1, 3)])
+
+        star_positions.append([game_width, random.randint(0, game_height), random.randint(1, 3)])
     for star in star_positions:                                                                 # Loop that generalizes the behavior to all stars.
         star[0] -= star[2]                                                                      # Subtracts x position by the speed.
         if star[0] < 0:                                                                         # Detects if it is off the screen.
@@ -151,8 +222,8 @@ def game_loop():
         if game.player.is_touching_enemy(game.enemies.sprites()):                               # Detects if the player touches any enemy.
             print("Player touched enemy, x: {0}, y: {1},  {2}".format(game.player.rect.x, game.player.rect.y, game.bullets))
             game.player.hp -= 1
-        display.update()                                                                        # Updates the display
         clock.tick(60)
+        info_bar()
         display.flip()                                                                          # Sets the background and refreshes the window
 
         if sprite.spritecollideany(game.player, game.bullets):                                  # Detects is there is collision with smth
