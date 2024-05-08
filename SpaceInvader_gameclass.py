@@ -2,6 +2,7 @@ from pygame import *
 from SpaceInvader_player import *
 from SpaceInvader_enemies import *
 
+
 # Class containing different elements of the game
 class Game:
     def __init__(self):
@@ -14,13 +15,7 @@ class Game:
         self.enemy_count = 0
         self.score = 0
         self.activate = 0
-        """self.spawn(811, 11, 4, "EnemyShip")  # Makes an enemy spawn upon initialisation
-        self.spawn(500, 0, 3, "Sinusoid")  # Makes another enemy spawn
-        self.spawn(550, 250, 6, "EnemyBullets")  # Spawns a random bullet
-        self.spawn(30, 0, 5, "Randominator")  # Spawns a Randominator
-        self.spawn(450, 250, 0, "EnemyShip", 0, 15)  # Immobile enemy spawning for bullet position tests
-        self.spawn(575, 250, 0, "Sinusoid")
-        self.spawn(100, 150, 0, "Randominator", 0, 15, 5, 3)"""
+        self.boss = sprite.Group()
         print(self.enemies.sprites())  # Prints lists of sprite present in the sprite groups
         print(self.bullets.sprites())
 
@@ -53,6 +48,17 @@ class Game:
             return
         elif type == "Randominator":
             a = Randominator()
+        elif type == "Boss":
+            a = Boss()
+            self.boss.add(a)
+        elif type == "GravMiss":
+            a = GravitationalMissiles()
+            a.rect.x = x  # Special case for enemy bullets, since they're in a specific group
+            a.rect.y = y
+            a.velocity = velocity
+            a.damage = damage
+            self.bullets.add(a)  # Adds it to the bullet group for specific management
+            return
         else:
             # In case of a wrong type of entity entered, returns an input.
             print("Incorrect type input for spawn method : "+type)
@@ -80,7 +86,8 @@ class Game:
                 bullet_spawn.append(self.enemies.sprites()[i].detection(self.player))  # Puts in a list the tuple
                 # yielded from each enemy's player detection method
                 if self.enemies.sprites()[i].hp < 1:
-                    self.score += self.enemies.sprites()[i].score  # When an enemy is killed, increments the score according to the points it is supposed to give.
+                    self.score += self.enemies.sprites()[i].score  # When an enemy is killed, increments the score
+                    # according to the points it is supposed to give.
                     print("Score : {}".format(self.score))
                     self.enemies.sprites()[i].kill()  # Kill the sprites of dead enemies.
                     mixer.Sound("assets/enemy_boom.mp3").play()  # Plays a sound when an enemy is killed.
@@ -213,3 +220,11 @@ class Game:
             if self.enemy_count == 6:
                 self.level = 8
                 self.enemy_count = 0
+        if self.level == 8:
+            if self.enemy_count == 0 and self.activate == 0:
+                mixer.Sound("assets/level_up.mp3").play()
+                self.score += self.player.hp
+                self.spawn(565, 10, 0, "Boss", 0, -1, -1, -1)
+                self.activate = 1
+            if self.enemy_count == 1:
+                self.level = 9

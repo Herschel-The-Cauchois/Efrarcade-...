@@ -20,6 +20,10 @@ clock = time.Clock()
 star_positions = []  # Lists that holds the position of each respective star.
 game_over_font = font.SysFont("Comic Sans MS", 30)
 game_over_text = game_over_font.render("Game Over :(", False, (255, 255, 255))
+secret_code = [K_UP, K_UP, K_DOWN, K_DOWN, K_LEFT, K_RIGHT, K_LEFT, K_RIGHT, K_b, K_a]
+code_enter = []
+code_index = 0
+activated = 0
 
 
 def generate_stars():
@@ -42,12 +46,16 @@ def paint_stars(s):
 
 
 def game_loop():
+    global code_index
+    global code_enter
+    global secret_code
+    global activated
+    game_over = 0
     is_active = True  # Elementary boolean that stays True until QUIT event is triggered.
     while is_active:
         scene.blit(background, (0, 0))  # Draws background.
         draw.rect(scene, (0, 0, 0), (0, 0, 1000, 100))  # Trying to draw a slot for the game stats...
         if game.player.hp > 0:
-            game_over = 0
             scene.blit(game.player.image, (game.player.rect.x, game.player.rect.y))  # Draws player if alive.
 
         game.enemies.draw(scene)
@@ -85,7 +93,18 @@ def game_loop():
             game.player.kill()  # Kills the player.
             if not game_over:
                 mixer.Sound("assets/game_over.mp3").play()
+                game.score += game.level*10  # Level Completion bonus at game over.
                 game_over = 1
+
+        if game.level == 9 and game_over != 2:  # If the player has completed all the levels...
+            print("A.")
+            for enemy in game.enemies.sprites():
+                enemy.kill()  # Kills all enemies.
+            for bullet in game.bullets.sprites():
+                bullet.kill()  # Kills all bullets.
+            game.player.kill()  # Kills the player.
+            mixer.Sound("assets/level_up.mp3").play()
+            game_over = 2
 
         for thing in event.get():
             if thing.type == QUIT:
@@ -95,6 +114,27 @@ def game_loop():
             if thing.type == KEYDOWN and thing.key == K_SPACE and game.player.hp > 0:
                 # If the space key is pressed and the player is alive, spawns projectile
                 game.spawn(game.player.rect.x + 60, game.player.rect.y + 36, 1, "PlayerProjectile")
+            if thing.type == KEYDOWN:
+                if thing.key == secret_code[code_index]:
+                    code_enter.append(thing.key)
+                    code_index += 1
+                    if code_enter == secret_code:
+                        # We removed the index reset to prevent the player from accessing the boss twice.
+                        code_index = 0
+                        if not activated:
+                            for enemy in game.enemies.sprites():
+                                enemy.kill()  # Kills all enemies.
+                            for bullet in game.bullets.sprites():
+                                bullet.kill()  # Kills all bullets.
+                            game.activate = 0
+                            game.level = 8
+                            game.score = 0
+                            print("Boss cheatcode activated !")
+                            mixer.Sound("./assets/konami vine boom.mp3").play()
+                            activated = 1
+                else:
+                    code_enter = []
+                    code_index = 0
             if thing.type == VIDEORESIZE:  # WIP
                 new_width = thing.w
                 new_height = int(new_width / ratio)

@@ -351,3 +351,36 @@ class EnemyBullets(Enemies):
         """Method that applies a rotation transformation following the rotation angle given by the transformation
         attribute."""
         self.image = transform.rotate(self.image, self.transformation)
+
+
+class Boss(Enemies):
+    # Class for game's boss
+    def __init__(self):
+        super().__init__()  # Initializes sprite class
+        # Classical sprite initialisation : load image, initialize rectangle, positions...
+        self.image = image.load("./assets/Boss.png")
+        self.image = transform.scale(self.image, (500, 500))  # Resizes image sprite to correct size
+        self.image = transform.rotate(self.image, -90)  # Rotates the enemy to face the left side of the screen
+        self.hp = 100  # + sets new common properties for enemies of that type such as constant hp stat
+        self.type = "Boss"  # Declares type of enemy for it to be identifiable to the game
+        self.damage = 5  # Damage inflicted by the enemy
+        self.rect = self.image.get_rect()  # Creates hit box
+        self.rect = Rect.inflate(self.rect, -15, -15) # Tries to redimensionate the hitbox.
+        self.rect.x = 0
+        self.rect.y = 0  # Sets up starting position of the ship by setting up the enemy's coordinate
+        self.reached_border = 0
+        self.velocity = 2
+        self.cadence = 8
+        self.score = 1000  # For each enemy, the number of points given when they are killed
+
+    def displacement(self):
+        self.rect.x += self.velocity
+
+    def detection(self, player):
+        if self.time >= 100 / self.cadence:
+            self.time = 0
+            return self.rect.x, randint(30, 450), -90, self.damage
+        else:
+            # If the timer isn't at the right value, increments it and returns a tuple of incorrect values.
+            self.time += 1
+            return -1, -1, 0, 0
