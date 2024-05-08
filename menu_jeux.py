@@ -13,6 +13,11 @@ screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE
 pygame.display.set_caption("Game Menu")
 
 # Load background image
+window_size = screen.get_size()  # Replace 'surface' with your pygame.Surface object for the window
+
+# Load and scale the background image
+background_image = pygame.image.load("assets/arcade.jpg").convert()
+background_image = pygame.transform.scale(background_image, window_size)
 background_image = pygame.image.load("assets/arcade.jpg").convert()
 
 # Define colors
@@ -173,7 +178,7 @@ def game_options_menu(game_selected, username):
                 elif event.key == pygame.K_RETURN:
                     if options[option_selected] == "Play":
                         if game_selected == "Space Invader":
-                            game_loop()
+                            game_loop(username)
                     elif options[option_selected] == "About":
                         print("About", game_selected)
                     elif options[option_selected] == "Back":

@@ -41,7 +41,7 @@ game_width = 1000
 game_height = 500  # Dimensions of the game window
 ratio = game_width / game_height
 game = Game()  # Initializes the game class
-display.set_caption("Efrarcade")  # Titles the pygame window to Efrarcade
+display.set_caption("Efrarcade - Space Invader")  # Titles the pygame window to Efrarcade
 
 clock = time.Clock()
 star_positions = []  # Lists that holds the position of each respective star.
@@ -54,7 +54,12 @@ def level_bar(player_xp):
     # Create a surface for the level bar
     level_surface = Surface((100, 25))
     # Fill the rectangle with the player's level progression
-    draw.rect(level_surface, (0, 255, 0), (0, 0, (player_xp/100)*100, 25))
+    if player_xp < 50 and player_xp > 10:
+        draw.rect(level_surface, (255, 255, 0), (0, 0, (player_xp/100)*100, 25))
+    elif player_xp < 10:
+        draw.rect(level_surface, (255, 0, 0), (0, 0, (player_xp/100)*100, 25))
+    else:
+        draw.rect(level_surface, (0, 255, 0), (0, 0, (player_xp/100)*100, 25))
     # Draw the border rectangle
     draw.rect(level_surface, (255, 255, 255), (0, 0, 100, 25), 2)
     # Return the level bar surface
@@ -75,13 +80,15 @@ def info_bar():
     level_surface = level_bar(game.player.hp)
     info_surface.blit(level_surface, (50, 35))  # Adjust the position as needed
     info_surface.blit(info_font.render(f"Level: {game.level}/8", False, (255, 255, 255)), (50, 80))
+    info_surface.blit(info_font.render(f"Score: {game.score}", False, (255, 255, 255)), (50, 120))
     draw.line(info_surface, (255, 255, 255), (0, 0), (0, game_height), 2)
     draw.line(info_surface, (255, 255, 255), (0, 0), (200, 0), 2)
     draw.line(info_surface, (255, 255, 255), (0, game_height/2-70), (200, game_height/2-70), 2)
 
     #SCORES
     minus=0
-    for i in import_score():
+    scores=import_score()
+    for i in scores: #so that we can later just show top 10, for now there is not enought data
         score_text = info_font.render(i, False, (255, 255, 255))
         info_surface.blit(score_text, (10, game_height/2-50+minus))
         minus+=30
@@ -109,7 +116,8 @@ def paint_stars(s):
         draw.circle(s, (255, 255, 255), (star[0], star[1]), 1)  # Represents them as a circle.
 
 
-def game_loop():
+def game_loop(username):
+    display.set_caption("Efrarcade - Space Invader")
     scene = display.set_mode((screen_width, screen_height), RESIZABLE)
     background = Surface(scene.get_size())  # Creates a surface for the background of the game
     secret_code = [K_UP, K_UP, K_DOWN, K_DOWN, K_LEFT, K_RIGHT, K_LEFT, K_RIGHT, K_b, K_a]
@@ -163,6 +171,12 @@ def game_loop():
                 mixer.Sound("assets/game_over.mp3").play()
                 game.score += game.level*10  # Level Completion bonus at game over.
                 game_over = 1
+                # show a game over screen
+                with open('score.csv', 'a') as file:
+                    writer = csv.writer(file)
+                    writer.writerow([username, game.score])
+
+
 
         if game.level == 9 and game_over != 2:  # If the player has completed all the levels...
             print("A.")
@@ -211,4 +225,4 @@ def game_loop():
 
 
 if __name__ == "__main__":
-    game_loop()
+    game_loop("player")
