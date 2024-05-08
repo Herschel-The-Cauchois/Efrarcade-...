@@ -28,6 +28,10 @@ def check_name(value):
     print('User name:', value)
     return value
 
+def start_the_game():
+    print('The game will start')
+    pygame.quit()
+    game_loop()
 
 about_menu = pygame_menu.Menu('About',1000, 500,
                        theme=mytheme,
@@ -39,10 +43,11 @@ about_menu.add.button('Return to main menu', pygame_menu.events.BACK)
 
 
 
-menu.add.button('Play', game_loop, font_name = pygame_menu.font.FONT_8BIT, font_size = 30, font_color = (0,0,0), selection_color = (255,255,255))
+menu.add.button('Play', start_the_game, font_name = pygame_menu.font.FONT_8BIT, font_size = 30, font_color = (0,0,0), selection_color = (255,255,255))
 menu.add.button('About',about_menu, font_name = pygame_menu.font.FONT_8BIT, font_size = 30, font_color = (0,0,0), selection_color = (255,255,255))
 menu.add.button('Quit', pygame_menu.events.EXIT, font_name = pygame_menu.font.FONT_8BIT, font_size = 30, font_color = (0,0,0), selection_color = (255,255,255))
 
 
 def main_invader():
+    print("started menu invader")
     menu.mainloop(surface, main_background)

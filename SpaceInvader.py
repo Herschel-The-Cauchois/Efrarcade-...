@@ -42,17 +42,11 @@ game_height = 500  # Dimensions of the game window
 ratio = game_width / game_height
 game = Game()  # Initializes the game class
 display.set_caption("Efrarcade")  # Titles the pygame window to Efrarcade
-scene = display.set_mode((screen_width, screen_height), RESIZABLE)
-background = Surface(scene.get_size())  # Creates a surface for the background of the game
+
 clock = time.Clock()
 star_positions = []  # Lists that holds the position of each respective star.
 
-secret_code = [K_UP, K_UP, K_DOWN, K_DOWN, K_LEFT, K_RIGHT, K_LEFT, K_RIGHT, K_b, K_a]
-code_enter = []
-code_index = 0
-activated = 0
-info_font = font.SysFont("Comic Sans MS", 30)
-game_over_text = info_font.render("Game Over :(", False, (255, 255, 255))
+
 
 
 def level_bar(player_xp):
@@ -67,6 +61,7 @@ def level_bar(player_xp):
     return level_surface
 
 def info_bar():
+    info_font = font.SysFont("Comic Sans MS", 30)
     """Right display to show the player's stats."""
     #INIT OF THE INFO BAR
     info_surface = Surface((200, game_height))  # Create a surface for the info bar
@@ -79,7 +74,7 @@ def info_bar():
     #level_surface = level_bar(game.player.level, game.player.xp)
     level_surface = level_bar(game.player.hp)
     info_surface.blit(level_surface, (50, 35))  # Adjust the position as needed
-    info_surface.blit(info_font.render("Level: 1/8", False, (255, 255, 255)), (50, 80))
+    info_surface.blit(info_font.render(f"Level: {game.level}/8", False, (255, 255, 255)), (50, 80))
     draw.line(info_surface, (255, 255, 255), (0, 0), (0, game_height), 2)
     draw.line(info_surface, (255, 255, 255), (0, 0), (200, 0), 2)
     draw.line(info_surface, (255, 255, 255), (0, game_height/2-70), (200, game_height/2-70), 2)
@@ -92,7 +87,7 @@ def info_bar():
         minus+=30
 
     # Blit the info bar onto the scene
-    scene.blit(info_surface, (game_width, 0))
+    return info_surface
 
 
 def generate_stars():
@@ -115,12 +110,16 @@ def paint_stars(s):
 
 
 def game_loop():
-    global code_index
-    global code_enter
-    global secret_code
-    global activated
+    scene = display.set_mode((screen_width, screen_height), RESIZABLE)
+    background = Surface(scene.get_size())  # Creates a surface for the background of the game
+    secret_code = [K_UP, K_UP, K_DOWN, K_DOWN, K_LEFT, K_RIGHT, K_LEFT, K_RIGHT, K_b, K_a]
+    code_enter = []
+    code_index = 0
+    activated = 0
     game_over = 0
     is_active = True  # Elementary boolean that stays True until QUIT event is triggered.
+    info_font = font.SysFont("Comic Sans MS", 30)
+    game_over_text = info_font.render("Game Over :(", False, (255, 255, 255))
     while is_active:
         scene.blit(background, (0, 0))  # Draws background.
         draw.rect(scene, (0, 0, 0), (0, 0, 1000, 100))  # Trying to draw a slot for the game stats...
@@ -140,7 +139,7 @@ def game_loop():
             print("Player touched enemy, x: {0}, y: {1},  {2}, HP : {3}".format(game.player.rect.x, game.player.rect.y, game.bullets, game.player.hp))
             game.player.hp -= 1
         clock.tick(60)
-        info_bar()
+        scene.blit(info_bar(), (game_width, 0))
         display.flip()  # Sets the background and refreshes the window
 
         if sprite.spritecollideany(game.player, game.bullets):  # Detects is there is collision with smth
@@ -210,4 +209,6 @@ def game_loop():
                 screen = display.set_mode((new_width, new_height), RESIZABLE)
 
 
-game_loop()
+
+if __name__ == "__main__":
+    game_loop()

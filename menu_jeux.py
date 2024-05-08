@@ -1,5 +1,7 @@
 import pygame
 import sys
+#from menu_spaceinvader import main_invader
+from SpaceInvader import game_loop
 
 # Initialize Pygame
 pygame.init()
@@ -154,7 +156,7 @@ def game_menu(username):
                 draw_button(game, font, WHITE, GRAY, screen, 300, 200 + i * 50, 200, 40)
         pygame.display.update()
 
-from menu_spaceinvader import main_invader
+
 
 
 # Function to display game options menu
@@ -171,7 +173,7 @@ def game_options_menu(game_selected, username):
                 elif event.key == pygame.K_RETURN:
                     if options[option_selected] == "Play":
                         if game_selected == "Space Invader":
-                            main_invader()
+                            game_loop()
                     elif options[option_selected] == "About":
                         print("About", game_selected)
                     elif options[option_selected] == "Back":
