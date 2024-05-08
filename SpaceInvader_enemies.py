@@ -379,7 +379,7 @@ class Boss(Enemies):
     def detection(self, player):
         if self.time >= 100 / self.cadence:
             self.time = 0
-            return self.rect.x, randint(30, 450), -90, self.damage
+            return self.rect.x, randint(30, 450), -90, self.damage  # Will make spawn a bullet at a random height.
         else:
             # If the timer isn't at the right value, increments it and returns a tuple of incorrect values.
             self.time += 1
