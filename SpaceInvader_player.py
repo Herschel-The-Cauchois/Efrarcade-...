@@ -5,9 +5,11 @@ class Player(sprite.Sprite):
 
     def __init__(self):
         super().__init__()
-        self.image = image.load("./assets/ship.png")                        # Loads the ship's image.
-        self.image = transform.rotate(self.image, -90)                      # Rotates it to respect the gameplay.
-        self.rect = self.image.get_rect()                                   # Defines a collision box for the player and its coordinates set.
+        self.image = image.load("./assets/shipofficiel.png")  # Loads the ship's image.
+        self.image = transform.rotate(self.image, -90)  # Rotates it to respect the gameplay.
+        self.image = transform.scale(self.image, (80, 80))
+        self.rect = self.image.get_rect()  # Defines a collision box for the player and its coordinates set.
+        self.rect = Rect.inflate(self.rect, -30, -30)
         self.hp = 100
         self.rect.x = 0
         self.rect.y = (500 - 100)//2

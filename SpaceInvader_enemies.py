@@ -45,17 +45,19 @@ class EnemyShip(Enemies):                                               # Class 
         Classical sprite initialisation : load image, initialize rectangle, positions...
         """
         self.image = image.load("./assets/EnemyShip.png")
-        self.image = transform.scale(self.image, (50, 50))              # Resizes image sprite to correct size
-        self.image = transform.rotate(self.image, -90)                  # Rotates the enemy to face the left side of the screen
-        self.hp = 50                                                    # + sets new common properties for enemies of that type such as constant hp stat
-        self.type = "EnemyShip"                                         # Declares type of enemy for it to be identifiable to the game
-        self.damage = 1                                                 # Damage inflicted by the enemy
-        self.rect = self.image.get_rect()                               # Creates hit box
+        self.image = transform.scale(self.image, (50, 50))  # Resizes image sprite to correct size
+        self.image = transform.rotate(self.image, -90)  # Rotates the enemy to face the left side of the screen
+        self.hp = 50  # + sets new common properties for enemies of that type such as constant hp stat
+        self.type = "EnemyShip"  # Declares type of enemy for it to be identifiable to the game
+        self.damage = 1  # Damage inflicted by the enemy
+        self.rect = self.image.get_rect()  # Creates hit box
+        self.rect = Rect.inflate(self.rect, -15, -15)
         self.rect.x = 0
         self.rect.y = 0                                                 # Sets up starting position of the ship by setting up the enemy's coordinate
         self.reached_border = 0
         self.velocity = 2
         self.cadence = 3
+        self.score = 25  # For each enemy, the number of points given when they are killed
 
     def displacement(self):
         """Method that moves the ship across the screen. This enemy will move in straight lines until it reaches a
@@ -85,9 +87,12 @@ class EnemyShip(Enemies):                                               # Class 
 
     def detection(self, player):
         """Detects the position of the player relative to the ship and returns a tuple containing the expected
-        position of the bullet that will be spawned, and its rotation angle to aim at the player's ship. The cadence
-        attribute allows to personalize the frequency of bullet spawning in a certain amount of time."""
-        if player.rect.x < self.rect.x - 35:                                        # Detects the position of the player relative to the ship's position.
+        position of the bullet that will be spawned, the bullet's damage and its rotation angle to aim at the
+        player's ship. The cadence attribute allows to personalize the frequency of bullet spawning in a certain
+        amount of time."""
+        if player.rect.x < self.rect.x - 35:
+            # Detects the position of the player relative to the ship's position.
+
             flag = 0
         elif player.rect.x < self.rect.x + 35 and player.rect.y < self.rect.y:
             flag = 1
@@ -97,17 +102,22 @@ class EnemyShip(Enemies):                                               # Class 
             flag = 2
         if self.time >= 100/self.cadence:
             self.time = 0
-            if flag == 0:                                                           # Makes the bullet spawn to the left of the enemy.
-                return self.rect.x-20, self.rect.y+20, -90
-            if flag == 1:                                                           # Bis repetita for different positions, here above the enemy.
-                return self.rect.x+20, self.rect.y-20, 180
-            if flag == 2:                                                           # Right of the enemy.
-                return self.rect.x+50, self.rect.y+20, 90
-            if flag == 3:                                                           # Under the enemy.
-                return self.rect.x+20, self.rect.y+50, 0
-        else:                                                                       # If the timer isn't at the right value, increments it and returns a tuple of incorrect values.
+            if flag == 0:
+                # Makes the bullet spawn to the left of the enemy.
+                return self.rect.x-20, self.rect.y+20, -90, self.damage
+            if flag == 1:
+                # Bis repetita for different positions, here above the enemy.
+                return self.rect.x+20, self.rect.y-20, 180, self.damage
+            if flag == 2:
+                # Right of the enemy.
+                return self.rect.x+50, self.rect.y+20, 90, self.damage
+            if flag == 3:
+                # Under the enemy.
+                return self.rect.x+20, self.rect.y+50, 0, self.damage
+        else:
+            # If the timer isn't at the right value, increments it and returns a tuple of incorrect values.
             self.time += 1
-            return -1, -1, 0
+            return -1, -1, 0, 0
 
 
 class Sinusoid(Enemies):                                                            # New enemy, sinusoid, which will follow a sinusoidal trajectory
@@ -116,18 +126,20 @@ class Sinusoid(Enemies):                                                        
        
         # Classical sprite initialisation : load image, initialize rectangle, positions...
         self.image = image.load("./assets/Sinusoid.png")
-        self.image = transform.scale(self.image, (30, 50))                          # Resizes image sprite to correct size
-        self.image = transform.rotate(self.image, -90)                              # Rotates the enemy to face the left side of the screen
-        self.hp = 50                                                                # + sets new common properties for enemies of that type such as constant hp stat
-        self.type = "Sinusoid"                                                      # Declares type of enemy for it to be identifiable to the game
-        self.damage = 5                                                             # Damage inflicted by the enemy
-        self.rect = self.image.get_rect()                                           # Creates hit box
+        self.image = transform.scale(self.image, (30, 50))  # Resizes image sprite to correct size
+        self.image = transform.rotate(self.image, -90)  # Rotates the enemy to face the left side of the screen
+        self.hp = 50  # + sets new common properties for enemies of that type such as constant hp stat
+        self.type = "Sinusoid"  # Declares type of enemy for it to be identifiable to the game
+        self.damage = 5  # Damage inflicted by the enemy
+        self.rect = self.image.get_rect()  # Creates hit box
+        self.rect = Rect.inflate(self.rect, -5, -5)
         self.rect.x = 0
         self.rect.y = 0                                                             # Sets up starting position of the ship by setting up the enemy's coordinate
         self.reached_border = 0                                                     # Determines if the ship has reached one of the borders.
         self.trajectory = []                                                        # This attribute host the list of points the enemy will have to go through.
         self.velocity = 10
         self.cadence = 3
+        self.score = 35
 
     def displacement(self):
         """
@@ -175,10 +187,11 @@ class Sinusoid(Enemies):                                                        
 
     def detection(self, player):
         """Detects the position of the player relative to the ship and returns a tuple containing the expected
-        position of the bullet that will be spawned, and its rotation angle to aim at the player's ship. The cadence
-        attribute allows to personalize the frequency of bullet spawning in a certain amount of time."""
-        
-        if player.rect.x < self.rect.x - 35:                                        # Detects the position of the player relative to the ship's position.
+        position of the bullet that will be spawned, the bullet's damage and its rotation angle to aim at the
+        player's ship. The cadence attribute allows to personalize the frequency of bullet spawning in a certain
+        amount of time."""
+        if player.rect.x < self.rect.x - 35:
+            # Detects the position of the player relative to the ship's position.
             flag = 0
         elif player.rect.x < self.rect.x + 35 and player.rect.y < self.rect.y:
             flag = 1
@@ -189,18 +202,22 @@ class Sinusoid(Enemies):                                                        
 
         if self.time >= 100 / self.cadence:
             self.time = 0
-
-            if flag == 0:                                                           # Makes the bullet spawn to the left of the enemy.
-                return self.rect.x - 20, self.rect.y + 9, -90
-            if flag == 1:                                                           # Bis repetita for different positions, here above the enemy.
-                return self.rect.x + 20, self.rect.y - 20, 180
-            if flag == 2:                                                           # Right of the enemy.
-                return self.rect.x + 50, self.rect.y + 9, 90
-            if flag == 3:                                                           # Under the enemy.
-                return self.rect.x + 20, self.rect.y + 30, 0
-        else:                                                                       # If the timer isn't at the right value, increments it and returns a tuple of incorrect values.
+            if flag == 0:
+                # Makes the bullet spawn to the left of the enemy.
+                return self.rect.x - 20, self.rect.y + 9, -90, self.damage
+            if flag == 1:
+                # Bis repetita for different positions, here above the enemy.
+                return self.rect.x + 20, self.rect.y - 20, 180, self.damage
+            if flag == 2:
+                # Right of the enemy.
+                return self.rect.x + 50, self.rect.y + 9, 90, self.damage
+            if flag == 3:
+                # Under the enemy.
+                return self.rect.x + 20, self.rect.y + 30, 0, self.damage
+        else:
+            # If the timer isn't at the right value, increments it and returns a tuple of incorrect values.
             self.time += 1
-            return -1, -1, 0
+            return -1, -1, 0, 0
 
 
 class Randominator(Enemies):                                                        #Pretty much identical
@@ -208,18 +225,20 @@ class Randominator(Enemies):                                                    
         super().__init__()  
 
         self.image = image.load("./assets/Randominator.png")
-        self.image = transform.scale(self.image, (40, 35))  
-        self.image = transform.rotate(self.image, -90)  
-        self.hp = 100  
-        self.type = "Randominator"  
-        self.damage = 10 
-        self.rect = self.image.get_rect()
+        self.image = transform.scale(self.image, (40, 35))  # Resizes image sprite to correct size
+        self.image = transform.rotate(self.image, -90)  # Rotates the enemy to face the left side of the screen
+        self.hp = 100  # + sets new common properties for enemies of that type such as constant hp stat
+        self.type = "Randominator"  # Declares type of enemy for it to be identifiable to the game
+        self.damage = 10  # Damage inflicted by the enemy
+        self.rect = self.image.get_rect()  # Creates hit box
+        self.rect = Rect.inflate(self.rect, -15, -15)
         self.rect.x = 0
         self.rect.y = 0 
         self.reached_border = 0  
         self.trajectory = []  
         self.velocity = 10
         self.cadence = 3
+        self.score = 100
 
     def displacement(self):
         """
@@ -263,11 +282,10 @@ class Randominator(Enemies):                                                    
                    
 
     def detection(self, player):
-        """
-        Detects the position of the player relative to the ship and returns a tuple containing the expected
-        position of the bullet that will be spawned, and its rotation angle to aim at the player's ship. The cadence
-        attribute allows to personalize the frequency of bullet spawning in a certain amount of time.
-        """
+        """Detects the position of the player relative to the ship and returns a tuple containing the expected
+        position of the bullet that will be spawned, the bullet's damage and its rotation angle to aim at the
+        player's ship. The cadence attribute allows to personalize the frequency of bullet spawning in a certain
+        amount of time."""
         if player.rect.x < self.rect.x - 35:
             flag = 0
         elif player.rect.x < self.rect.x + 15 and player.rect.y < self.rect.y:
@@ -281,20 +299,20 @@ class Randominator(Enemies):                                                    
             self.time = 0
             
             if flag == 0:
-                return self.rect.x - 20, self.rect.y + 15, -90
-            
+                # Makes the bullet spawn to the left of the enemy.
+                return self.rect.x - 20, self.rect.y + 15, -90, self.damage
             if flag == 1:
-                return self.rect.x + 13, self.rect.y - 20, 180
-            
+                # Bis repetita for different positions, here above the enemy.
+                return self.rect.x + 13, self.rect.y - 20, 180, self.damage
             if flag == 2:
-                return self.rect.x + 35, self.rect.y + 15, 90
-            
+                # Right of the enemy.
+                return self.rect.x + 35, self.rect.y + 15, 90, self.damage
             if flag == 3:
-                return self.rect.x + 13, self.rect.y + 40, 0
-            
+                # Under the enemy.
+                return self.rect.x + 13, self.rect.y + 40, 0, self.damage
         else:
             self.time += 1
-            return -1, -1, 0
+            return -1, -1, 0, 0
 
 
 class EnemyBullets(Enemies):                                                     # Same here                      
@@ -331,3 +349,36 @@ class EnemyBullets(Enemies):                                                    
         """Method that applies a rotation transformation following the rotation angle given by the transformation
         attribute."""
         self.image = transform.rotate(self.image, self.transformation)
+
+
+class Boss(Enemies):
+    # Class for game's boss
+    def __init__(self):
+        super().__init__()  # Initializes sprite class
+        # Classical sprite initialisation : load image, initialize rectangle, positions...
+        self.image = image.load("./assets/Boss.png")
+        self.image = transform.scale(self.image, (500, 500))  # Resizes image sprite to correct size
+        self.image = transform.rotate(self.image, -90)  # Rotates the enemy to face the left side of the screen
+        self.hp = 100  # + sets new common properties for enemies of that type such as constant hp stat
+        self.type = "Boss"  # Declares type of enemy for it to be identifiable to the game
+        self.damage = 5  # Damage inflicted by the enemy
+        self.rect = self.image.get_rect()  # Creates hit box
+        self.rect = Rect.inflate(self.rect, -15, -15) # Tries to redimensionate the hitbox.
+        self.rect.x = 0
+        self.rect.y = 0  # Sets up starting position of the ship by setting up the enemy's coordinate
+        self.reached_border = 0
+        self.velocity = 2
+        self.cadence = 8
+        self.score = 1000  # For each enemy, the number of points given when they are killed
+
+    def displacement(self):
+        self.rect.x += self.velocity
+
+    def detection(self, player):
+        if self.time >= 100 / self.cadence:
+            self.time = 0
+            return self.rect.x, randint(30, 450), -90, self.damage  # Will make spawn a bullet at a random height.
+        else:
+            # If the timer isn't at the right value, increments it and returns a tuple of incorrect values.
+            self.time += 1
+            return -1, -1, 0, 0
