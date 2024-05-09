@@ -1,13 +1,14 @@
 from BeerPong_classes import *
 
 
-def bp_game_loop(username : str):
-    display.set_caption("Efrarcade - Beer Pong")
+def bp_game_loop(username: str):
+    display.set_caption("Efrarcade - Water Pong")
     scene = display.set_mode((700, 500), RESIZABLE)
     background = image.load("./assets/Bar background.jpg")  # Creates a surface for the background of the game
     background = transform.scale(background, (700, 500))
     is_active = True  # Elementary boolean that stays True until QUIT event is triggered.
     game = Game()
+    game.vector.graphical_rotation(5, 9, game.ball.rect.center)
     while is_active:
         scene.blit(background, (0, 0))  # Draws background.
         game.game_sprites.update()
