@@ -119,11 +119,11 @@ def paint_stars(s):
 def game_over_screen(username, scene, event):
     game_over_font = font.SysFont("Comic Sans MS", 50)
     game_over_text = game_over_font.render("Game Over :( Press Enter to restart", True, (255, 255, 255))
-    while True:
+    active=True
+    while active:
         for events in event.get():
             if events.type == QUIT:
-                quit()
-                exit()
+                active = False
             if events.type == KEYDOWN:
                 if events.key == K_RETURN:
                     game_loop(username)
@@ -190,6 +190,7 @@ def game_loop(username):
                     writer.writerow([username, game.score])
                     print(f"Score of {game.score} by {username} has been saved.")
                 game_over_screen(username, scene, event)
+                is_active = False
 
         if game.level == 9 and game_over != 2:  # If the player has completed all the levels...
             print("A.")
@@ -205,7 +206,6 @@ def game_loop(username):
             if thing.type == QUIT:
                 # If quitting event detected, closes the windows
                 is_active = False
-                quit()
             if thing.type == KEYDOWN and thing.key == K_SPACE and game.player.hp > 0:
                 # If the space key is pressed and the player is alive, spawns projectile
                 game.spawn(game.player.rect.x + 60, game.player.rect.y + 36, 1, "PlayerProjectile")
@@ -234,6 +234,7 @@ def game_loop(username):
                 new_width = thing.w
                 new_height = int(new_width / ratio)
                 screen = display.set_mode((new_width, new_height), RESIZABLE)
+    quit()
 
 if __name__ == "__main__":
     game_loop("player")
