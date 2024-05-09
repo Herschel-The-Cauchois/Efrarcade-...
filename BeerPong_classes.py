@@ -59,7 +59,7 @@ class Vector(sprite.Sprite):
                 self.rect.midleft = center
             elif 4 < angle <= 65:
                 print(int(sin(radians(angle))*75))
-                self.rect.bottomleft = (center[0], center[1]+int(sin(radians(angle))*75))
+                self.rect.bottomleft = (center[0], center[1]+20)
             elif 75 <= angle <= 90:
                 self.rect.midbottom = center
             return True
