@@ -130,7 +130,7 @@ def main_menu():
 # Function to display game menu
 def game_menu(username):
     # Here you can list your games
-    games = ["Pong Beer", "Space Invader"]  # Adding "Space Invader" to the list
+    games = ["Beer Pong", "Space Invader"]  # Adding "Space Invader" to the list
     game_selected = 0
     while True:
         for event in pygame.event.get():

@@ -176,8 +176,6 @@ def game_loop(username):
                     writer = csv.writer(file)
                     writer.writerow([username, game.score])
 
-
-
         if game.level == 9 and game_over != 2:  # If the player has completed all the levels...
             print("A.")
             for enemy in game.enemies.sprites():
@@ -221,8 +219,6 @@ def game_loop(username):
                 new_width = thing.w
                 new_height = int(new_width / ratio)
                 screen = display.set_mode((new_width, new_height), RESIZABLE)
-
-
 
 if __name__ == "__main__":
     game_loop("player")
