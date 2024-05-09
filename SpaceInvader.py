@@ -40,7 +40,7 @@ screen_height = 500
 game_width = 1000
 game_height = 500  # Dimensions of the game window
 ratio = game_width / game_height
-game = Game()  # Initializes the game class
+  # Initializes the game class
 display.set_caption("Efrarcade - Space Invader")  # Titles the pygame window to Efrarcade
 
 clock = time.Clock()
@@ -65,7 +65,7 @@ def level_bar(player_xp):
     # Return the level bar surface
     return level_surface
 
-def info_bar():
+def info_bar(game):
     info_font = font.SysFont("Comic Sans MS", 30)
     """Right display to show the player's stats."""
     #INIT OF THE INFO BAR
@@ -115,8 +115,23 @@ def paint_stars(s):
     for star in star_positions:
         draw.circle(s, (255, 255, 255), (star[0], star[1]), 1)  # Represents them as a circle.
 
+def game_over_screen(username, scene, event):
+    game_over_font = font.SysFont("Comic Sans MS", 50)
+    game_over_text = game_over_font.render("Game Over :( Press Enter to restart", True, (255, 255, 255))
+    while True:
+        for events in event.get():
+            if events.type == QUIT:
+                quit()
+                exit()
+            if events.type == KEYDOWN:
+                if events.key == K_RETURN:
+                    game_loop(username)
+        scene.blit(game_over_text, (screen_width/2 - game_over_text.get_width()/2, screen_height/2 - game_over_text.get_height()/2))
+        display.flip()
+
 
 def game_loop(username):
+    game = Game()
     display.set_caption("Efrarcade - Space Invader")
     scene = display.set_mode((screen_width, screen_height), RESIZABLE)
     background = Surface(scene.get_size())  # Creates a surface for the background of the game
@@ -127,7 +142,6 @@ def game_loop(username):
     game_over = 0
     is_active = True  # Elementary boolean that stays True until QUIT event is triggered.
     info_font = font.SysFont("Comic Sans MS", 30)
-    game_over_text = info_font.render("Game Over :(", False, (255, 255, 255))
     while is_active:
         scene.blit(background, (0, 0))  # Draws background.
         draw.rect(scene, (0, 0, 0), (0, 0, 1000, 100))  # Trying to draw a slot for the game stats...
@@ -147,7 +161,7 @@ def game_loop(username):
             print("Player touched enemy, x: {0}, y: {1},  {2}, HP : {3}".format(game.player.rect.x, game.player.rect.y, game.bullets, game.player.hp))
             game.player.hp -= 1
         clock.tick(60)
-        scene.blit(info_bar(), (game_width, 0))
+        scene.blit(info_bar(game), (game_width, 0))
         display.flip()  # Sets the background and refreshes the window
 
         if sprite.spritecollideany(game.player, game.bullets):  # Detects is there is collision with smth
@@ -161,7 +175,6 @@ def game_loop(username):
                     bullets[bullet].kill()  # Deletes bullets, since it has hit its target.
 
         if game.player.hp < 1:  # If the player dies...
-            scene.blit(game_over_text, (500, 250))
             for enemy in game.enemies.sprites():
                 enemy.kill()  # Kills all enemies.
             for bullet in game.bullets.sprites():
@@ -175,6 +188,7 @@ def game_loop(username):
                 with open('score.csv', 'a') as file:
                     writer = csv.writer(file)
                     writer.writerow([username, game.score])
+                game_over_screen(username, scene, event)
 
 
 

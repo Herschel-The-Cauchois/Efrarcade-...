@@ -10,7 +10,7 @@ class Player(sprite.Sprite):
         self.image = transform.scale(self.image, (80, 80))
         self.rect = self.image.get_rect()  # Defines a collision box for the player and its coordinates set.
         self.rect = Rect.inflate(self.rect, -30, -30)
-        self.hp = 100
+        self.hp = 10
         self.rect.x = 0
         self.rect.y = (500 - 100)//2
         self.damage = 1
