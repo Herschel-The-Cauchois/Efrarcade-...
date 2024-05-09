@@ -3,10 +3,11 @@ import random
 #csv file
 import csv
 
+
 # score importation from the csv
 def import_score():
-    score=[]
-    final=[]
+    score = []
+    final = []
     with open('score.csv', 'r') as file:
         reader = csv.reader(file)
         next(reader)
@@ -65,18 +66,17 @@ def level_bar(player_xp):
     # Return the level bar surface
     return level_surface
 
+
 def info_bar(game):
     info_font = font.SysFont("Comic Sans MS", 30)
     """Right display to show the player's stats."""
-    #INIT OF THE INFO BAR
+    # INIT OF THE INFO BAR
     info_surface = Surface((200, game_height))  # Create a surface for the info bar
     info_surface.fill((0, 0, 0))  # Fill the surface with black color
     # Draw a white line to separate the game and the info bar    
     # DISPLAYS
     hp_text = info_font.render("HP:", False, (255, 255, 255))
-    #score_text = game_over_font.render("Score: {}".format(game.player.score), False, (255, 255, 255))
     info_surface.blit(hp_text, (75, 10))
-    #level_surface = level_bar(game.player.level, game.player.xp)
     level_surface = level_bar(game.player.hp)
     info_surface.blit(level_surface, (50, 35))  # Adjust the position as needed
     info_surface.blit(info_font.render(f"Level: {game.level}/8", False, (255, 255, 255)), (50, 80))
@@ -86,12 +86,13 @@ def info_bar(game):
     draw.line(info_surface, (255, 255, 255), (0, game_height/2-70), (200, game_height/2-70), 2)
 
     #SCORES
+
     minus=0
     scores=import_score()
-    for i in scores: #so that we can later just show top 10, for now there is not enought data
-        score_text = info_font.render(i, False, (255, 255, 255))
+    for i in range(10) #so that we can later just show top 10, for now there is not enought data
+        score_text = info_font.render(score[i], (255, 255, 255))
         info_surface.blit(score_text, (10, game_height/2-50+minus))
-        minus+=30
+        minus += 30
 
     # Blit the info bar onto the scene
     return info_surface
@@ -236,3 +237,4 @@ def game_loop(username):
 
 if __name__ == "__main__":
     game_loop("player")
+
