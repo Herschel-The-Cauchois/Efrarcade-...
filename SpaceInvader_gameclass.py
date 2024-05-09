@@ -51,14 +51,6 @@ class Game:
         elif type == "Boss":
             a = Boss()
             self.boss.add(a)
-        elif type == "GravMiss":
-            a = GravitationalMissiles()
-            a.rect.x = x  # Special case for enemy bullets, since they're in a specific group
-            a.rect.y = y
-            a.velocity = velocity
-            a.damage = damage
-            self.bullets.add(a)  # Adds it to the bullet group for specific management
-            return
         else:
             # In case of a wrong type of entity entered, returns an input.
             print("Incorrect type input for spawn method : "+type)

@@ -41,19 +41,13 @@ screen_height = 500
 game_width = 1000
 game_height = 500  # Dimensions of the game window
 ratio = game_width / game_height
-game = Game()  # Initializes the game class
-display.set_caption("Efrarcade")  # Titles the pygame window to Efrarcade
-scene = display.set_mode((screen_width, screen_height), RESIZABLE)
-background = Surface(scene.get_size())  # Creates a surface for the background of the game
+  # Initializes the game class
+display.set_caption("Efrarcade - Space Invader")  # Titles the pygame window to Efrarcade
+
 clock = time.Clock()
 star_positions = []  # Lists that holds the position of each respective star.
 
-secret_code = [K_UP, K_UP, K_DOWN, K_DOWN, K_LEFT, K_RIGHT, K_LEFT, K_RIGHT, K_b, K_a]
-code_enter = []
-code_index = 0
-activated = 0
-info_font = font.SysFont("Comic Sans MS", 30)
-game_over_text = info_font.render("Game Over :(", False, (255, 255, 255))
+
 
 
 def level_bar(player_xp):
@@ -61,14 +55,20 @@ def level_bar(player_xp):
     # Create a surface for the level bar
     level_surface = Surface((100, 25))
     # Fill the rectangle with the player's level progression
-    draw.rect(level_surface, (0, 255, 0), (0, 0, (player_xp/100)*100, 25))
+    if player_xp < 50 and player_xp > 10:
+        draw.rect(level_surface, (255, 255, 0), (0, 0, (player_xp/100)*100, 25))
+    elif player_xp < 10:
+        draw.rect(level_surface, (255, 0, 0), (0, 0, (player_xp/100)*100, 25))
+    else:
+        draw.rect(level_surface, (0, 255, 0), (0, 0, (player_xp/100)*100, 25))
     # Draw the border rectangle
     draw.rect(level_surface, (255, 255, 255), (0, 0, 100, 25), 2)
     # Return the level bar surface
     return level_surface
 
 
-def info_bar():
+def info_bar(game):
+    info_font = font.SysFont("Comic Sans MS", 30)
     """Right display to show the player's stats."""
     # INIT OF THE INFO BAR
     info_surface = Surface((200, game_height))  # Create a surface for the info bar
@@ -79,20 +79,23 @@ def info_bar():
     info_surface.blit(hp_text, (75, 10))
     level_surface = level_bar(game.player.hp)
     info_surface.blit(level_surface, (50, 35))  # Adjust the position as needed
-    info_surface.blit(info_font.render("Level: 1/8", False, (255, 255, 255)), (50, 80))
+    info_surface.blit(info_font.render(f"Level: {game.level}/8", False, (255, 255, 255)), (50, 80))
+    info_surface.blit(info_font.render(f"Score: {game.score}", False, (255, 255, 255)), (50, 120))
     draw.line(info_surface, (255, 255, 255), (0, 0), (0, game_height), 2)
     draw.line(info_surface, (255, 255, 255), (0, 0), (200, 0), 2)
     draw.line(info_surface, (255, 255, 255), (0, game_height/2-70), (200, game_height/2-70), 2)
 
     #SCORES
-    minus = 0
-    for i in import_score():
-        score_text = info_font.render(i, False, (255, 255, 255))
+
+    minus=0
+    scores=import_score()
+    for i in range(10) #so that we can later just show top 10, for now there is not enought data
+        score_text = info_font.render(score[i], (255, 255, 255))
         info_surface.blit(score_text, (10, game_height/2-50+minus))
         minus += 30
 
     # Blit the info bar onto the scene
-    scene.blit(info_surface, (game_width, 0))
+    return info_surface
 
 
 def generate_stars():
@@ -113,14 +116,33 @@ def paint_stars(s):
     for star in star_positions:
         draw.circle(s, (255, 255, 255), (star[0], star[1]), 1)  # Represents them as a circle.
 
+def game_over_screen(username, scene, event):
+    game_over_font = font.SysFont("Comic Sans MS", 50)
+    game_over_text = game_over_font.render("Game Over :( Press Enter to restart", True, (255, 255, 255))
+    while True:
+        for events in event.get():
+            if events.type == QUIT:
+                quit()
+                exit()
+            if events.type == KEYDOWN:
+                if events.key == K_RETURN:
+                    game_loop(username)
+        scene.blit(game_over_text, (screen_width/2 - game_over_text.get_width()/2, screen_height/2 - game_over_text.get_height()/2))
+        display.flip()
 
-def game_loop():
-    global code_index
-    global code_enter
-    global secret_code
-    global activated
+
+def game_loop(username):
+    game = Game()
+    display.set_caption("Efrarcade - Space Invader")
+    scene = display.set_mode((screen_width, screen_height), RESIZABLE)
+    background = Surface(scene.get_size())  # Creates a surface for the background of the game
+    secret_code = [K_UP, K_UP, K_DOWN, K_DOWN, K_LEFT, K_RIGHT, K_LEFT, K_RIGHT, K_b, K_a]
+    code_enter = []
+    code_index = 0
+    activated = 0
     game_over = 0
     is_active = True  # Elementary boolean that stays True until QUIT event is triggered.
+    info_font = font.SysFont("Comic Sans MS", 30)
     while is_active:
         scene.blit(background, (0, 0))  # Draws background.
         draw.rect(scene, (0, 0, 0), (0, 0, 1000, 100))  # Trying to draw a slot for the game stats...
@@ -140,7 +162,7 @@ def game_loop():
             print("Player touched enemy, x: {0}, y: {1},  {2}, HP : {3}".format(game.player.rect.x, game.player.rect.y, game.bullets, game.player.hp))
             game.player.hp -= 1
         clock.tick(60)
-        info_bar()
+        scene.blit(info_bar(game), (game_width, 0))
         display.flip()  # Sets the background and refreshes the window
 
         if sprite.spritecollideany(game.player, game.bullets):  # Detects is there is collision with smth
@@ -154,7 +176,6 @@ def game_loop():
                     bullets[bullet].kill()  # Deletes bullets, since it has hit its target.
 
         if game.player.hp < 1:  # If the player dies...
-            scene.blit(game_over_text, (500, 250))
             for enemy in game.enemies.sprites():
                 enemy.kill()  # Kills all enemies.
             for bullet in game.bullets.sprites():
@@ -164,6 +185,11 @@ def game_loop():
                 mixer.Sound("assets/game_over.mp3").play()
                 game.score += game.level*10  # Level Completion bonus at game over.
                 game_over = 1
+                # show a game over screen
+                with open('score.csv', 'a') as file:
+                    writer = csv.writer(file)
+                    writer.writerow([username, game.score])
+                game_over_screen(username, scene, event)
 
         if game.level == 9 and game_over != 2:  # If the player has completed all the levels...
             print("A.")
@@ -204,5 +230,11 @@ def game_loop():
                 else:
                     code_enter = []
                     code_index = 0
+            if thing.type == VIDEORESIZE:  # WIP
+                new_width = thing.w
+                new_height = int(new_width / ratio)
+                screen = display.set_mode((new_width, new_height), RESIZABLE)
 
-game_loop()
+if __name__ == "__main__":
+    game_loop("player")
+

@@ -1,5 +1,7 @@
 import pygame
 import sys
+#from menu_spaceinvader import main_invader
+from SpaceInvader import game_loop
 
 # Initialize Pygame
 pygame.init()
@@ -11,6 +13,11 @@ screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE
 pygame.display.set_caption("Game Menu")
 
 # Load background image
+window_size = screen.get_size()  # Replace 'surface' with your pygame.Surface object for the window
+
+# Load and scale the background image
+background_image = pygame.image.load("assets/arcade.jpg").convert()
+background_image = pygame.transform.scale(background_image, window_size)
 background_image = pygame.image.load("assets/arcade.jpg").convert()
 
 # Define colors
@@ -123,7 +130,7 @@ def main_menu():
 # Function to display game menu
 def game_menu(username):
     # Here you can list your games
-    games = ["Pong Beer", "Space Invader"]  # Adding "Space Invader" to the list
+    games = ["Beer Pong", "Space Invader"]  # Adding "Space Invader" to the list
     game_selected = 0
     while True:
         for event in pygame.event.get():
@@ -154,7 +161,7 @@ def game_menu(username):
                 draw_button(game, font, WHITE, GRAY, screen, 300, 200 + i * 50, 200, 40)
         pygame.display.update()
 
-from menu_spaceinvader import main_invader
+
 
 
 # Function to display game options menu
@@ -171,7 +178,7 @@ def game_options_menu(game_selected, username):
                 elif event.key == pygame.K_RETURN:
                     if options[option_selected] == "Play":
                         if game_selected == "Space Invader":
-                            main_invader()
+                            game_loop(username)
                     elif options[option_selected] == "About":
                         print("About", game_selected)
                     elif options[option_selected] == "Back":
