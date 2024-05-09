@@ -89,8 +89,8 @@ def info_bar(game):
 
     minus=0
     scores=import_score()
-    for i in range(10) #so that we can later just show top 10, for now there is not enought data
-        score_text = info_font.render(score[i], (255, 255, 255))
+    for i in range(10) : #so that we can later just show top 10, for now there is not enought data
+        score_text = info_font.render(scores[i],False, (255, 255, 255))
         info_surface.blit(score_text, (10, game_height/2-50+minus))
         minus += 30
 
@@ -185,10 +185,10 @@ def game_loop(username):
                 mixer.Sound("assets/game_over.mp3").play()
                 game.score += game.level*10  # Level Completion bonus at game over.
                 game_over = 1
-                # show a game over screen
                 with open('score.csv', 'a') as file:
                     writer = csv.writer(file)
                     writer.writerow([username, game.score])
+                    print(f"Score of {game.score} by {username} has been saved.")
                 game_over_screen(username, scene, event)
 
         if game.level == 9 and game_over != 2:  # If the player has completed all the levels...
