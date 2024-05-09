@@ -12,15 +12,17 @@ def import_score():
         reader = csv.reader(file)
         next(reader)
         for row in reader:
-            score.append(row)
+            if row:
+                score.append(row)
     counter = 1
     while score:
         max_score = 0
         max_index = 0
         for i in range(len(score)):
-            if int(score[i][1]) > max_score:
-                max_score = int(score[i][1])
-                max_index = i
+            if score[i]:
+                if int(score[i][1]) > max_score:
+                    max_score = int(score[i][1])
+                    max_index = i
         final.append(f"{counter}. {score[max_index][0]} : {score[max_index][1]}")
         score.pop(max_index)
         counter += 1
@@ -222,6 +224,7 @@ def game_loop(username):
                             for bullet in game.bullets.sprites():
                                 bullet.kill()  # Kills all bullets.
                             game.activate = 0
+                            game.enemy_count = 0
                             game.level = 8
                             game.score = 0
                             print("Boss cheatcode activated !")
