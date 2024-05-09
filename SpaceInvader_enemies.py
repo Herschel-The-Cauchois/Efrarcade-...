@@ -36,6 +36,7 @@ class Enemies(sprite.Sprite):
         self.hp = 0
         self.damage = 0
         self.time = 0
+        self.direction = "left"
 
 
 class EnemyShip(Enemies):                                               # Class for the basic enemy ship
@@ -92,13 +93,18 @@ class EnemyShip(Enemies):                                               # Class 
         amount of time."""
         if player.rect.x < self.rect.x - 35:
             # Detects the position of the player relative to the ship's position.
-
+            if self.direction == "left":
+                self.image = transform.flip(self.image, True, False)
+                self.direction = "right"
             flag = 0
         elif player.rect.x < self.rect.x + 35 and player.rect.y < self.rect.y:
             flag = 1
         elif player.rect.x < self.rect.x + 35 and player.rect.y > self.rect.y:
             flag = 3
         else:
+            if self.direction == "right":
+                self.image = transform.flip(self.image, True, False)
+                self.direction = "left"
             flag = 2
         if self.time >= 100/self.cadence:
             self.time = 0
