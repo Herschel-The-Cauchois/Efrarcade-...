@@ -149,6 +149,23 @@ def game_over_screen(username, scene, event):
         scene.blit(game_over_text, (screen_width/2 - game_over_text.get_width()/2, screen_height/2 - game_over_text.get_height()/2))
         display.flip()
 
+def victory_screen(username, scene, event):
+    victory_font = font.SysFont("Comic Sans MS", 50)
+    victory_text = victory_font.render("Congratulations ! You have completed the game !", True, (255, 255, 255))
+    active = True
+
+    while active:
+        for events in event.get():
+            if events.type == QUIT:
+                active = False
+
+            if events.type == KEYDOWN:
+                if events.key == K_RETURN:
+                    game_loop(username)
+
+        scene.blit(victory_text, (screen_width/2 - victory_text.get_width()/2, screen_height/2 - victory_text.get_height()/2))
+        display.flip()
+
 
 def game_loop(username):
     game = Game()
@@ -228,6 +245,13 @@ def game_loop(username):
             game.player.kill()                                                                          # Kills the player.
             mixer.Sound("assets/level_up.mp3").play()
             game_over = 2
+            with open('score.csv', 'a') as file:
+                writer = csv.writer(file)
+                writer.writerow([username, game.score])
+                print(f"Score of {game.score} by {username} has been saved.")
+            victory_screen(username, scene, event)
+            is_active = False
+            
 
         for thing in event.get():
             if thing.type == QUIT:                                                                      # If quitting event detected, closes the windows
