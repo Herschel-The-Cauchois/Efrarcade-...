@@ -14,11 +14,9 @@ def import_score():                                                             
         next(reader)
 
         for row in reader:
-            if row:
+            if row and int(row[1])>25:
                 score.append(row)
-
     counter = 1
-
     while score:
         max_score = 0
         max_index = 0
@@ -166,6 +164,11 @@ def victory_screen(username, scene, event):
         scene.blit(victory_text, (screen_width/2 - victory_text.get_width()/2, screen_height/2 - victory_text.get_height()/2))
         display.flip()
 
+def save_score(username, score):
+    with open('score.csv', 'a') as file:
+        writer = csv.writer(file)
+        writer.writerow([username, score])
+        print(f"Score of {score} by {username} has been saved.")
 
 def game_loop(username):
     game = Game()
@@ -226,10 +229,7 @@ def game_loop(username):
                 mixer.Sound("assets/game_over.mp3").play()
                 game.score += game.level*10                                                            # Level Completion bonus at game over.
                 game_over = 1
-                with open('score.csv', 'a') as file:
-                    writer = csv.writer(file)
-                    writer.writerow([username, game.score])
-                    print(f"Score of {game.score} by {username} has been saved.")
+                save_score(username, game.score)
 
                 game_over_screen(username, scene, event)
                 is_active = False
@@ -245,17 +245,16 @@ def game_loop(username):
             game.player.kill()                                                                          # Kills the player.
             mixer.Sound("assets/level_up.mp3").play()
             game_over = 2
-            with open('score.csv', 'a') as file:
-                writer = csv.writer(file)
-                writer.writerow([username, game.score])
-                print(f"Score of {game.score} by {username} has been saved.")
+            save_score(username, game.score)
             victory_screen(username, scene, event)
             is_active = False
             
 
         for thing in event.get():
-            if thing.type == QUIT:                                                                      # If quitting event detected, closes the windows
+            if thing.type == QUIT:
+                save_score(username,game.score)                                                                      # If quitting event detected, closes the windows
                 is_active = False
+
 
             if thing.type == KEYDOWN and thing.key == K_SPACE and game.player.hp > 0:                   # If the space key is pressed and the player is alive, spawns projectile
                 game.spawn(game.player.rect.x + 60, game.player.rect.y + 36, 1, "PlayerProjectile")
