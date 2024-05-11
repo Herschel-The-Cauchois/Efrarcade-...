@@ -40,19 +40,25 @@ This is an example of how you may give instructions on setting up your project l
 To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
-1.  - If you don't have Python or Pygame installed, you can simply double click the .exe file to play the game. 
-    - If you have the correct version of Python and Pygame installed, you can run the program in the command prompt / terminal.
+Python 3.0 or greater, and pip :
+```sh
+python -m pip install -r requirement.txt
+```
 
 ### Installation
 
 
-2. Clone the repo
+1. Clone the repo
    ```sh
    git clone https://github.com/Herschel-The-Cauchois/Efrarcade-TheHowls.git
    ```
-3. Install NPM packages
+2. Go in the folder
    ```sh
-   npm install
+   cd Efrarcade-TheHowls
+   ```
+4. Start the file menu_jeux.py
+   ```sh
+   python menu_jeux.py
    ```
 
 ### How to play
