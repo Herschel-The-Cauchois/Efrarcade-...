@@ -38,7 +38,6 @@ class Ball(sprite.Sprite):
         self.image = image.load("./assets/The BallTM.png")
         self.image = transform.scale(self.image, (25, 25))  # Rescales the sprite.
         self.rect = self.image.get_rect()  # Creates hit box
-        # self.rect = Rect.inflate(self.rect, -15, -15) To see if we need rect redimensioning
         self.rect.center = player_glass_coord  # Centers it around the top of the player's glass.
         self.trajectory = []
 
@@ -61,7 +60,7 @@ class Ball(sprite.Sprite):
         self.trajectory = trajectory_list  # Places the generated trajectory inside the ball's attribute.
         parabola_momentum = trajectory_list[0]
         for i in range(0, len(self.trajectory)):
-            # Looks for the extremum of the parabola by looking for the point with the minimal height. This is because
+            # Looks for the extreme of the parabola by looking for the point with the minimal height. This is because
             # Pygame's y-axis is reversed !
             if self.trajectory[i][1] < parabola_momentum[1]:
                 parabola_momentum = self.trajectory[i]
@@ -70,7 +69,7 @@ class Ball(sprite.Sprite):
 
     def launch(self):
         """Manages to update point by point the placement of the ball throughout its trajectory in the launch phase. It
-        places the ball coordinate pair by coordinate pair following the list of lists in the self.trajectory attribute,
+        places the ball coordinate pair by coordinate pair following the list of lists in the self.Trajectory attribute,
         deleting the couple of coordinates already went through from the trajectory list after."""
         if self.trajectory:
             self.rect.x = self.trajectory[0][0]
@@ -83,11 +82,13 @@ class Ball(sprite.Sprite):
 
 class Vector(sprite.Sprite):
     def __init__(self, ball_topright: tuple):
+        """Initializes the vector's sprite and its default values."""
         super().__init__()
         self.image = image.load("./assets/vecteur test.png")
         self.orig_image = self.image  # Keeps a copy of the original image to avoid loading it at each transformation.
         self.image = transform.scale(self.image, (25, 25))
-        self.rect = self.image.get_rect(center=ball_topright)  # Puts the trajectory arrow near and above the ball for schematisation.
+        self.rect = self.image.get_rect(center=ball_topright)  # Puts the trajectory arrow near and above the ball
+        # to visualise.
         self.pos = Vector2(ball_topright)  # Data for rotation management.
         self.offset = Vector2(10, -10)
         self.angle = 0  # Holds the essential data that will be used for the trajectory calculation.
@@ -95,6 +96,8 @@ class Vector(sprite.Sprite):
         self.length = 1
 
     def graphical_rotation(self, angle: int, acceleration: int, ball):
+        """When called, realizes the scaling and rotation of the arrow vector sprite following an angle and acceleration
+         given by user manipulation."""
         if 0 <= angle < 91 and 1 <= acceleration <= 30:
             self.angle = angle
             self.length = int(acceleration/3)
@@ -114,6 +117,7 @@ class Vector(sprite.Sprite):
 
 class Game:
     def __init__(self):
+        """Initializes the game globally, the objects and sprites inside it for better global management."""
         self.score = 0
         self.game_sprites = sprite.Group()
         self.player_glass = PlayerGlass()  # Instantiates the glass that will represent the player's.

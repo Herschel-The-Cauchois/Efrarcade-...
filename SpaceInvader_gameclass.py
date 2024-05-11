@@ -1,5 +1,3 @@
-from pygame import *
-from SpaceInvader_player import *
 from SpaceInvader_enemies import *
 
 
