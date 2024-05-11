@@ -13,12 +13,12 @@ screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE
 pygame.display.set_caption("Game Menu")
 
 # Load background image
-window_size = screen.get_size()  # Replace 'surface' with your pygame.Surface object for the window
+window_size = screen.get_size()                                                             # Replace 'surface' with your pygame.Surface object for the window
 
 # Load and scale the background image
-background_image = pygame.image.load("assets/arcade.jpg").convert()
-background_image = pygame.transform.scale(background_image, window_size)
-background_image = pygame.image.load("assets/arcade.jpg").convert()
+background_image = pygame.image.load("assets/arcade.jpg").convert()                         # Load the image
+background_image = pygame.transform.scale(background_image, window_size)                    # Resize the image to fit the window
+background_image = pygame.image.load("assets/arcade.jpg").convert()                         # Load the image
 
 # Define colors
 WHITE = (255, 255, 255)
@@ -53,16 +53,19 @@ def main_menu():
     cursor_visible = True
     cursor_timer = 0
 
-    while input_active:
+    while input_active:                                                                         # While the input is active, do :
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT:                                                       # If the event is the quit event, do :                     
                 pygame.quit()
                 sys.exit()
-            if len(username) < 20 and event.type == pygame.KEYDOWN:
+
+            if len(username) < 20 and event.type == pygame.KEYDOWN:                                                    # If the event is a key press and the username is less than 20 char (check issue #23), do :
                 if event.key == pygame.K_RETURN:
-                    input_active = False
+                    input_active = False                                                        # If the key is the Enter key, set the input to inactive
+
                 elif event.key == pygame.K_BACKSPACE:
                     username = username[:-1]
+
                 else:
                     username += event.unicode
 
@@ -70,8 +73,8 @@ def main_menu():
 
         # Toggle cursor visibility
         cursor_timer += 1
-        if cursor_timer >= 5:  # Change blinking speed here
-            cursor_visible = not cursor_visible
+        if cursor_timer >= 5:                                                                   # Change blinking speed here
+            cursor_visible = not cursor_visible                                                 # Toggle cursor visibility
             cursor_timer = 0
 
         # Update input rectangle width based on username length
@@ -107,24 +110,28 @@ def main_menu():
 
 
 # Function to display game menu
-def game_menu(username):
-    # Here you can list your games
-    games = ["Beer Pong", "Space Invader"]  # Adding "Space Invader" to the list
+def game_menu(username):                                                                        # Here you can list your games
+    games = ["Beer Pong", "Space Invader"]                                                      # Adding "Space Invader" to the list
     game_selected = 0
     while True:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
                     game_selected = (game_selected - 1) % len(games)
+               
                 elif event.key == pygame.K_DOWN:
                     game_selected = (game_selected + 1) % len(games)
+                
                 elif event.key == pygame.K_RETURN:
                     return games[game_selected]
+                
                 elif event.key == pygame.K_ESCAPE:
                     return None
+            
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+        
         screen.blit(background_image, (0, 0))
         
         # Draw title
@@ -136,6 +143,7 @@ def game_menu(username):
         for i, game in enumerate(games):
             if i == game_selected:
                 draw_button(game, font, WHITE, LIGHT_GREEN, screen, 300, 200 + i * 50, 200, 40)
+            
             else:
                 draw_button(game, font, WHITE, GRAY, screen, 300, 200 + i * 50, 200, 40)
         pygame.display.update()
@@ -152,22 +160,29 @@ def game_options_menu(game_selected, username):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
                     option_selected = (option_selected - 1) % len(options)
+                
                 elif event.key == pygame.K_DOWN:
                     option_selected = (option_selected + 1) % len(options)
+               
                 elif event.key == pygame.K_RETURN:
                     if options[option_selected] == "Play":
                         if game_selected == "Space Invader":
                             game_loop(username)
+               
                     elif options[option_selected] == "About":
                         print("About", game_selected)
+               
                     elif options[option_selected] == "Back":
                         return
+               
                     elif options[option_selected] == "Exit":
                         pygame.quit()
                         sys.exit()
+           
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+        
         screen.blit(background_image, (0, 0))
         
         # Display selected game in the top left
@@ -179,8 +194,10 @@ def game_options_menu(game_selected, username):
         for i, option in enumerate(options):
             if i == option_selected:
                 draw_button(option, font, WHITE, LIGHT_GREEN, screen, 300, 200 + i * 50, 200, 40)
+            
             else:
                 draw_button(option, font, WHITE, GRAY, screen, 300, 200 + i * 50, 200, 40)
+        
         pygame.display.update()
 
 

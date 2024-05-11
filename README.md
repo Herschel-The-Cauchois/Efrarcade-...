@@ -54,8 +54,9 @@ To get a local copy up and running follow these simple example steps.
    ```sh
    npm install
    ```
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+### How to play
+1. You will arrive on the main menu, click on the games' button to play or the info's button to get more informations about Efr'Arcade
 
 
 
@@ -75,4 +76,4 @@ Project Link: [EFRARCADE](https://github.com/Herschel-The-Cauchois/Efrarcade)
 * Inès VEIGNEAUX
 * Raphaël LESTERLING
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
