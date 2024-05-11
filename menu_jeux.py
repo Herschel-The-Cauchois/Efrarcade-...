@@ -7,7 +7,7 @@ from SpaceInvader import game_loop
 pygame.init()
 
 # Set up the screen
-screen_width = 1000
+screen_width = 1200
 screen_height = 500
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
 pygame.display.set_caption("Game Menu")
@@ -18,7 +18,6 @@ window_size = screen.get_size()                                                 
 # Load and scale the background image
 background_image = pygame.image.load("assets/arcade.jpg").convert()                         # Load the image
 background_image = pygame.transform.scale(background_image, window_size)                    # Resize the image to fit the window
-background_image = pygame.image.load("assets/arcade.jpg").convert()                         # Load the image
 
 # Define colors
 WHITE = (255, 255, 255)
@@ -44,31 +43,6 @@ def draw_button(text, font, color, bg_color, surface, x, y, width, height):
     pygame.draw.rect(surface, color, (x, y, width, height), 2)
     draw_text(text, font, color, surface, x + 10, y + 10)
 
-# Function to get text input
-def get_text_input(prompt):
-    input_text = ""
-    while True:
-        for event in pygame.event.get():                                                        # Get all events in the event queue
-            if event.type == pygame.KEYDOWN:                                                    # Check if a key is pressed
-                if event.key == pygame.K_RETURN:                                                # If the key is the Enter key, do :
-                    return input_text                                                           # Return the input text
-
-                elif event.key == pygame.K_BACKSPACE:                                           # If the key is the Backspace key, do :           
-                    input_text = input_text[:-1]                                                # Remove the last character from the input text
-
-                else:                                                                           # If the key is any other key, do :
-                    input_text += event.unicode                                                 # Add the key to the input text
-
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-
-        screen.blit(background_image, (0, 0))
-        draw_text(prompt, font, WHITE, screen, 20, 20)
-        draw_text(input_text, font, WHITE, screen, 20, 70)
-        pygame.display.update()
-
-
 
 # Main menu function
 def main_menu():
@@ -84,7 +58,7 @@ def main_menu():
                 pygame.quit()
                 sys.exit()
 
-            if event.type == pygame.KEYDOWN:                                                    # If the event is a key press, do :
+            if len(username) < 20 and event.type == pygame.KEYDOWN:                                                    # If the event is a key press and the username is less than 20 char (check issue #23), do :
                 if event.key == pygame.K_RETURN:
                     input_active = False                                                        # If the key is the Enter key, set the input to inactive
 
