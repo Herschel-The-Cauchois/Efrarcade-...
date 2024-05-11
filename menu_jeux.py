@@ -7,7 +7,7 @@ from SpaceInvader import game_loop
 pygame.init()
 
 # Set up the screen
-screen_width = 1000
+screen_width = 1200
 screen_height = 500
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
 pygame.display.set_caption("Game Menu")
