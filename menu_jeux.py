@@ -44,27 +44,6 @@ def draw_button(text, font, color, bg_color, surface, x, y, width, height):
     pygame.draw.rect(surface, color, (x, y, width, height), 2)
     draw_text(text, font, color, surface, x + 10, y + 10)
 
-# Function to get text input
-def get_text_input(prompt):
-    input_text = ""
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    return input_text
-                elif event.key == pygame.K_BACKSPACE:
-                    input_text = input_text[:-1]
-                else:
-                    input_text += event.unicode
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-        screen.blit(background_image, (0, 0))
-        draw_text(prompt, font, WHITE, screen, 20, 20)
-        draw_text(input_text, font, WHITE, screen, 20, 70)
-        pygame.display.update()
-
-
 
 # Main menu function
 def main_menu():
@@ -79,7 +58,7 @@ def main_menu():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.KEYDOWN:
+            if len(username) < 20 and event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     input_active = False
                 elif event.key == pygame.K_BACKSPACE:
