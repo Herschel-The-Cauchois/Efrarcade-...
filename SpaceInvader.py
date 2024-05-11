@@ -150,6 +150,7 @@ def game_over_screen(username, scene, event):
 def victory_screen(username, scene, event):
     victory_font = font.SysFont("Comic Sans MS", 50)
     victory_text = victory_font.render("Congratulations ! You have completed the game !", True, (255, 255, 255))
+    text= victory_font.render("Press Enter to restart", True, (255, 255, 255))
     active = True
 
     while active:
@@ -162,6 +163,7 @@ def victory_screen(username, scene, event):
                     game_loop(username)
 
         scene.blit(victory_text, (screen_width/2 - victory_text.get_width()/2, screen_height/2 - victory_text.get_height()/2))
+        scene.blit(text, (screen_width/2 - text.get_width()/2, screen_height/2 - text.get_height()/2 + 50))
         display.flip()
 
 def save_score(username, score):
