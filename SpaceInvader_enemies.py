@@ -23,7 +23,7 @@ def bezier_curve_calc(controls: list, details: int):
                 Only one remaining : a point belonging to the curve.
                 """
                 if coord != working_list[-1]:                           # Last control point is excluded of course because there is no element after.
-                    working_list[pos] = (1-t)*coord[0]+t*working_list[pos+1][0], (1-t)*coord[1]+t*working_list[pos+1][1]
+                    working_list[pos] = int((1-t)*coord[0]+t*working_list[pos+1][0]), int((1-t)*coord[1]+t*working_list[pos+1][1])
             working_list.pop()
         curve.append(working_list[0])                                   # Appends found point to the curve list.
         t += 1/details                                                  # Increments t by 1/details, the more the incrementation is small -> more points -> more seamless curve.

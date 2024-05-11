@@ -1,6 +1,7 @@
 from pygame import *
 from math import *
 from SpaceInvader_enemies import bezier_curve_calc  # For displaying curve trajectory purposes
+clock = time.Clock()
 
 
 class PlayerGlass(sprite.Sprite):
@@ -40,6 +41,7 @@ class Ball(sprite.Sprite):
         """Precalculates a list of points in the canvas that will correspond to the skeleton of the trajectory
         the ball will physically follow. Takes into account the angle of launch in degrees related to the ground
         and its acceleration."""
+        print((angle, acceleration))
         trajectory_list = []  # Creates an empty list to hold all the mathematical points of the trajectory.
         temp = [self.rect.center[0], self.rect.center[1]]  # This list will hold the successive values of the
         # ball's coordinates after each update following the trajectorial equation.
@@ -52,7 +54,23 @@ class Ball(sprite.Sprite):
             trajectory_list.append([temp[0], temp[1]])  # Appends the newly generated point to the trajectory list.
             t += 0.1
         self.trajectory = trajectory_list  # Places the generated trajectory inside the ball's attribute.
-        return trajectory_list
+        parabola_momentum = trajectory_list[0]
+        for i in range(0, len(self.trajectory)):
+            # Looks for the extremum of the parabola by looking for the point with the minimal height. This is because
+            # Pygame's y-axis is reversed !
+            if self.trajectory[i][1] < parabola_momentum[1]:
+                parabola_momentum = self.trajectory[i]
+        self.trajectory = bezier_curve_calc([self.trajectory[0], parabola_momentum, self.trajectory[len(self.trajectory)-1]], 1000)  # Extrapolates from the math curve to
+        # get a smooth curve movement to display.
+
+    def launch(self):
+        if self.trajectory:
+            self.rect.x = self.trajectory[0][0]
+            self.rect.y = self.trajectory[0][1]
+            self.trajectory.pop(0)
+            return True
+        if not self.trajectory:
+            return False
 
 
 class Vector(sprite.Sprite):
@@ -99,4 +117,5 @@ class Game:
         self.game_sprites.add(self.ball)
         self.game_sprites.add(self.vector)
         self.launch = 0
+        self.forbidden_rects = []
         print(self.game_sprites.sprites())
