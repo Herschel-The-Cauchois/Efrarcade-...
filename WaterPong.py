@@ -1,6 +1,6 @@
 import time
 
-from BeerPong_classes import *  # Imports all the classes designed in the Waterpong files.
+from WaterPong_classes import *  # Imports all the classes designed in the Waterpong files.
 
 
 def bp_game_loop(username: str):
