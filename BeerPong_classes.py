@@ -8,8 +8,8 @@ class PlayerGlass(sprite.Sprite):
         """Initializes the glass as a simple graphic sprite."""
         super().__init__()
         self.image = image.load("./assets/Water glass.png")
-        self.image = transform.scale(self.image, (100, 100))
-        self.rect = self.image.get_rect()  # Creates hit box
+        self.image = transform.scale(self.image, (100, 100))  # Rescales glass image after loading it
+        self.rect = self.image.get_rect()  # Creates general hitbox
         self.rect.x = 0
         self.rect.y = 400
 
@@ -34,6 +34,25 @@ class Ball(sprite.Sprite):
         self.rect = self.image.get_rect()  # Creates hit box
         # self.rect = Rect.inflate(self.rect, -15, -15) To see if we need rect redimensioning
         self.rect.center = player_glass_coord  # Centers it around the top of the player's glass.
+        self.trajectory = []
+
+    def trajectory_calculation(self, angle: int, acceleration: int):
+        """Precalculates a list of points in the canvas that will correspond to the skeleton of the trajectory
+        the ball will physically follow. Takes into account the angle of launch in degrees related to the ground
+        and its acceleration."""
+        trajectory_list = []  # Creates an empty list to hold all the mathematical points of the trajectory.
+        temp = [self.rect.center[0], self.rect.center[1]]  # This list will hold the successive values of the
+        # ball's coordinates after each update following the trajectorial equation.
+        t = 0.1
+        while 0 < temp[0] < 690 and 0 < temp[1] < 500:  # Until one of the points is out of bounds:
+            temp[0] += acceleration*cos(radians(angle))*t  # Adds horizontal displacement to x coordinate.
+            temp[1] -= acceleration*sin(radians(angle))*t-0.5*9.81*t**2  # Adds the vertical one for y.
+            temp[0], temp[1] = int(temp[0]), int(temp[1])  # Turns the values into integers to be comprehensible by
+            # pygame.
+            trajectory_list.append([temp[0], temp[1]])  # Appends the newly generated point to the trajectory list.
+            t += 0.1
+        self.trajectory = trajectory_list  # Places the generated trajectory inside the ball's attribute.
+        return trajectory_list
 
 
 class Vector(sprite.Sprite):
@@ -47,15 +66,17 @@ class Vector(sprite.Sprite):
         self.offset = Vector2(10, -10)
         self.angle = 0  # Holds the essential data that will be used for the trajectory calculation.
         self.acceleration = 1
+        self.length = 1
 
-    def graphical_rotation(self, angle: int, length: int, ball):
-        if 0 <= angle < 91 and 1 <= length <= 10:
+    def graphical_rotation(self, angle: int, acceleration: int, ball):
+        if 0 <= angle < 91 and 1 <= acceleration <= 30:
             self.angle = angle
-            self.acceleration = length  # Modifies the input data with the player's modifications.
+            self.length = int(acceleration/3)
+            self.acceleration = acceleration  # Modifies the input data with the player's modifications.
             # Applies length and angle transformation to the arrow. To preserve its position, the offset vectors once
             # Rotated allows a recalibration of the position due to the rect modifications induced by image rotation.
             self.image = transform.rotozoom(self.orig_image, self.angle, 1)
-            self.image = transform.scale(self.image, (25+length*5, 25+length*5))
+            self.image = transform.scale(self.image, (20 + self.length * 5, 20 + self.length * 5))
             offset_rotation = self.offset.rotate(angle)
             self.rect = self.image.get_rect(center=self.pos+offset_rotation)  # Places the arrow at the desired
             # Corrected position.

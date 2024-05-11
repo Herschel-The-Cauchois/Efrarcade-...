@@ -9,6 +9,7 @@ def bp_game_loop(username: str):
     is_active = True  # Elementary boolean that stays True until QUIT event is triggered.
     game = Game()
     game.vector.graphical_rotation(0, 1, game.ball)  # Does the initial rotation of the arrow-vector representing
+    print(game.ball.trajectory_calculation(61, 16))  # Trajectory calculation test.
     # the trajectory's input.
     while is_active:
         scene.blit(background, (0, 0))  # Draws background.
