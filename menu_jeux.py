@@ -18,7 +18,6 @@ window_size = screen.get_size()                                                 
 # Load and scale the background image
 background_image = pygame.image.load("assets/arcade.jpg").convert()                         # Load the image
 background_image = pygame.transform.scale(background_image, window_size)                    # Resize the image to fit the window
-background_image = pygame.image.load("assets/arcade.jpg").convert()                         # Load the image
 
 # Define colors
 WHITE = (255, 255, 255)
