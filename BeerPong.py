@@ -4,6 +4,7 @@ from BeerPong_classes import *
 
 
 def bp_game_loop(username: str):
+    game_over = 0
     display.set_caption("Efrarcade - Water Pong")
     scene = display.set_mode((700, 500), RESIZABLE)
     background = image.load("./assets/Bar background.jpg")  # Creates a surface for the background of the game
@@ -12,19 +13,34 @@ def bp_game_loop(username: str):
     clock = time.Clock()
     game = Game()
     game.vector.graphical_rotation(0, 1, game.ball)  # Does the initial rotation of the arrow-vector representing
-    print(game.ball.trajectory)  # Trajectory calculation test.
     # the trajectory's input.
     while is_active:
         clock.tick(1000)
         scene.blit(background, (0, 0))  # Draws background.
         game.game_sprites.update()
         game.game_sprites.draw(scene)
+        draw.rect(scene, (0, 255, 0), game.glass_goal.win_rect)  # For testing, draws collision rectangles
+        for rectangle in game.forbidden_rects:
+            draw.rect(scene, (255, 0, 0), rectangle)
         display.flip()  # Draws every graphical element of the game.
+        if game.attempts < 0:
+            print("You lost ! Press Enter to retry")
+            game_over = 1
         if game.launch == 1:
             # This condition verifies that the game is in the ball launching state.
-            if not game.ball.launch():
-                # If it is, triggers the launch method of the ball until it reaches its end point or collides with
-                # Specific rectangles.
+            if game.ball.rect.collidelistall(game.forbidden_rects):
+                # Detects if there is any collision with the border of a glass.
+                game.attempts -= 1
+                print(game.attempts)
+                game.launch = 0
+            elif game.ball.rect.colliderect(game.glass_goal.win_rect):
+                print("Congrats !")
+                game_over = 2
+            elif not game.ball.launch():
+                # If in launch, triggers the launch method of the ball until it reaches its end point or collides with
+                # Specific rectangles. If no contact with the winning collision rectangles, notes this as a loss.
+                game.attempts -= 1
+                print(game.attempts)
                 game.launch = 0
         else:
             # If the launch mode is off, automatically puts back the ball to the top of the glass.
@@ -52,7 +68,7 @@ def bp_game_loop(username: str):
                 if thing.key == K_SPACE and not game.launch:
                     # If the game hasn't launched the ball and space is pressed, launches the ball.
                     game.ball.trajectory_calculation(game.vector.angle, game.vector.acceleration)
-                    # Interessant tuple of values to get into glass (72, 17), (67,16)
+                    # Interesting tuple of values to get in goal glass (72, 17), (67,16), (75,18)
                     game.launch = 1
 
 bp_game_loop("Test")

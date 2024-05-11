@@ -13,6 +13,9 @@ class PlayerGlass(sprite.Sprite):
         self.rect = self.image.get_rect()  # Creates general hitbox
         self.rect.x = 0
         self.rect.y = 400
+        topright_rectangle = self.rect.topright[0], self.rect.topright[1]+10
+        bottom_rectangle_tuple = self.rect.bottomleft[0], self.rect.bottomleft[1]-10
+        self.loss_rects = [Rect(self.rect.topleft, (10, 100)), Rect(topright_rectangle, (10, 100)), Rect(bottom_rectangle_tuple, (100, 10))]
 
 
 class GoalGlass(sprite.Sprite):
@@ -24,6 +27,8 @@ class GoalGlass(sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = 600
         self.rect.y = 400
+        self.win_rect = Rect(self.rect.topleft, (100, 20))
+        self.loss_rects = [Rect(self.rect.topleft, (10, 100)), Rect(self.rect.topright, (10, 100))]
 
 
 class Ball(sprite.Sprite):
@@ -46,7 +51,7 @@ class Ball(sprite.Sprite):
         temp = [self.rect.center[0], self.rect.center[1]]  # This list will hold the successive values of the
         # ball's coordinates after each update following the trajectorial equation.
         t = 0.1
-        while 0 < temp[0] < 690 and 0 < temp[1] < 500:  # Until one of the points is out of bounds:
+        while 0 < temp[0] < 690 and 0 < temp[1] < 500:  # Until one of the points is out of the game's bounds:
             temp[0] += acceleration*cos(radians(angle))*t  # Adds horizontal displacement to x coordinate.
             temp[1] -= acceleration*sin(radians(angle))*t-0.5*9.81*t**2  # Adds the vertical one for y.
             temp[0], temp[1] = int(temp[0]), int(temp[1])  # Turns the values into integers to be comprehensible by
@@ -64,6 +69,9 @@ class Ball(sprite.Sprite):
         # get a smooth curve movement to display.
 
     def launch(self):
+        """Manages to update point by point the placement of the ball throughout its trajectory in the launch phase. It
+        places the ball coordinate pair by coordinate pair following the list of lists in the self.trajectory attribute,
+        deleting the couple of coordinates already went through from the trajectory list after."""
         if self.trajectory:
             self.rect.x = self.trajectory[0][0]
             self.rect.y = self.trajectory[0][1]
@@ -110,12 +118,13 @@ class Game:
         self.game_sprites = sprite.Group()
         self.player_glass = PlayerGlass()  # Instantiates the glass that will represent the player's.
         self.glass_goal = GoalGlass()  # Instantiates the glass surrounded by a few rects
-        self.ball = Ball(self.player_glass.rect.midtop)
-        self.vector = Vector(self.ball.rect.topright)
+        self.ball = Ball(self.player_glass.rect.midtop)  # Instantiates the ball object
+        self.vector = Vector(self.ball.rect.topright)  # Instantiates the vector arrow to visualise the player inputs
         self.game_sprites.add(self.player_glass)  # Adds successfully each sprite to the sprite group for display.
         self.game_sprites.add(self.glass_goal)
         self.game_sprites.add(self.ball)
         self.game_sprites.add(self.vector)
         self.launch = 0
-        self.forbidden_rects = []
+        self.attempts = 10
+        self.forbidden_rects = self.glass_goal.loss_rects + self.player_glass.loss_rects
         print(self.game_sprites.sprites())
