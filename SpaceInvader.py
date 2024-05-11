@@ -14,7 +14,7 @@ def import_score():                                                             
         next(reader)
 
         for row in reader:
-            if row and int(row[1])>25:
+            if row and int(row[1])>10:
                 score.append(row)
     counter = 1
     while score:
