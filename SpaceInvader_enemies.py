@@ -1,4 +1,3 @@
-from pygame import *
 from math import sqrt
 from random import *
 from SpaceInvader_player import *
