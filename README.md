@@ -33,7 +33,7 @@
 
 Space Invaders is a two-dimensional fixed shooter game in which the player controls a ship with lasers by moving it on the screen (mostly across the left side of the screen) and firing at descending aliens. 
 
-Beerpong is a game where the goal is to throw a ball, by finding the perfect trajectory, into a goblet.
+Waterpong is a game where the goal is to throw a ball, by finding the perfect trajectory, into a goblet.
 
 <!-- GETTING STARTED -->
 ## Getting Started
