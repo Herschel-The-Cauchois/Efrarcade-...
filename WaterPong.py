@@ -5,17 +5,18 @@ import csv
 from WaterPong_classes import *  # Imports all the classes designed in the Waterpong files.
 
 
-def import_score():                                                                                     # Function that imports the score from the csv file 
+def import_score():
+    """Functions that imports the score leaderboard from a csv file."""
     score = []
-    final = []
+    final = []  # Initializes working lists.
 
     with open('score_wp.csv', 'r') as file:
         reader = csv.reader(file)
         next(reader)
 
         for row in reader:
-            if row and int(row[1])>10:
-                score.append(row)
+            if row and int(row[1]) > 10:
+                score.append(row)  # Puts every row of the csv file in a list.
     counter = 1
     while score:
         max_score = 0
@@ -23,10 +24,10 @@ def import_score():                                                             
 
         for i in range(len(score)):
             if score[i]:
-                if int(score[i][1]) > max_score:
+                if int(score[i][1]) > max_score:  # Looks for the highest score in the list.
                     max_score = int(score[i][1])
                     max_index = i
-
+        # Puts it at the top of the leaderboard list before removing it and find the 2nd highest, etc. until the 10th
         final.append(f"{counter}. {score[max_index][0]} : {score[max_index][1]}")
         score.pop(max_index)
         counter += 1
@@ -62,7 +63,7 @@ def info_bar(game):
     minus = 0
     scores = import_score()
 
-    for i in range(len(scores)):                                                                                #so that we can later just show top 10, for now there is not enought data
+    for i in range(len(scores)):  # Shows the leading players in the infobar.
         score_text = info_font.render(scores[i], False, (255, 255, 255))
         info_surface.blit(score_text, (10, 500/2-50+minus))
         minus += 30
@@ -167,33 +168,76 @@ def bp_game_loop(username: str):
                 # Detects if there is any collision with the border of a glass.
                 mixer.Sound("assets/ball fell.mp3").play()
                 game.attempts -= 1
+                test = 0
                 print(game.attempts)
                 game.launch = 0
             elif game.ball.rect.colliderect(game.glass_goal1.win_rect) or game.ball.rect.colliderect(game.glass_goal2.win_rect) or game.ball.rect.colliderect(game.glass_goal3.win_rect):
-                # If the player makes the ball successfully land in the glass
-                game.multiply += 1
-                game.score += game.attempts * game.multiply
+                # If the player makes the ball successfully land in one glass
                 if game.ball.rect.colliderect(game.glass_goal1.win_rect):
+                    game.multiply += 1  # Increments the score multiplier
+                    game.score += game.attempts * game.multiply  # Adds to the score the attempts remaining * multiplier
+                    for rectangle in game.glass_goal1.loss_rects:
+                        # Removes all loss collision rectangles from the forbidden rectangles list
+                        finder_index = 0
+                        for i in range(0, len(game.forbidden_rects)):
+                            if game.forbidden_rects[i] == rectangle:
+                                finder_index = i
+                        game.forbidden_rects.pop(finder_index)
                     game.game_sprites.remove(game.glass_goal1)
+                    mixer.Sound("assets/ball placed.mp3").play()
+                    victory_screen(username, scene, event, game.multiply, game.score)
+                    # Removes out of existence the winning rectangle of the glass below
+                    game.glass_goal1.win_rect.center = (1000, 1000)
+                    print("Left victory screen")
+                    game.launch = 0  # Resets the launch state to default, towards parameter customisation state
+                    game.attempts = 10  # Resets the number of attempts
+                    game.ball.rect.center = game.player_glass.rect.midtop  # Replaces the ball at starting point
+                    game_over = 2
                 if game.ball.rect.colliderect(game.glass_goal2.win_rect):
+                    game.multiply += 1  # Increments the score multiplier
+                    game.score += game.attempts * game.multiply  # Adds to the score the attempts remaining * multiplier
+                    for rectangle in game.glass_goal2.loss_rects:  # Redoes all the steps described above.
+                        finder_index = 0
+                        for i in range(0, len(game.forbidden_rects)):
+                            if game.forbidden_rects[i] == rectangle:
+                                finder_index = i
+                        game.forbidden_rects.pop(finder_index)
                     game.game_sprites.remove(game.glass_goal2)
+                    mixer.Sound("assets/ball placed.mp3").play()
+                    victory_screen(username, scene, event, game.multiply, game.score)
+                    game.glass_goal2.win_rect.center = (1000, 1000)
+                    print("Left victory screen")
+                    game.launch = 0
+                    game.attempts = 10
+                    game.ball.rect.center = game.player_glass.rect.midtop
+                    game_over = 2
                 if game.ball.rect.colliderect(game.glass_goal3.win_rect):
+                    game.multiply += 1  # Increments the score multiplier
+                    game.score += game.attempts * game.multiply  # Adds to the score the attempts remaining * multiplier
+                    for rectangle in game.glass_goal3.loss_rects:
+                        finder_index = 0
+                        for i in range(0, len(game.forbidden_rects)):
+                            if game.forbidden_rects[i] == rectangle:
+                                finder_index = i
+                        game.forbidden_rects.pop(finder_index)
                     game.game_sprites.remove(game.glass_goal3)
-                mixer.Sound("assets/ball placed.mp3").play()
+                    mixer.Sound("assets/ball placed.mp3").play()
+                    victory_screen(username, scene, event, game.multiply, game.score)
+                    game.glass_goal3.win_rect.center = (1000, 1000)
+                    print("Left victory screen")
+                    game.launch = 0
+                    game.attempts = 10
+                    game.ball.rect.center = game.player_glass.rect.midtop
+                    game_over = 2
                 if game.glass_goal1 not in game.game_sprites and game.glass_goal2 not in game.game_sprites and game.glass_goal3 not in game.game_sprites:
                     # If all the cups have a ball in it, plays the victory sound.
                     mixer.Sound("assets/water pong won.mp3").play()
-                victory_screen(username, scene, event, game.multiply, game.score)
-                print("Left victory screen")
-                game.launch = 0
-                game.attempts = 10
-                game.ball.rect.center = game.player_glass.rect.midtop
-                game_over = 2
             elif not game.ball.launch():
                 # If in launch, triggers the launch method of the ball until it reaches its end point or collides with
                 # Specific rectangles. If no contact with the winning collision rectangles, notes this as a loss.
                 mixer.Sound("assets/ball fell.mp3").play()
                 game.attempts -= 1
+                test = 0
                 print(game.attempts)
                 game.launch = 0
         else:

@@ -25,6 +25,7 @@ class GoalGlass(sprite.Sprite):
         self.image = image.load("./assets/cup_red.png")
         self.image = transform.scale(self.image, (100, 100))
         self.rect = self.image.get_rect()
+        self.filled = 0  # Boolean that states whether the ball has already filled this cup.
         self.rect.x = x  # Sets up the glass' coordinates as passed in the function parameters.
         self.rect.y = y
         self.win_rect = Rect(self.rect.topleft, (80, 20))  # This is the only spot where the player can land the ball
@@ -121,7 +122,7 @@ class Game:
     def __init__(self):
         """Initializes the game globally, the objects and sprites inside it for better global management."""
         self.score = 0
-        self.multiply=1
+        self.multiply = 1
         self.game_sprites = sprite.Group()
         self.player_glass = PlayerGlass()  # Instantiates the glass that will represent the player's.
         self.glass_goal1 = GoalGlass(500, 400)  # Instantiates the glass surrounded by a few rects
@@ -135,7 +136,7 @@ class Game:
         self.game_sprites.add(self.glass_goal3)
         self.game_sprites.add(self.ball)
         self.game_sprites.add(self.vector)
-        self.launch = 0
-        self.attempts = 10
+        self.launch = 0  # Sets the launch state by default to 0.
+        self.attempts = 10  # Sets the number of attempts by default to 10.
+        # Then creates the list of collision rectangles that will cause a failure.
         self.forbidden_rects = self.glass_goal1.loss_rects + self.glass_goal2.loss_rects + self.glass_goal3.loss_rects + self.player_glass.loss_rects
-        print(self.game_sprites.sprites())
