@@ -13,9 +13,9 @@ class PlayerGlass(sprite.Sprite):
         self.rect = self.image.get_rect()  # Creates general hitbox
         self.rect.x = 0
         self.rect.y = 400
-        topright_rectangle = self.rect.topright[0], self.rect.topright[1]+10
+        topright_rectangle = self.rect.topright[0], self.rect.topright[1]+20
         bottom_rectangle_tuple = self.rect.bottomleft[0], self.rect.bottomleft[1]-10
-        #self.loss_rects = [Rect(self.rect.topleft, (10, 100)), Rect(topright_rectangle, (10, 100)), Rect(bottom_rectangle_tuple, (100, 10))]
+        self.loss_rects = [Rect(self.rect.topleft, (10, 100)), Rect(topright_rectangle, (10, 100)), Rect(bottom_rectangle_tuple, (100, 10))]
 
 
 class GoalGlass(sprite.Sprite):
@@ -25,10 +25,12 @@ class GoalGlass(sprite.Sprite):
         self.image = image.load("./assets/cup_red.png")
         self.image = transform.scale(self.image, (100, 100))
         self.rect = self.image.get_rect()
-        self.rect.x = x
+        self.rect.x = x  # Sets up the glass' coordinates as passed in the function parameters.
         self.rect.y = y
-        self.win_rect = Rect(self.rect.topleft, (100, 20))
-        self.loss_rects = [Rect(self.rect.topleft, (10, 100)), Rect(self.rect.topright, (10, 100))]
+        self.win_rect = Rect(self.rect.topleft, (80, 20))  # This is the only spot where the player can land the ball
+        # To win.
+        self.loss_rects = [Rect(self.rect.topleft, (10, 100)), Rect((self.rect.topright[0]-20, self.rect.topright[1]), (10, 100))]
+        # Defines the hitboxes where if touched, the game will consider it a loss.
 
 
 class Ball(sprite.Sprite):
@@ -52,7 +54,7 @@ class Ball(sprite.Sprite):
         t = 0.1
         while 0 < temp[0] < 690 and 0 < temp[1] < 500:  # Until one of the points is out of the game's bounds:
             temp[0] += acceleration*cos(radians(angle))*t  # Adds horizontal displacement to x coordinate.
-            temp[1] -= acceleration*sin(radians(angle))*t-0.5*15*t**2  # Adds the vertical one for y.
+            temp[1] -= acceleration*sin(radians(angle))*t-0.5*9.81*t**2  # Adds the vertical one for y.
             temp[0], temp[1] = int(temp[0]), int(temp[1])  # Turns the values into integers to be comprehensible by
             # pygame.
             trajectory_list.append([temp[0], temp[1]])  # Appends the newly generated point to the trajectory list.
@@ -72,12 +74,12 @@ class Ball(sprite.Sprite):
         places the ball coordinate pair by coordinate pair following the list of lists in the self.Trajectory attribute,
         deleting the couple of coordinates already went through from the trajectory list after."""
         if self.trajectory:
-            self.rect.x = self.trajectory[0][0]
-            self.rect.y = self.trajectory[0][1]
-            self.trajectory.pop(0)
+            self.rect.x = self.trajectory[0][0]  # Sets the coordinates of the ball as those of the point we want
+            self.rect.y = self.trajectory[0][1]  # To displace it to.
+            self.trajectory.pop(0)  # Removes the point from the lists of points to go through.
             return True
         if not self.trajectory:
-            return False
+            return False  # If the list is empty, return False
 
 
 class Vector(sprite.Sprite):
@@ -135,5 +137,5 @@ class Game:
         self.game_sprites.add(self.vector)
         self.launch = 0
         self.attempts = 10
-        self.forbidden_rects = self.glass_goal1.loss_rects + self.glass_goal2.loss_rects + self.glass_goal3.loss_rects
+        self.forbidden_rects = self.glass_goal1.loss_rects + self.glass_goal2.loss_rects + self.glass_goal3.loss_rects + self.player_glass.loss_rects
         print(self.game_sprites.sprites())

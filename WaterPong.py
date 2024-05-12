@@ -4,6 +4,7 @@ import csv
 
 from WaterPong_classes import *  # Imports all the classes designed in the Waterpong files.
 
+
 def import_score():                                                                                     # Function that imports the score from the csv file 
     score = []
     final = []
@@ -32,13 +33,12 @@ def import_score():                                                             
     return final
 
 
-
 def info_bar(game):
     info_font = pygame.font.Font("./assets/pixel_font.ttf", 20)
     info_surface = Surface((200, 500))
     info_surface.fill((0, 0, 0))
     essays_txt = info_font.render(f"Encore {game.attempts} essais", False, (255, 255, 255))
-    if game.multiply !=1:
+    if game.multiply != 1:
         score_txt = info_font.render(f"Score multiply by {game.multiply}", False, (255, 0, 0))
         info_surface.blit(score_txt, (20, 50))
     info_surface.blit(essays_txt, (20, 10))
@@ -48,14 +48,15 @@ def info_bar(game):
     draw.line(info_surface, (255, 255, 255), (0, 0), (200, 0), 2)
     draw.line(info_surface, (255, 255, 255), (0, 500/2-70), (200, 500/2-70), 2)
 
-    minus=0
-    scores=import_score()
+    minus = 0
+    scores = import_score()
 
-    for i in range(len(scores)) :                                                                                #so that we can later just show top 10, for now there is not enought data
-        score_text = info_font.render(scores[i],False, (255, 255, 255))
+    for i in range(len(scores)):                                                                                #so that we can later just show top 10, for now there is not enought data
+        score_text = info_font.render(scores[i], False, (255, 255, 255))
         info_surface.blit(score_text, (10, 500/2-50+minus))
         minus += 30
     return info_surface
+
 
 def game_over_screen(username, scene, event, score):
     game_over_font = pygame.font.Font("./assets/pixel_font.ttf", 30)
@@ -80,6 +81,7 @@ def game_over_screen(username, scene, event, score):
 
         scene.blit(game_over_text, (800/2 - game_over_text.get_width()/2, 250))
         display.flip()
+
 
 def victory_screen(username, scene, event, cup_num, score):
     victory_font = pygame.font.Font("./assets/pixel_font.ttf", 20)
@@ -117,9 +119,10 @@ def victory_screen(username, scene, event, cup_num, score):
 
 
 def bp_game_loop(username: str):
-    pygame.font.init()
     """The function that contains the main program of the game, that will run continuously until ordered to do
-    otherwise by user action."""
+        otherwise by user action."""
+    pygame.font.init()  # Initializes the parts of pygame that manages the sound and the fonts.
+    mixer.init()
     game_over = 0
     display.set_caption("Efrarcade - Water Pong")
     scene = display.set_mode((800, 500), RESIZABLE)
@@ -131,38 +134,46 @@ def bp_game_loop(username: str):
     game.vector.graphical_rotation(0, 1, game.ball)  # Does the initial rotation of the arrow-vector representing
     # the trajectory's input.
     while is_active:
-        clock.tick(1000)
+        clock.tick(10000)
         scene.blit(background, (0, 0))  # Draws background.
         game.game_sprites.update()
         game.game_sprites.draw(scene)
-        """draw.rect(scene, (0, 255, 0), game.glass_goal.win_rect)  # For testing, draws collision rectangles
+        draw.rect(scene, (0, 255, 0), game.glass_goal1.win_rect)  # For testing, draws collision rectangles
+        draw.rect(scene, (0, 255, 0), game.glass_goal2.win_rect)
+        draw.rect(scene, (0, 255, 0), game.glass_goal3.win_rect)
         for rectangle in game.forbidden_rects:
-            draw.rect(scene, (255, 0, 0), rectangle)"""
+            draw.rect(scene, (255, 0, 0), rectangle)
         scene.blit(info_bar(game), (600, 0))
         display.flip()  # Draws every graphical element of the game.
         if game.attempts < 1:
             # If the player has exhausted its attempts, freezes the game and shows the game over screen.
+            mixer.Sound("assets/water pong game over.mp3").play()
             game_over_screen(username, scene, event, game.score)
             is_active = False
         if game.launch == 1:
             # This condition verifies that the game is in the ball launching state.
             if game.ball.rect.collidelistall(game.forbidden_rects):
                 # Detects if there is any collision with the border of a glass.
+                mixer.Sound("assets/ball fell.mp3").play()
                 game.attempts -= 1
                 print(game.attempts)
                 game.launch = 0
             elif game.ball.rect.colliderect(game.glass_goal1.win_rect) or game.ball.rect.colliderect(game.glass_goal2.win_rect) or game.ball.rect.colliderect(game.glass_goal3.win_rect):
                 # If the player makes the ball successfully land in the glass
                 game.multiply += 1
-                game.score+= game.attempts* game.multiply
+                game.score += game.attempts * game.multiply
                 if game.ball.rect.colliderect(game.glass_goal1.win_rect):
                     game.game_sprites.remove(game.glass_goal1)
                 if game.ball.rect.colliderect(game.glass_goal2.win_rect):
                     game.game_sprites.remove(game.glass_goal2)
                 if game.ball.rect.colliderect(game.glass_goal3.win_rect):
                     game.game_sprites.remove(game.glass_goal3)
+                mixer.Sound("assets/ball placed.mp3").play()
+                if game.glass_goal1 not in game.game_sprites and game.glass_goal2 not in game.game_sprites and game.glass_goal3 not in game.game_sprites:
+                    # If all the cups have a ball in it, plays the victory sound.
+                    mixer.Sound("assets/water pong won.mp3").play()
                 victory_screen(username, scene, event, game.multiply, game.score)
-                print("quited victory screen")
+                print("Left victory screen")
                 game.launch = 0
                 game.attempts = 10
                 game.ball.rect.center = game.player_glass.rect.midtop
@@ -170,6 +181,7 @@ def bp_game_loop(username: str):
             elif not game.ball.launch():
                 # If in launch, triggers the launch method of the ball until it reaches its end point or collides with
                 # Specific rectangles. If no contact with the winning collision rectangles, notes this as a loss.
+                mixer.Sound("assets/ball fell.mp3").play()
                 game.attempts -= 1
                 print(game.attempts)
                 game.launch = 0
