@@ -29,8 +29,8 @@ class Ball(sprite.Sprite):
     def __init__(self, player_glass_coord: tuple):
         super().__init__()
         self.image = image.load("./assets/The BallTM.png")
-        self.image = transform.scale(self.image, (25, 25))
-        self.rect = self.image.get_rect()  # Creates hit box
+        self.image = transform.scale(self.image, (25, 25))  
+        self.rect = self.image.get_rect()  # Creates hit box 
         # self.rect = Rect.inflate(self.rect, -15, -15) To see if we need rect redimensioning
         self.rect.center = player_glass_coord
 

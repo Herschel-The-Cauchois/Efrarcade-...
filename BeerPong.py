@@ -10,18 +10,23 @@ game_width = 1000
 ratio = game_width / game_height
 
 pygame.init()
-def info_bar(scene, player1_score, player2_score):
+def info_bar(scene, player1_score, player2_score, try1_left):
     font = pygame.font.Font(None, 30)
-    text1 = font.render(f"Player 1 - Score: {player1_score}", True, (255, 255, 255))
-    text2 = font.render(f"Player 2 - Score: {player2_score}", True, (255, 255, 255))
-    text1_rect = text1.get_rect()
-    text2_rect = text2.get_rect()
-    text1_rect.left = 10
-    text2_rect.right = scene.get_width() - 10
-    text1_rect.top = 10
-    text2_rect.top = 10
-    scene.blit(text1, text1_rect)
-    scene.blit(text2, text2_rect)
+    player1 = font.render(f"Player 1 - Score: {player1_score}", True, (255, 255, 255))
+    player2 = font.render(f"Player 2 - Score: {player2_score}", True, (255, 255, 255))
+    try1 = font.render(f"{try1_left} try left", True, (255, 255, 255))
+    player1_rect = player1.get_rect()
+    player2_rect = player2.get_rect()
+    try1_rect = try1.get_rect()
+    player1_rect.left = 10
+    player2_rect.right = scene.get_width() - 10
+    try1_rect.left = 10
+    player1_rect.top = 10
+    player2_rect.top = 10
+    try1_rect.top = 30
+    scene.blit(player1, player1_rect)
+    scene.blit(player2, player2_rect)
+    scene.blit(try1, try1_rect)
 
 def bp_game_loop(username: str):
     display.set_caption("Efrarcade - Water Pong")
@@ -32,13 +37,14 @@ def bp_game_loop(username: str):
     game = Game()
     player1_score = 0
     player2_score = 0
+    try1_left = 3
 
     game.vector.graphical_rotation(0, 1, game.ball.rect.center)
     while is_active:
         scene.blit(background, (0, 0))  # Draws background.
         game.game_sprites.update()
         game.game_sprites.draw(scene)
-        info_bar(scene, player1_score, player2_score)  # Call the info_bar function to display scores
+        info_bar(scene, player1_score, player2_score, try1_left)  # Call the info_bar function to display scores
         display.flip()
 
         for thing in event.get():
@@ -58,5 +64,7 @@ def bp_game_loop(username: str):
                 if thing.key == K_DOWN:
                     game.vector.graphical_rotation(game.vector.angle, game.vector.acceleration - 1,
                                                    game.ball.rect.center)
+                if thing.key == K_SPACE:
+                    pass
 
 bp_game_loop("Test")
