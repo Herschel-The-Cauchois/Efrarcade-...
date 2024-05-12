@@ -19,14 +19,14 @@ class PlayerGlass(sprite.Sprite):
 
 
 class GoalGlass(sprite.Sprite):
-    def __init__(self):
+    def __init__(self, x, y):
         """Initializes the goal glasses' sprite."""
         super().__init__()
         self.image = image.load("./assets/cup_red.png")
         self.image = transform.scale(self.image, (100, 100))
         self.rect = self.image.get_rect()
-        self.rect.x = 600
-        self.rect.y = 400
+        self.rect.x = x
+        self.rect.y = y
         self.win_rect = Rect(self.rect.topleft, (100, 20))
         self.loss_rects = [Rect(self.rect.topleft, (10, 100)), Rect(self.rect.topright, (10, 100))]
 
@@ -121,14 +121,18 @@ class Game:
         self.score = 0
         self.game_sprites = sprite.Group()
         self.player_glass = PlayerGlass()  # Instantiates the glass that will represent the player's.
-        self.glass_goal = GoalGlass()  # Instantiates the glass surrounded by a few rects
+        self.glass_goal1 = GoalGlass(500, 400)  # Instantiates the glass surrounded by a few rects
+        self.glass_goal2 = GoalGlass(300, 400)
+        self.glass_goal3 = GoalGlass(200, 400)
         self.ball = Ball(self.player_glass.rect.midtop)  # Instantiates the ball object
         self.vector = Vector(self.ball.rect.topright)  # Instantiates the vector arrow to visualise the player inputs
         self.game_sprites.add(self.player_glass)  # Adds successfully each sprite to the sprite group for display.
-        self.game_sprites.add(self.glass_goal)
+        self.game_sprites.add(self.glass_goal1)
+        self.game_sprites.add(self.glass_goal2)
+        self.game_sprites.add(self.glass_goal3)
         self.game_sprites.add(self.ball)
         self.game_sprites.add(self.vector)
         self.launch = 0
         self.attempts = 10
-        self.forbidden_rects = self.glass_goal.loss_rects #+ self.player_glass.loss_rects
+        self.forbidden_rects = self.glass_goal1.loss_rects + self.glass_goal2.loss_rects + self.glass_goal3.loss_rects
         print(self.game_sprites.sprites())

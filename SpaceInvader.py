@@ -63,7 +63,7 @@ def level_bar(player_xp):
 
 
 def info_bar():
-    info_font = font.SysFont("Comic Sans MS", 30)
+    info_font = font.Font("./assets/pixel_font.ttf", 20)
     """Right display to show the player's stats."""
     # INIT OF THE INFO BAR
     info_surface = Surface((200, game_height))  # Create a surface for the info bar
@@ -121,7 +121,7 @@ def game_loop(username):
     activated = 0
     game_over = 0
     is_active = True  # Elementary boolean that stays True until QUIT event is triggered.
-    info_font = font.SysFont("Comic Sans MS", 30)
+    info_font = font.Font("./assets/pixel_font.ttf", 30)
     game_over_text = info_font.render("Game Over :(", False, (255, 255, 255))
     while is_active:
         scene.blit(background, (0, 0))  # Draws background.
