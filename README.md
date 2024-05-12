@@ -33,6 +33,8 @@
 
 Space Invaders is a two-dimensional fixed shooter game in which the player controls a ship with lasers by moving it on the screen (mostly across the left side of the screen) and firing at descending aliens. 
 
+Beerpong is a game where the goal is to throw a ball, by finding the perfect trajectory, into a goblet.
+
 <!-- GETTING STARTED -->
 ## Getting Started
 
@@ -40,22 +42,31 @@ This is an example of how you may give instructions on setting up your project l
 To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
-1.  - If you don't have Python or Pygame installed, you can simply double click the .exe file to play the game. 
-    - If you have the correct version of Python and Pygame installed, you can run the program in the command prompt / terminal.
+Python 3.0 or greater, and pip :
+```sh
+python -m pip install -r requirement.txt
+```
 
 ### Installation
 
 
-2. Clone the repo
+1. Clone the repo
    ```sh
    git clone https://github.com/Herschel-The-Cauchois/Efrarcade-TheHowls.git
    ```
-3. Install NPM packages
+2. Go in the folder
    ```sh
-   npm install
+   cd Efrarcade-TheHowls
    ```
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+4. Start the file menu_jeux.py
+   ```sh
+   python menu_jeux.py
+   ```
 
+### How to play
+1. You will arrive on the main menu, enter your username then press the enter key.
+2. The games menu will appear, with the arrows, choose the game you want to play(beerpong or space invader) and press the enter key.
+3. You will be able to choose to directly play [play button], to learn more about the game [about button], to go back to the game menu [back button] or to exit the arcade [exit button].
 
 
 
@@ -75,4 +86,4 @@ Project Link: [EFRARCADE](https://github.com/Herschel-The-Cauchois/Efrarcade)
 * Inès VEIGNEAUX
 * Raphaël LESTERLING
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+

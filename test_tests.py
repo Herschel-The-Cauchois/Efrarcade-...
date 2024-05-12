@@ -3,10 +3,9 @@ import sys
 scene=pygame.display.set_mode((1000, 1000))
 def level_bar(player_level, player_xp):
     """Creates a rectangle that will show in a % the player's level progression."""
-    # Fill the rectangle with the player's level progression
-    pygame.draw.rect(scene, (0, 255, 0), (0, 0, (player_xp/100)*100, 25))
-    # Draw the border rectangle
-    pygame.draw.rect(scene, (255, 255, 255), (0, 0, 100, 25), 2)
+    
+    pygame.draw.rect(scene, (0, 255, 0), (0, 0, (player_xp/100)*100, 25))                           # Fill the rectangle with the player's level progression
+    pygame.draw.rect(scene, (255, 255, 255), (0, 0, 100, 25), 2)                                    # Draw the border rectangle
 
 
 def game_loop():
