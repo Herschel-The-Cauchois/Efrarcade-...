@@ -14,8 +14,7 @@ class Game:
         self.score = 0
         self.activate = 0
         self.boss = sprite.Group()
-        print(self.enemies.sprites())                                               # Prints lists of sprite present in the sprite groups
-        print(self.bullets.sprites())
+
 
     def spawn(self, x: int, y: int, velocity: int, type: str, transformation: int = 0, hp: int = -1, damage: int = -1, cadence: int = -1):
         """
@@ -86,7 +85,6 @@ class Game:
                 bullet_spawn.append(self.enemies.sprites()[i].detection(self.player))           # Puts in a list the tuple yielded from each enemy's player detection method
                 if self.enemies.sprites()[i].hp < 1:
                     self.score += self.enemies.sprites()[i].score                               # When an enemy is killed, increments the score according to the points it is supposed to give.
-                    print("Score : {}".format(self.score))
                     self.enemies.sprites()[i].kill()                                            # Kill the sprites of dead enemies.
                     mixer.Sound("assets/enemy_boom.mp3").play()                                 # Plays a sound when an enemy is killed.
                     self.enemy_count += 1                                                       # Adds one to the enemy killed in the wave

@@ -48,7 +48,6 @@ class Ball(sprite.Sprite):
         """Precalculates a list of points in the canvas that will correspond to the skeleton of the trajectory
         the ball will physically follow. Takes into account the angle of launch in degrees related to the ground
         and its acceleration."""
-        print((angle, acceleration))
         trajectory_list = []  # Creates an empty list to hold all the mathematical points of the trajectory.
         temp = [self.rect.center[0], self.rect.center[1]]  # This list will hold the successive values of the
         # ball's coordinates after each update following the trajectorial equation.

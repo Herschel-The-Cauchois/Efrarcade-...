@@ -127,7 +127,6 @@ def victory_screen(username, scene, event, cup_num, score):
 
 
         display.flip()
-    print("quit active")
 
 
 def bp_game_loop(username: str):
@@ -150,11 +149,11 @@ def bp_game_loop(username: str):
         scene.blit(background, (0, 0))  # Draws background.
         game.game_sprites.update()
         game.game_sprites.draw(scene)
-        draw.rect(scene, (0, 255, 0), game.glass_goal1.win_rect)  # For testing, draws collision rectangles
+        """draw.rect(scene, (0, 255, 0), game.glass_goal1.win_rect)  # For testing, draws collision rectangles
         draw.rect(scene, (0, 255, 0), game.glass_goal2.win_rect)
         draw.rect(scene, (0, 255, 0), game.glass_goal3.win_rect)
         for rectangle in game.forbidden_rects:
-            draw.rect(scene, (255, 0, 0), rectangle)
+            draw.rect(scene, (255, 0, 0), rectangle)"""
         scene.blit(info_bar(game), (600, 0))
         display.flip()  # Draws every graphical element of the game.
         if game.attempts < 1:
@@ -169,7 +168,6 @@ def bp_game_loop(username: str):
                 mixer.Sound("assets/ball fell.mp3").play()
                 game.attempts -= 1
                 test = 0
-                print(game.attempts)
                 game.launch = 0
             elif game.ball.rect.colliderect(game.glass_goal1.win_rect) or game.ball.rect.colliderect(game.glass_goal2.win_rect) or game.ball.rect.colliderect(game.glass_goal3.win_rect):
                 # If the player makes the ball successfully land in one glass
@@ -188,7 +186,6 @@ def bp_game_loop(username: str):
                     victory_screen(username, scene, event, game.multiply, game.score)
                     # Removes out of existence the winning rectangle of the glass below
                     game.glass_goal1.win_rect.center = (1000, 1000)
-                    print("Left victory screen")
                     game.launch = 0  # Resets the launch state to default, towards parameter customisation state
                     game.attempts = 10  # Resets the number of attempts
                     game.ball.rect.center = game.player_glass.rect.midtop  # Replaces the ball at starting point
@@ -206,7 +203,6 @@ def bp_game_loop(username: str):
                     mixer.Sound("assets/ball placed.mp3").play()
                     victory_screen(username, scene, event, game.multiply, game.score)
                     game.glass_goal2.win_rect.center = (1000, 1000)
-                    print("Left victory screen")
                     game.launch = 0
                     game.attempts = 10
                     game.ball.rect.center = game.player_glass.rect.midtop
@@ -224,7 +220,6 @@ def bp_game_loop(username: str):
                     mixer.Sound("assets/ball placed.mp3").play()
                     victory_screen(username, scene, event, game.multiply, game.score)
                     game.glass_goal3.win_rect.center = (1000, 1000)
-                    print("Left victory screen")
                     game.launch = 0
                     game.attempts = 10
                     game.ball.rect.center = game.player_glass.rect.midtop
@@ -238,7 +233,6 @@ def bp_game_loop(username: str):
                 mixer.Sound("assets/ball fell.mp3").play()
                 game.attempts -= 1
                 test = 0
-                print(game.attempts)
                 game.launch = 0
         else:
             # If the launch mode is off, automatically puts back the ball to the top of the glass.

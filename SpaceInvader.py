@@ -164,7 +164,6 @@ def save_score(username, score):
     with open('score.csv', 'a') as file:
         writer = csv.writer(file)
         writer.writerow([username, score])
-        print(f"Score of {score} by {username} has been saved.")
 
 def game_loop(username):
     game = Game()
@@ -195,7 +194,6 @@ def game_loop(username):
         paint_stars(scene)
         game.player.move()
         if game.player.is_touching_enemy(game.enemies.sprites()):                                       # Detects if the player touches any enemy.
-            print("Player touched enemy, x: {0}, y: {1},  {2}, HP : {3}".format(game.player.rect.x, game.player.rect.y, game.bullets, game.player.hp))
             game.player.hp -= 1
 
         clock.tick(60)
@@ -208,7 +206,6 @@ def game_loop(username):
             for bullet in bullets_hitting:                                                              # For each of the concerned bullets, does following action :
                 if bullets[bullet] not in game.projectiles:                                             # If the concerned bullet isn't a player projectile
                     game.player.hp -= bullets[bullet].damage                                            # Removes hp from the player and kills the bullet
-                    print(game.player.hp)
                     bullets[bullet].kill()                                                              # Deletes bullets, since it has hit its target.
 
         if game.player.hp < 1:                                                                          # If the player dies, do :
@@ -229,7 +226,6 @@ def game_loop(username):
                 is_active = False
 
         if game.level == 9 and game_over != 2:                                                          # If the player has completed all the levels...
-            print("A.")
             for enemy in game.enemies.sprites():
                 enemy.kill()    
                                                                                         # Kills all enemies.
@@ -271,7 +267,6 @@ def game_loop(username):
                             game.enemy_count = 0
                             game.level = 8
                             game.score = 0
-                            print("Boss cheatcode activated !")
                             mixer.Sound("./assets/konami vine boom.mp3").play()
                             activated = 1
                 else:

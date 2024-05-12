@@ -67,7 +67,6 @@ class Projectile(sprite.Sprite):
         for i in enemies:
             if self.rect.colliderect(i.rect):                                           # Check if enemy has been hit by a projectile.
                 i.hp -= self.damage                                                     # If so, removes hp to the enemy and kills the projectile.
-                print(i.hp)
                 self.kill()
                 return True
         return False
