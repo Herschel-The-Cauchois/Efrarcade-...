@@ -62,7 +62,9 @@ python -m pip install -r requirement.txt
    ```
 
 ### How to play
-1. You will arrive on the main menu, click on the games' button to play or the info's button to get more informations about Efr'Arcade
+1. You will arrive on the main menu, enter your username then press the enter key.
+2. The games menu will appear, with the arrows, choose the game you want to play(beerpong or space invader) and press the enter key.
+3. You will be able to choose to directly play [play button], to learn more about the game [about button], to go back to the game menu [back button] or to exit the arcade [exit button].
 
 
 
