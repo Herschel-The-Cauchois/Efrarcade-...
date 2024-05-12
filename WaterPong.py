@@ -35,6 +35,7 @@ def import_score():                                                             
 
 def info_bar(game):
     info_font = pygame.font.Font("./assets/pixel_font.ttf", 20)
+    htp_font = pygame.font.Font("./assets/pixel_font.ttf", 15)
     info_surface = Surface((200, 500))
     info_surface.fill((0, 0, 0))
     essays_txt = info_font.render(f"{game.attempts} tries left", False, (255, 255, 255))
@@ -48,6 +49,12 @@ def info_bar(game):
     angle_txt = info_font.render(f"Angle: {game.vector.angle}", False, (255, 255, 255))
     info_surface.blit(acceleration_txt, (20, 50))
     info_surface.blit(angle_txt, (20, 70))
+    htp_txt = htp_font.render("Arrows : precise input", False, (255, 255, 255))
+    htp_txt2 = htp_font.render("zqsd : faster input", False, (255, 255, 255))
+    htp_txt3 = htp_font.render("Space : launch the ball", False, (255, 255, 255))
+    info_surface.blit(htp_txt, (15, 110))
+    info_surface.blit(htp_txt2, (15, 130))
+    info_surface.blit(htp_txt3, (15, 150))
     draw.line(info_surface, (255, 255, 255), (0, 0), (0, 500), 2)
     draw.line(info_surface, (255, 255, 255), (0, 0), (200, 0), 2)
     draw.line(info_surface, (255, 255, 255), (0, 500/2-70), (200, 500/2-70), 2)
