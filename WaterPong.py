@@ -238,4 +238,5 @@ def bp_game_loop(username: str):
                     game.launch = 1
     quit()
 
-bp_game_loop("Test")
+if __name__ == "__main__":
+    bp_game_loop("Player")

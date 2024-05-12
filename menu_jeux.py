@@ -2,6 +2,7 @@ import pygame
 import sys
 #from menu_spaceinvader import main_invader
 from SpaceInvader import game_loop
+from WaterPong import bp_game_loop
 
 # Initialize Pygame
 pygame.init()
@@ -16,7 +17,7 @@ pygame.display.set_caption("Game Menu")
 window_size = screen.get_size()                                                             # Replace 'surface' with your pygame.Surface object for the window
 
 # Load and scale the background image
-background_image = pygame.image.load("assets/arcade.jpg").convert()                         # Load the image
+background_image = pygame.image.load("assets/menu.jpg").convert()                         # Load the image
 background_image = pygame.transform.scale(background_image, window_size)                    # Resize the image to fit the window
 
 # Define colors
@@ -46,7 +47,7 @@ def draw_button(text, font, color, bg_color, surface, x, y, width, height):
 
 # Main menu function
 def main_menu():
-    input_rect = pygame.Rect(300, 200, 200, 50)
+    input_rect = pygame.Rect(400, 200, 600, 50)
     username = ""
     input_active = True
     cursor_visible = True
@@ -58,14 +59,14 @@ def main_menu():
                 pygame.quit()
                 sys.exit()
 
-            if len(username) < 20 and event.type == pygame.KEYDOWN:                                                    # If the event is a key press and the username is less than 20 char (check issue #23), do :
+            if event.type == pygame.KEYDOWN:                                                    # If the event is a key press and the username is less than 20 char (check issue #23), do :
                 if event.key == pygame.K_RETURN:
                     input_active = False                                                        # If the key is the Enter key, set the input to inactive
 
                 elif event.key == pygame.K_BACKSPACE:
                     username = username[:-1]
 
-                else:
+                elif len(username) < 20 and event.unicode.isprintable():
                     username += event.unicode
 
         screen.blit(background_image, (0, 0))
@@ -77,20 +78,20 @@ def main_menu():
             cursor_timer = 0
 
         # Update input rectangle width based on username length
-        text_surface = font.render(username, True, BLACK)
+        text_surface = font.render(username, True, WHITE)
         input_rect.w = max(200, text_surface.get_width() + 10)
 
-        pygame.draw.rect(screen, BLACK, input_rect, 2)
-        text_surface = font.render("Enter Your Username:", True, BLACK)
-        screen.blit(text_surface, (250, 150))
-        text_surface = font.render(username, True, BLACK)
+        pygame.draw.rect(screen, WHITE, input_rect, 2)
+        text_surface = font.render("Enter Your Username:", True, WHITE)
+        screen.blit(text_surface, (400, 150))
+        text_surface = font.render(username, True, WHITE)
         screen.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))
 
         # Draw cursor if visible
         if cursor_visible:
             cursor_x = input_rect.x + text_surface.get_width() + 5
             cursor_y = input_rect.y + 5
-            pygame.draw.line(screen, BLACK, (cursor_x, cursor_y), (cursor_x, cursor_y + text_surface.get_height()), 2)
+            pygame.draw.line(screen, WHITE, (cursor_x, cursor_y), (cursor_x, cursor_y + text_surface.get_height()), 2)
 
         pygame.display.flip()
 
@@ -110,7 +111,7 @@ def main_menu():
 
 # Function to display game menu
 def game_menu(username):                                                                        # Here you can list your games
-    games = ["Beer Pong", "Space Invader"]                                                      # Adding "Space Invader" to the list
+    games = ["Water Pong", "Space Invader"]                                                      # Adding "Space Invader" to the list
     game_selected = 0
     while True:
         for event in pygame.event.get():
@@ -141,10 +142,10 @@ def game_menu(username):                                                        
 
         for i, game in enumerate(games):
             if i == game_selected:
-                draw_button(game, font, WHITE, LIGHT_GREEN, screen, 300, 200 + i * 50, 200, 40)
+                draw_button(game, font, WHITE, LIGHT_GREEN, screen, 400, 200 + i * 50, 200, 40)
             
             else:
-                draw_button(game, font, WHITE, GRAY, screen, 300, 200 + i * 50, 200, 40)
+                draw_button(game, font, WHITE, GRAY, screen, 400, 200 + i * 50, 200, 40)
         pygame.display.update()
 
 
@@ -167,6 +168,9 @@ def game_options_menu(game_selected, username):
                     if options[option_selected] == "Play":
                         if game_selected == "Space Invader":
                             game_loop(username)
+                        elif game_selected == "Water Pong":
+                            bp_game_loop(username)
+                            
                
                     elif options[option_selected] == "About":
                         print("About", game_selected)
