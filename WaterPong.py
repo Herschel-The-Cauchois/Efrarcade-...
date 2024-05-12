@@ -1,17 +1,63 @@
 import time
 import pygame
+import csv
 
 from WaterPong_classes import *  # Imports all the classes designed in the Waterpong files.
+
+def import_score():                                                                                     # Function that imports the score from the csv file 
+    score = []
+    final = []
+
+    with open('score_wp.csv', 'r') as file:
+        reader = csv.reader(file)
+        next(reader)
+
+        for row in reader:
+            if row and int(row[1])>10:
+                score.append(row)
+    counter = 1
+    while score:
+        max_score = 0
+        max_index = 0
+
+        for i in range(len(score)):
+            if score[i]:
+                if int(score[i][1]) > max_score:
+                    max_score = int(score[i][1])
+                    max_index = i
+
+        final.append(f"{counter}. {score[max_index][0]} : {score[max_index][1]}")
+        score.pop(max_index)
+        counter += 1
+    return final
+
+
 
 def info_bar(game):
     info_font = pygame.font.Font("./assets/pixel_font.ttf", 20)
     info_surface = Surface((200, 500))
     info_surface.fill((0, 0, 0))
     essays_txt = info_font.render(f"Encore {game.attempts} essais", False, (255, 255, 255))
+    if game.multiply !=1:
+        score_txt = info_font.render(f"Score multiply by {game.multiply}", False, (255, 0, 0))
+        info_surface.blit(score_txt, (20, 50))
     info_surface.blit(essays_txt, (20, 10))
+    score_txt = info_font.render(f"Score: {game.score}", False, (255, 255, 255))
+    info_surface.blit(score_txt, (20, 30))
+    draw.line(info_surface, (255, 255, 255), (0, 0), (0, 500), 2)
+    draw.line(info_surface, (255, 255, 255), (0, 0), (200, 0), 2)
+    draw.line(info_surface, (255, 255, 255), (0, 500/2-70), (200, 500/2-70), 2)
+
+    minus=0
+    scores=import_score()
+
+    for i in range(len(scores)) :                                                                                #so that we can later just show top 10, for now there is not enought data
+        score_text = info_font.render(scores[i],False, (255, 255, 255))
+        info_surface.blit(score_text, (10, 500/2-50+minus))
+        minus += 30
     return info_surface
 
-def game_over_screen(username, scene, event):
+def game_over_screen(username, scene, event, score):
     game_over_font = pygame.font.Font("./assets/pixel_font.ttf", 30)
     game_over_text = game_over_font.render("Game Over :( Press Enter to restart", True, (255, 255, 255))
     active = True
@@ -20,13 +66,54 @@ def game_over_screen(username, scene, event):
         for events in event.get():
             if events.type == QUIT:
                 active = False
+                with open('score_wp.csv', 'a') as file:
+                    writer = csv.writer(file)
+                    writer.writerow([username, score])
 
             if events.type == KEYDOWN:
                 if events.key == K_RETURN:
+                    with open('score_wp.csv', 'a') as file:
+                        writer = csv.writer(file)
+                        writer.writerow([username, score])
                     bp_game_loop(username)
+                    active = False
 
         scene.blit(game_over_text, (800/2 - game_over_text.get_width()/2, 250))
         display.flip()
+
+def victory_screen(username, scene, event, cup_num, score):
+    victory_font = pygame.font.Font("./assets/pixel_font.ttf", 20)
+    if cup_num < 4:
+        victory_text = victory_font.render(f"Congratulation ! There is still {3-cup_num} cups to get", True, (255, 255, 255))
+        victory_text2 = victory_font.render(f"Double ? Press Space to continue or Enter to quit and register score", True, (255, 255, 255))
+        scene.blit(victory_text, (800/2 - victory_text.get_width()/2, 250))
+        scene.blit(victory_text2, (800/2 - victory_text2.get_width()/2, 300))
+    else:
+        victory_text = victory_font.render(f"Congratulation ! You won the game !", True, (255, 255, 255))
+        scene.blit(victory_text, (800/2 - victory_text.get_width()/2, 250))
+    active = True
+
+    while active:
+        for events in event.get():
+            if events.type == QUIT:
+                active = False
+                with open('score_wp.csv', 'a') as file:
+                    writer = csv.writer(file)
+                    writer.writerow([username, score])
+                quit()
+
+            if events.type == KEYDOWN:
+                if events.key == K_RETURN:
+                    with open('score_wp.csv', 'a') as file:
+                        writer = csv.writer(file)
+                        writer.writerow([username, score])
+                    bp_game_loop(username)
+                if events.key == K_SPACE and cup_num < 4:
+                    active = False
+
+
+        display.flip()
+    print("quit active")
 
 
 def bp_game_loop(username: str):
@@ -55,7 +142,7 @@ def bp_game_loop(username: str):
         display.flip()  # Draws every graphical element of the game.
         if game.attempts < 1:
             # If the player has exhausted its attempts, freezes the game and shows the game over screen.
-            game_over_screen(username, scene, event)
+            game_over_screen(username, scene, event, game.score)
             is_active = False
         if game.launch == 1:
             # This condition verifies that the game is in the ball launching state.
@@ -66,7 +153,19 @@ def bp_game_loop(username: str):
                 game.launch = 0
             elif game.ball.rect.colliderect(game.glass_goal1.win_rect) or game.ball.rect.colliderect(game.glass_goal2.win_rect) or game.ball.rect.colliderect(game.glass_goal3.win_rect):
                 # If the player makes the ball successfully land in the glass
-                print("Congrats !")
+                game.multiply += 1
+                game.score+= game.attempts* game.multiply
+                if game.ball.rect.colliderect(game.glass_goal1.win_rect):
+                    game.game_sprites.remove(game.glass_goal1)
+                if game.ball.rect.colliderect(game.glass_goal2.win_rect):
+                    game.game_sprites.remove(game.glass_goal2)
+                if game.ball.rect.colliderect(game.glass_goal3.win_rect):
+                    game.game_sprites.remove(game.glass_goal3)
+                victory_screen(username, scene, event, game.multiply, game.score)
+                print("quited victory screen")
+                game.launch = 0
+                game.attempts = 10
+                game.ball.rect.center = game.player_glass.rect.midtop
                 game_over = 2
             elif not game.ball.launch():
                 # If in launch, triggers the launch method of the ball until it reaches its end point or collides with

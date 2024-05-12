@@ -119,6 +119,7 @@ class Game:
     def __init__(self):
         """Initializes the game globally, the objects and sprites inside it for better global management."""
         self.score = 0
+        self.multiply=1
         self.game_sprites = sprite.Group()
         self.player_glass = PlayerGlass()  # Instantiates the glass that will represent the player's.
         self.glass_goal1 = GoalGlass(500, 400)  # Instantiates the glass surrounded by a few rects
