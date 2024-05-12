@@ -14,7 +14,7 @@ def info_bar(scene, player1_score, player2_score, try1_left):
     font = pygame.font.Font(None, 30)
     player1 = font.render(f"Player 1 - Score: {player1_score}", True, (255, 255, 255))
     player2 = font.render(f"Player 2 - Score: {player2_score}", True, (255, 255, 255))
-    try1 = font.render(f"{try1_left} try left", True, (255, 255, 255))
+    try1 = font.render(f"{try1_left} try / tries left", True, (255, 255, 255))
     player1_rect = player1.get_rect()
     player2_rect = player2.get_rect()
     try1_rect = try1.get_rect()
@@ -37,7 +37,7 @@ def bp_game_loop(username: str):
     game = Game()
     player1_score = 0
     player2_score = 0
-    try1_left = 3
+    try1_left = 2
 
     game.vector.graphical_rotation(0, 1, game.ball.rect.center)
     while is_active:
