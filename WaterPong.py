@@ -52,9 +52,9 @@ def bp_game_loop(username: str):
 
         keys_held = key.get_pressed()
         # Detects if the keys A, E, Z or S are held to increase or decrease faster the angle and acceleration.
-        if keys_held[K_a] and not game.launch:
+        if keys_held[K_q] and not game.launch:
             game.vector.graphical_rotation(game.vector.angle + 1, game.vector.acceleration, game.ball)
-        if keys_held[K_e] and not game.launch:
+        if keys_held[K_d] and not game.launch:
             game.vector.graphical_rotation(game.vector.angle - 1, game.vector.acceleration,
                                            game.ball)
         if keys_held[K_z] and not game.launch:

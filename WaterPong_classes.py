@@ -15,14 +15,14 @@ class PlayerGlass(sprite.Sprite):
         self.rect.y = 400
         topright_rectangle = self.rect.topright[0], self.rect.topright[1]+10
         bottom_rectangle_tuple = self.rect.bottomleft[0], self.rect.bottomleft[1]-10
-        self.loss_rects = [Rect(self.rect.topleft, (10, 100)), Rect(topright_rectangle, (10, 100)), Rect(bottom_rectangle_tuple, (100, 10))]
+        #self.loss_rects = [Rect(self.rect.topleft, (10, 100)), Rect(topright_rectangle, (10, 100)), Rect(bottom_rectangle_tuple, (100, 10))]
 
 
 class GoalGlass(sprite.Sprite):
     def __init__(self):
         """Initializes the goal glasses' sprite."""
         super().__init__()
-        self.image = image.load("./assets/Water glass.png")
+        self.image = image.load("./assets/cup_red.png")
         self.image = transform.scale(self.image, (100, 100))
         self.rect = self.image.get_rect()
         self.rect.x = 600
@@ -52,7 +52,7 @@ class Ball(sprite.Sprite):
         t = 0.1
         while 0 < temp[0] < 690 and 0 < temp[1] < 500:  # Until one of the points is out of the game's bounds:
             temp[0] += acceleration*cos(radians(angle))*t  # Adds horizontal displacement to x coordinate.
-            temp[1] -= acceleration*sin(radians(angle))*t-0.5*9.81*t**2  # Adds the vertical one for y.
+            temp[1] -= acceleration*sin(radians(angle))*t-0.5*15*t**2  # Adds the vertical one for y.
             temp[0], temp[1] = int(temp[0]), int(temp[1])  # Turns the values into integers to be comprehensible by
             # pygame.
             trajectory_list.append([temp[0], temp[1]])  # Appends the newly generated point to the trajectory list.
@@ -130,5 +130,5 @@ class Game:
         self.game_sprites.add(self.vector)
         self.launch = 0
         self.attempts = 10
-        self.forbidden_rects = self.glass_goal.loss_rects + self.player_glass.loss_rects
+        self.forbidden_rects = self.glass_goal.loss_rects #+ self.player_glass.loss_rects
         print(self.game_sprites.sprites())
