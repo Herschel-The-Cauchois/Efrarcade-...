@@ -1,14 +1,13 @@
 from SpaceInvader_gameclass import *
 import random
-#csv file
+# Csv file management
 import csv
 
 
-
-def import_score():                                                                                     # Function that imports the score from the csv file 
+# Score importation from the csv
+def import_score():
     score = []
     final = []
-
     with open('score.csv', 'r') as file:
         reader = csv.reader(file)
         next(reader)
@@ -32,9 +31,6 @@ def import_score():                                                             
         counter += 1
     return final
 
-"""
-SPACE INVADER
-"""
 
 init()                                                                                                  # Initializes pygame
 font.init()                                                                                             # Initializes font module
@@ -57,13 +53,12 @@ clock = time.Clock()
 star_positions = []                                                                                     # Lists that holds the position of each respective star.
 
 
-
-
 def level_bar(player_xp):
     """Creates a rectangle that will show in a % the player's level progression."""
-    
-    level_surface = Surface((100, 25))                                                                  # Create a surface for the level bar
-    if player_xp < 50 and player_xp > 10:                                                               # If the player's level is between 10 and 50, the color is yellow                                  
+    # Create a surface for the level bar
+    level_surface = Surface((100, 25))
+    # Fill the rectangle with the player's level progression
+    if 50 > player_xp > 10:
         draw.rect(level_surface, (255, 255, 0), (0, 0, (player_xp/100)*100, 25))
 
     elif player_xp < 10:
@@ -71,13 +66,12 @@ def level_bar(player_xp):
 
     else:
         draw.rect(level_surface, (0, 255, 0), (0, 0, (player_xp/100)*100, 25))
-
     draw.rect(level_surface, (255, 255, 255), (0, 0, 100, 25), 2)                                       # Draw the border rectangle
     return level_surface                                                                                # Return the level bar surface
 
 
 def info_bar(game):
-    info_font = font.SysFont("Comic Sans MS", 30)                                                       # Right display to show the player's stats.
+    info_font = font.Font("./assets/pixel_font.ttf", 20)                                                       # Right display to show the player's stats.
 
     # INIT OF THE INFO BAR
     info_surface = Surface((200, game_height))                                                          # Create a surface for the info bar
@@ -184,10 +178,8 @@ def game_loop(username):
     code_index = 0
     activated = 0
     game_over = 0
-
-    is_active = True                                                                                    # Elementary boolean that stays True until QUIT event is triggered.
-    info_font = font.SysFont("Comic Sans MS", 30)
-
+    is_active = True  # Elementary boolean that stays True until QUIT event is triggered.
+    info_font = font.Font("./assets/pixel_font.ttf", 30)
     while is_active:
         scene.blit(background, (0, 0))                                                                  # Draws background.
         draw.rect(scene, (0, 0, 0), (0, 0, 1000, 100))                                                  # Trying to draw a slot for the game stats...
@@ -291,6 +283,7 @@ def game_loop(username):
                 new_height = int(new_width / ratio)
                 screen = display.set_mode((new_width, new_height), RESIZABLE)
     quit()
+
 
 if __name__ == "__main__":
     game_loop("player")
