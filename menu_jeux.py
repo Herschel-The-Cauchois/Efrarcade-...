@@ -27,8 +27,8 @@ GREEN = (0, 255, 0)
 LIGHT_GREEN = (0, 200, 0)
 
 # Define fonts
-title_font = pygame.font.SysFont(None, 48)
-font = pygame.font.SysFont(None, 36)
+title_font = pygame.font.SysFont(None, 48) # type: ignore
+font = pygame.font.SysFont(None, 36) # type: ignore
 
 # Function to display text on screen
 def draw_text(text, font, color, surface, x, y):

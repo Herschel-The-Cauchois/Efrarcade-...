@@ -100,8 +100,8 @@ def info_bar(game):
 
     #SCORES
 
-    minus=0
-    scores=import_score()
+    minus = 0
+    scores = import_score()
 
     for i in range(10) :                                                                                #so that we can later just show top 10, for now there is not enought data
         score_text = info_font.render(scores[i],False, (255, 255, 255))
