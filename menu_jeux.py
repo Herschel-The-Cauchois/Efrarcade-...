@@ -196,10 +196,10 @@ def game_options_menu(game_selected, username):
 
         for i, option in enumerate(options):
             if i == option_selected:
-                draw_button(option, font, WHITE, LIGHT_GREEN, screen, 300, 200 + i * 50, 200, 40)
+                draw_button(option, font, WHITE, LIGHT_GREEN, screen, 400, 200 + i * 50, 200, 40)
             
             else:
-                draw_button(option, font, WHITE, GRAY, screen, 300, 200 + i * 50, 200, 40)
+                draw_button(option, font, WHITE, GRAY, screen, 400, 200 + i * 50, 200, 40)
         
         pygame.display.update()
 
