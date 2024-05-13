@@ -44,7 +44,7 @@ To get a local copy up and running follow these simple example steps.
 ### Prerequisites
 Python 3.0 or greater, and pip :
 ```sh
-python -m pip install -r requirement.txt
+python -m pip install -r requirements.txt
 ```
 
 ### Installation
